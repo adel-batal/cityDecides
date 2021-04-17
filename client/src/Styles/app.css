@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Nova+Round&family=Varela+Round&display=swap');
+@import 'track-selection.css';
+@import 'adminConsole.css';
+@import 'navbar.css';
+
+:root {
+  --primary-color: #003699;
+  --dark-color: #333333;
+  --light-color: #f4f4f4;
+  --danger-color: #dc3545;
+  --success-color: #28a745;
+}
+
+*,
+*::before,
+*::after {
+  font-family: 'Nova Round', cursive;
+  font-family: 'Varela Round', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.centered-container {
+  margin: 10px auto;
+  margin-top: 25vh;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.standard-container {
+  max-width: 40vw;
+  min-height: 50vh;
+}
+
+.report-container {
+  display: grid;
+  max-width: 80vw;
+  min-height: 50vh;
+  padding: 1em;
+}
+
+
+.selectionListComponent__next-button-container {
+  align-self: flex-end;
+}
+
+.footer {
+  color: rgb(255, 255, 255);
+  background-color: rgb(109, 109, 109);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 23px;
+  text-align: center;
+}
+
+.footer__bottom {
+  background-color: rgb(255, 145, 0);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 3px;
+  text-align: center;
+}
+
+.app {
+  overflow: hidden;
+  z-index: 1;
+}
+
+.app::before {
+  background-size: cover;
+  background-image: url('../Images/cityEntrance.jpg');
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  z-index: -1;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: #666;
+}
+
+ul {
+  list-style: none;
+}
+
+.bg-primary {
+  background: var(--primary-color);
+  color: #fff;
+}
+
+/* img {
+  width: 100%;
+} */
+
+.bg-light {
+  background: var(--light-color);
+  color: #333;
+}
+
+.bg-dark {
+  background: var(--dark-color);
+  color: #fff;
+}
+
+.bg-danger {
+  background: var(--danger-color);
+  color: #fff;
+}
+
+.bg-success {
+  background: var(--success-color);
+  color: #fff;
+}
+
+.bg-white {
+  background: #fff;
+  color: #333;
+  border: #ccc solid 1px;
+}
+
+@media (max-width: 800px) {
+  .centered-container {
+    max-width: 90%;
+  }
+}
+
+@media (min-width: 1200px) {
+  .centered-container {
+    max-width: 30%;
+  }
+}
