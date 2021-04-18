@@ -82,12 +82,12 @@ const StudentState = (props) => {
   // clear filter
 
   // check student
-  const checkStudent = checkedStudent => {
-    dispatch({type: CHECK_STUDENT, payload: checkedStudent})
+  const checkStudent = checkedStudentEmail => {
+    dispatch({type: CHECK_STUDENT, payload: checkedStudentEmail})
   }
 
-  const uncheckStudent = uncheckedStudent => {
-    dispatch({type: UNCHECK_STUDENT, payload: uncheckedStudent})
+  const uncheckStudent = uncheckedStudentEmail => {
+    dispatch({type: UNCHECK_STUDENT, payload: uncheckedStudentEmail})
   }
 
   return (

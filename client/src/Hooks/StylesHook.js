@@ -79,3 +79,14 @@ export const usePaperStyles = makeStyles((theme) => ({
     },
 
 }));
+
+
+export const useNotificationStyles = makeStyles((theme) => ({
+    root: {
+      width: '70%',
+      margin: 'auto',
+      '& > * + *': {
+        marginTop: theme.spacing(0),
+      },
+    },
+  }));
