@@ -39,7 +39,7 @@ export default function AdminConsole() {
         />
       )}
       <div className='admin_admin-console'>
-        <Paper className={`${paperClasses.paper} ${classes.mb1}`}>
+        <Paper elevation={3} className={`${paperClasses.paper} ${classes.mb1}`}>
           <div className={classes.root}>
             <Button
               type='button'
@@ -63,7 +63,7 @@ export default function AdminConsole() {
           </div>
         </Paper>
         <StudentDatatable data={data} />
-        <Paper className={`${paperClasses.paper} ${classes.mt1}`}>
+        <Paper elevation={3} className={`${paperClasses.paper} ${classes.mt1}`}>
           <div className={classes.justifyRight}>
             <Button
             type='button'
