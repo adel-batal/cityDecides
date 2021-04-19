@@ -6,7 +6,7 @@ import {
   BrowserRouter as Router,
 } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import Login from './Components/Login';
+import Login from './Components/Auth/Login';
 import './Styles/app.css';
 import TrackSelection from './Components/StudentViews/TrackSelection';
 import UnitSelection from './Components/StudentViews/UnitSelection';
@@ -15,7 +15,10 @@ import AdminConsole from './Components/AdminConsole/AdminConsole';
 import DecisionReport from './Components/AdminConsole/DecisionReport'
 import Footer from './Components/Layout/Footer';
 import Navbar from './Components/Layout/Navbar';
+import Notifications from './Components/Layout/Notifications'
 import StudentState from './Context/Student/StudentState';
+import AuthState from './Context/Auth/AuthState';
+import NotificationState from './Context/Notification/NotificationState';
 
 function App() {
   const location = useLocation();
@@ -23,52 +26,58 @@ function App() {
   const [units, updateUnits] = useState(sampleUnits);
 
   return (
-    <Router>
-      
-      <div className='app'>
-        <Navbar />
-        <AnimatePresence exitBeforeEnter>
-          <Switch location={location} key={location.pathname}>
-            <Route
-              path='/unitSelection'
-              render={(props) => (
-                <UnitSelection
-                  {...props}
-                  units={units}
-                  updateUnits={updateUnits}
+    <AuthState>
+      <NotificationState>
+        <Router>
+          <div className='app'>
+            <Navbar />
+            <Notifications />
+            <AnimatePresence exitBeforeEnter>
+              <Switch location={location} key={location.pathname}>
+                <Route
+                  path='/unitSelection'
+                  render={(props) => (
+                    <UnitSelection
+                      {...props}
+                      units={units}
+                      updateUnits={updateUnits}
+                    />
+                  )}
                 />
-              )}
-            />
-            <Route
-              path='/trackSelection'
-              render={(props) => (
-                <TrackSelection
-                  {...props}
-                  tracks={tracks}
-                  updateTracks={updateTracks}
+                <Route
+                  path='/trackSelection'
+                  render={(props) => (
+                    <TrackSelection
+                      {...props}
+                      tracks={tracks}
+                      updateTracks={updateTracks}
+                    />
+                  )}
                 />
-              )}
-            />
-            <Route
-              path='/selectionReport'
-              render={(props) => (
-                <StudentSelectionReport
-                  {...props}
-                  tracks={tracks}
-                  units={units}
+                <Route
+                  path='/selectionReport'
+                  render={(props) => (
+                    <StudentSelectionReport
+                      {...props}
+                      tracks={tracks}
+                      units={units}
+                    />
+                  )}
                 />
-              )}
-            />
-            <Route exact path='/' component={Login} />
-            <StudentState>
-              <Route path='/adminConsole' component={AdminConsole} />
-              <Route path='/decisionReport' component={DecisionReport} />
-            </StudentState>
-          </Switch>
-        </AnimatePresence>
-        <Footer />
-      </div>
-    </Router>
+
+                <Route exact path='/' component={Login} />
+                <StudentState>
+                  <Route path='/adminConsole' component={AdminConsole} />
+                    <Route path='/decisionReport' component={DecisionReport} />
+                </StudentState>
+              </Switch>
+            </AnimatePresence>
+            <Footer />
+          </div>
+        </Router>
+      </NotificationState>
+    </AuthState>
+
   );
 }
 export default App;
