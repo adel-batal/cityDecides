@@ -2,6 +2,7 @@
 @import 'track-selection.css';
 @import 'adminConsole.css';
 @import 'navbar.css';
+@import 'decisionReport.css';
 
 :root {
   --primary-color: #003699;

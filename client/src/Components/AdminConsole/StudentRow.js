@@ -30,6 +30,8 @@ export default function StudentRow(props) {
     selectedUnits,
   } = props;
   const studentContext = useContext(StudentContext);
+
+  const { checkStudent, uncheckStudent } = studentContext;
   const [checkedStudentBox, setCheckedStudentBox] = useState({
     studentEmail: '',
     checked: false,
@@ -38,15 +40,17 @@ export default function StudentRow(props) {
   const classes = useRowStyles();
 
   const handleBoxCheck = (e) => {
-    setCheckedStudentBox({ studentEmail: e.target.name, checked: !checkedStudentBox.checked });
-    if(!checkedStudentBox.checked){
-      studentContext.checkStudent(e.target.name)
-    }
-    else {
-      studentContext.uncheckStudent(e.target.name)
+    setCheckedStudentBox({
+      studentEmail: e.target.name,
+      checked: !checkedStudentBox.checked,
+    });
+    if (!checkedStudentBox.checked) {
+      checkStudent(e.target.name);
+    } else {
+      uncheckStudent(e.target.name);
     }
   };
-  console.log(studentContext);
+  //console.log(studentContext);
   return (
     <>
       <TableRow className={classes.root}>
@@ -109,14 +113,14 @@ export default function StudentRow(props) {
                     <TableCell component='tr'>
                       <TableCell component='td' style={{ border: 'none' }}>
                         {selectedTracks.map((track) => (
-                          <div key={track}>{track}</div>
+                          <div key={track.id}>{track.trackName}</div>
                         ))}
                       </TableCell>
                     </TableCell>
                     <TableCell component='tr'>
                       <TableCell component='td' style={{ border: 'none' }}>
                         {selectedUnits.map((unit) => (
-                          <div key={unit}>{unit}</div>
+                          <div key={unit.id}>{unit.unitName}</div>
                         ))}
                       </TableCell>
                     </TableCell>
