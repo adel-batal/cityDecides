@@ -1,0 +1,9 @@
+.decisionReportContainer {
+    width: 90vw;
+    margin: auto;
+    padding: 10px;
+}
+
+.decisionReport {
+    padding: 1em;
+}
