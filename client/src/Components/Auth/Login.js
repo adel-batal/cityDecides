@@ -149,7 +149,7 @@ export default function Login() {
                 <Button
                   variant='outlined'
                   color='primary'
-                  onClick={handleSignIn}
+                  //onClick={handleSignIn}
                   onMouseOver={() => setClickedLoginButton('studentLogin')}
                 >
                   Student Login
@@ -159,7 +159,7 @@ export default function Login() {
                 <Button
                   variant='outlined'
                   color='primary'
-                  onClick={handleSignIn}
+                  //onClick={handleSignIn}
                   onMouseOver={() => setClickedLoginButton('adminLogin')}
                 >
                   Admin Login

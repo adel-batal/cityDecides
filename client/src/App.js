@@ -28,7 +28,6 @@ function App() {
   return (
     <AuthState>
       <NotificationState>
-        <Router>
           <div className='app'>
             <Navbar />
             <Notifications />
@@ -68,13 +67,13 @@ function App() {
                 <Route exact path='/' component={Login} />
                 <StudentState>
                   <Route path='/adminConsole' component={AdminConsole} />
+          
                     <Route path='/decisionReport' component={DecisionReport} />
                 </StudentState>
               </Switch>
             </AnimatePresence>
             <Footer />
           </div>
-        </Router>
       </NotificationState>
     </AuthState>
 

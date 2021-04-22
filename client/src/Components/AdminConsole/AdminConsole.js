@@ -9,6 +9,7 @@ import GenerateIcon from '@material-ui/icons/ArrowForward';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import UpdateIcon from '@material-ui/icons/Cached';
+import { Link } from 'react-router-dom';
 
 export default function AdminConsole() {
   const classes = useStyles();
@@ -65,6 +66,7 @@ export default function AdminConsole() {
         <StudentDatatable data={data} />
         <Paper elevation={3} className={`${paperClasses.paper} ${classes.mt1}`}>
           <div className={classes.justifyRight}>
+            <Link to='/decisionReport'>
             <Button
             type='button'
               variant='contained'
@@ -74,6 +76,7 @@ export default function AdminConsole() {
             >
               generate report
             </Button>
+            </Link>
           </div>
         </Paper>
       </div>

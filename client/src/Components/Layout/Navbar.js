@@ -11,7 +11,7 @@ export default function Navbar({ title, logo }) {
       </h1>
       <ul>
         <li>
-         <Link to='/'>Logout</Link>
+        {/*  <Link to='/'>Logout</Link> */}
         </li>
       </ul>
     </div>
