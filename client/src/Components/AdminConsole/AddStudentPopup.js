@@ -42,7 +42,8 @@ export default function AddStudentPopup({
 
   const { setNotification } = notificationContext;
   const { register, error, clearErrors } = authContext;
-
+  const { addStudent } = studentContext;
+//experimental
   useEffect(() => {
     if (error === 'user already exists') {
       setNotification(error, 'error', true);
@@ -59,16 +60,19 @@ export default function AddStudentPopup({
 
   function onSubmit(e) {
     e.preventDefault();
-    studentContext.addStudent(student);
-    register({
-      email,
-      firstName,
-      lastName,
-      password,
-      regNumber,
-      creditCount,
+    addStudent({
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      regNumber: regNumber,
+      creditCount: creditCount,
     });
-    console.log(student);
+    register({
+      email: email,
+      password: password,
+      role: "student"
+    });
+    
     setStudent({
       email: '',
       firstName: '',
@@ -79,10 +83,9 @@ export default function AddStudentPopup({
     });
     if (error === null) {
       handleAddStudentPopupClose();
-      
     }
   }
-  console.log(error)
+  console.log(email, firstName);
   return (
     <>
       <Dialog open={addStudentPopupOpen} onClose={handleAddStudentPopupClose}>
