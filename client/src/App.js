@@ -12,6 +12,7 @@ import TrackSelection from './Components/StudentViews/TrackSelection';
 import UnitSelection from './Components/StudentViews/UnitSelection';
 import StudentSelectionReport from './Components/StudentViews/StudentSelectionReport';
 import AdminConsole from './Components/AdminConsole/AdminConsole';
+import DecisionReport from './Components/AdminConsole/DecisionReport'
 import Footer from './Components/Layout/Footer';
 import Navbar from './Components/Layout/Navbar';
 import Notifications from './Components/Layout/Notifications'
@@ -27,7 +28,6 @@ function App() {
   return (
     <AuthState>
       <NotificationState>
-        <Router>
           <div className='app'>
             <Navbar />
             <Notifications />
@@ -63,17 +63,20 @@ function App() {
                     />
                   )}
                 />
+
                 <Route exact path='/' component={Login} />
                 <StudentState>
                   <Route path='/adminConsole' component={AdminConsole} />
+          
+                    <Route path='/decisionReport' component={DecisionReport} />
                 </StudentState>
               </Switch>
             </AnimatePresence>
             <Footer />
           </div>
-        </Router>
       </NotificationState>
     </AuthState>
+
   );
 }
 export default App;

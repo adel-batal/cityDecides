@@ -2,6 +2,7 @@
 @import 'track-selection.css';
 @import 'adminConsole.css';
 @import 'navbar.css';
+@import 'decisionReport.css';
 
 :root {
   --primary-color: #003699;
@@ -22,6 +23,7 @@
 }
 
 .centered-container {
+  padding-top: 1em;
   margin: 10px auto;
   margin-top: 25vh;
   background-color: white;
