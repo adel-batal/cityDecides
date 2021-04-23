@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import axios from 'axios';
 import StudentContext from './StudentContext';
 import StudentReducer from './StudentReducer';
 import {
@@ -11,6 +12,7 @@ import {
   CLEAR_FILTER,
   CHECK_STUDENT,
   UNCHECK_STUDENT,
+  ADD_STUDENT_FAIL
 } from '../Types';
 
 const StudentState = (props) => {
@@ -401,9 +403,25 @@ const StudentState = (props) => {
   const [state, dispatch] = useReducer(StudentReducer, initialState);
 
   // add student
-  const addStudent = (student) => {
-    dispatch({ type: ADD_STUDENT, payload: student });
-  };
+
+  const addStudent = async student => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.post(
+        'http://localhost:5000/students/add',
+        student,
+        config
+      );
+      dispatch({type: ADD_STUDENT, payload: {student, res}})
+    } catch (error) {
+    
+    }
+  }
+
 
   // delete student
 

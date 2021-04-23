@@ -45,7 +45,7 @@ const AuthState = (props) => {
     };
     try {
       const res = await axios.post(
-        'http://localhost:5000/students/add',
+        'http://localhost:5000/users/add',
         formData,
         config
       );

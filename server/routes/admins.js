@@ -1,9 +1,9 @@
 import express from 'express';
-import { getAdmins, login } from '../controllers/admins.js'
+import { getAdmins, getAdmin, deleteAdmin } from '../controllers/admins.js'
 const router = express.Router()
 
-router.get('/', getAdmins)
-router.post('login', login)
-
+router.get('/', /*auth*/ getAdmins)
+router.get('/:id',/*auth*/ getAdmin)
+router.post('/:id', /*auth*/ deleteAdmin)
 
 export default router
