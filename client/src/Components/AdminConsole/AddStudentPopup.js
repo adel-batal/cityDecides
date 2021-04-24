@@ -43,12 +43,13 @@ export default function AddStudentPopup({
   const { setNotification } = notificationContext;
   const { register, error, clearErrors } = authContext;
   const { addStudent } = studentContext;
-//experimental
+  //experimental
   useEffect(() => {
     if (error === 'user already exists') {
       setNotification(error, 'error', true);
       clearErrors();
     }
+    // eslint-disable-next-line
   }, [error]);
 
   function onChange(e) {
@@ -70,9 +71,9 @@ export default function AddStudentPopup({
     register({
       email: email,
       password: password,
-      role: "student"
+      role: 'student',
     });
-    
+
     setStudent({
       email: '',
       firstName: '',

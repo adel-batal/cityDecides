@@ -49,12 +49,26 @@ export const login = async (req, res) => {
     if (!isPasswordCorrect)
       return res.status(400).json({ msg: 'invalid credentials' });
     const token = jwt.sign(
-      { email: existingUser.email, id: existingUser._id, role: existingUser.role },
+      {
+        email: existingUser.email,
+        id: existingUser._id,
+        role: existingUser.role,
+      },
       config.jwtSecret,
       { expiresIn: '1h' }
     );
     res.status(200).json({ result: existingUser, token });
   } catch (error) {
     res.status(500).json({ msg: 'something went wrong' });
+  }
+};
+
+export const auth = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email }).select('password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).send('Server Error');
   }
 };
