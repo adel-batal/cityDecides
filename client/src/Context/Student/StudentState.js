@@ -484,7 +484,7 @@ const StudentState = (props) => {
         addStudents,
         checkStudent,
         uncheckStudent,
-        clearStudents
+        clearStudents,
         getStudents
       }}
     >
