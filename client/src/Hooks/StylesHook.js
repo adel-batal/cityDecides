@@ -37,6 +37,12 @@ export const useStyles = makeStyles((theme) => ({
     },
    justifyRight: {
        alignSelf: 'flex-end'
+   },
+   fullWidth: {
+       width: '95%'
+   },
+   btnFullWidth: {
+       width: '100%'
    }
 
 
