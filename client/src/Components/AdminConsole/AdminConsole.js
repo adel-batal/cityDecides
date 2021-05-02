@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AddStudentPopup from './AddStudentPopup';
 import { Paper, Button } from '@material-ui/core';
 
@@ -11,11 +11,16 @@ import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import UpdateIcon from '@material-ui/icons/Cached';
 import { Link } from 'react-router-dom';
 
+import AuthContext from '../../Context/Auth/AuthContext';
+
 export default function AdminConsole() {
+  const { loadUser } = useContext(AuthContext);
   const classes = useStyles();
   const paperClasses = usePaperStyles();
   const [data, setData] = useState([]);
   const [addStudentPopupOpen, setAddStudentPopupOpen] = useState(false);
+
+
 
   const handleAddStudentPopupOpen = () => {
     setAddStudentPopupOpen(true);
@@ -25,11 +30,6 @@ export default function AdminConsole() {
     setAddStudentPopupOpen(false);
   };
 
-  useEffect(() => {
-    fetch('http://dummy.restapiexample.com/api/v1/employees')
-      .then((response) => response.json())
-      .then((json) => setData(json.data));
-  }, []);
 
   return (
     <>
@@ -67,15 +67,15 @@ export default function AdminConsole() {
         <Paper elevation={3} className={`${paperClasses.paper} ${classes.mt1}`}>
           <div className={classes.justifyRight}>
             <Link to='/decisionReport'>
-            <Button
-            type='button'
-              variant='contained'
-              color='primary'
-              className={classes.button}
-              endIcon={<GenerateIcon />}
-            >
-              generate report
-            </Button>
+              <Button
+                type='button'
+                variant='contained'
+                color='primary'
+                className={classes.button}
+                endIcon={<GenerateIcon />}
+              >
+                generate report
+              </Button>
             </Link>
           </div>
         </Paper>

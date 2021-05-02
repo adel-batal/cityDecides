@@ -1,19 +1,40 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import defaultLogo from '../../Images/city-college-logo.png';
-import { Link } from 'react-router-dom';
+import AuthContext from '../../Context/Auth/AuthContext';
 
 export default function Navbar({ title, logo }) {
+  const authContext = useContext(AuthContext);
+
+  const { loadUser, isAuthenticated, logout, user } = authContext;
+
+  useEffect(() => {
+    loadUser();
+    // eslint-disable-next-line
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+  };
+  console.log(user);
   return (
     <div className='navbar bg-primary'>
       <h1 className='navbar_title'>
-        <img src={defaultLogo} alt={logo}/> {title}
+        <img src={defaultLogo} alt={logo} /> {title}
       </h1>
-      <ul>
-        <li>
-        {/*  <Link to='/'>Logout</Link> */}
-        </li>
-      </ul>
+      {isAuthenticated && (
+        <ul>
+          <li>
+            👤
+            {user && user.email}
+          </li>
+          <li>
+            <a onClick={handleLogout} href='/login'>
+              <i className='fas fa-sign-out-alt' /> <span>Logout </span>
+            </a>
+          </li>
+        </ul>
+      )}
     </div>
   );
 }

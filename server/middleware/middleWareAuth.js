@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/default.js';
 
-const auth = async (req, res, next) => {
+const middleWareAuth = async (req, res, next) => {
   const token = req.header('x-auth-token');
   if (!token) {
     return res.status(401).json({ msg: 'no token, authorization denied' });
@@ -14,4 +14,4 @@ const auth = async (req, res, next) => {
     res.status(401).json({ msg: 'token not valid' });
   }
 };
-export default auth;
+export default middleWareAuth;

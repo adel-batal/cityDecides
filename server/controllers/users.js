@@ -8,8 +8,8 @@ export const addUser = async (req, res) => {
   const { email, password, role } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
+    const user = await User.findOne({ email });
+    if (user)
       return res.status(400).json({ msg: 'user already exists' });
     const hashedPassword = await bcrypt.hash(password, 12);
     const result = await User.create({
@@ -38,23 +38,35 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const existingUser = await User.findOne({ email });
+    let user = await User.findOne({ email });
 
-    if (!existingUser)
+    if (!user)
       return res.status(404).json({ msg: 'user does not exist' });
     const isPasswordCorrect = await bcrypt.compare(
       password,
-      existingUser.password
+      user.password
     );
-    if (!isPasswordCorrect)
+    if (!isPasswordCorrect) {
       return res.status(400).json({ msg: 'invalid credentials' });
-    const token = jwt.sign(
-      { email: existingUser.email, id: existingUser._id, role: existingUser.role },
-      config.jwtSecret,
-      { expiresIn: '1h' }
-    );
-    res.status(200).json({ result: existingUser, token });
+    }
+    const payload = {
+      user: {
+        email: user.email,
+        id: user._id,
+      },
+    };
+    const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '1h' });
+    res.status(200).json({ result: user, token });
   } catch (error) {
-    res.status(500).json({ msg: 'something went wrong' });
+    res.status(500).send('server error');
+  }
+};
+
+export const getLoggedInUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).send('Server Error');
   }
 };
