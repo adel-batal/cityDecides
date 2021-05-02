@@ -9,10 +9,10 @@ const AdminPrivateRoute = ({ component: Component, data, ...rest }) => {
     <Route
       {...rest}
       render={(props) =>
-        isAuthenticated && !loading && user !== null && user.role === 'admin' ? (
-            <Component {...props} {...data} />
-            ) : (
-            <Redirect to='/login' />
+        (!isAuthenticated && !loading) || (user !== null && user.role !== 'admin') ? (
+          <Redirect to='/login' />
+        ) : (
+          <Component {...props} {...data} />
         )
       }
     />

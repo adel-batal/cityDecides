@@ -12,7 +12,8 @@ import {
   CLEAR_FILTER,
   CHECK_STUDENT,
   UNCHECK_STUDENT,
-  ADD_STUDENT_FAIL
+  ADD_STUDENT_FAIL,
+  CLEAR_STUDENTS
 } from '../Types';
 
 const StudentState = (props) => {
@@ -445,6 +446,11 @@ const StudentState = (props) => {
     dispatch({type: UNCHECK_STUDENT, payload: uncheckedStudentEmail})
   }
 
+  //clear students
+
+  const clearStudents = () => {
+    dispatch({type: CLEAR_STUDENTS})
+  }
 
   return (
     <StudentContext.Provider
@@ -454,6 +460,7 @@ const StudentState = (props) => {
         addStudent,
         checkStudent,
         uncheckStudent,
+        clearStudents
       }}
     >
       {props.children}

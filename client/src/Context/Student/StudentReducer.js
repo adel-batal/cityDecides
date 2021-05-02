@@ -8,6 +8,7 @@ import {
   CLEAR_FILTER,
   CHECK_STUDENT,
   UNCHECK_STUDENT,
+  CLEAR_STUDENTS,
 } from '../Types';
 
 export default (state, action) => {
@@ -28,6 +29,11 @@ export default (state, action) => {
         checkedStudents: state.checkedStudents.filter(
           (checkedStudent) => checkedStudent !== action.payload
         ),
+      };
+    case CLEAR_STUDENTS:
+      return {
+        ...state,
+        students: null,
       };
     default:
       return state;

@@ -2,11 +2,14 @@ import React, { useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import defaultLogo from '../../Images/city-college-logo.png';
 import AuthContext from '../../Context/Auth/AuthContext';
+import StudentContext from '../../Context/Student/StudentContext';
 
 export default function Navbar({ title, logo }) {
   const authContext = useContext(AuthContext);
+  const studentContext = useContext(StudentContext);
 
   const { loadUser, isAuthenticated, logout, user } = authContext;
+  const { clearStudents } = studentContext;
 
   useEffect(() => {
     loadUser();
@@ -15,6 +18,7 @@ export default function Navbar({ title, logo }) {
 
   const handleLogout = () => {
     logout();
+    clearStudents();
   };
   console.log(user);
   return (
@@ -24,13 +28,10 @@ export default function Navbar({ title, logo }) {
       </h1>
       {isAuthenticated && (
         <ul>
-          <li>
-            👤
-            {user && user.email}
-          </li>
+          <li>{user && user.email}</li>
           <li>
             <a onClick={handleLogout} href='/login'>
-              <i className='fas fa-sign-out-alt' /> <span>Logout </span>
+              <span>Logout </span>
             </a>
           </li>
         </ul>
