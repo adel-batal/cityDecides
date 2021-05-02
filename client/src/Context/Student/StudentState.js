@@ -15,6 +15,7 @@ import {
   CHECK_STUDENT,
   UNCHECK_STUDENT,
   ADD_STUDENT_FAIL,
+  CLEAR_STUDENTS
 } from '../Types';
 
 const StudentState = (props) => {
@@ -465,6 +466,11 @@ const StudentState = (props) => {
     dispatch({ type: CHECK_STUDENT, payload: checkedStudentEmail });
   };
 
+  //clear students
+
+  const clearStudents = () => {
+    dispatch({type: CLEAR_STUDENTS})
+  }
   const uncheckStudent = (uncheckedStudentEmail) => {
     dispatch({ type: UNCHECK_STUDENT, payload: uncheckedStudentEmail });
   };
@@ -478,6 +484,7 @@ const StudentState = (props) => {
         addStudents,
         checkStudent,
         uncheckStudent,
+        clearStudents
         getStudents
       }}
     >

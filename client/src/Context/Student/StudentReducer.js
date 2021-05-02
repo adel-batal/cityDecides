@@ -8,6 +8,7 @@ import {
   CLEAR_FILTER,
   CHECK_STUDENT,
   UNCHECK_STUDENT,
+  CLEAR_STUDENTS,
   GET_STUDENTS,
   STUDENT_ERROR,
 } from '../Types';
@@ -37,11 +38,18 @@ export default (state, action) => {
           (checkedStudent) => checkedStudent !== action.payload
         ),
       };
+    case CLEAR_STUDENTS:
+      return {
+        ...state,
+        students: null,
+      };
+
       case STUDENT_ERROR:
         return {
           ...state,
           error: action.payload
         };
+
     default:
       return state;
   }

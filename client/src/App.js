@@ -37,41 +37,41 @@ function App() {
   return (
     <AuthState>
       <NotificationState>
-        <div className='app'>
-          <Navbar />
-          <Notifications />
-          <AnimatePresence exitBeforeEnter>
-            <Switch location={location} key={location.pathname}>
-              <Route exact path='/login' component={Login} />
-              <PrivateRoute
-                exact
-                path={'/unitSelection'}
-                component={UnitSelection}
-                data={{
-                  units,
-                  updateUnits,
-                }}
-              />
-              <PrivateRoute
-                exact
-                path={'/trackSelection'}
-                component={TrackSelection}
-                data={{
-                  tracks,
-                  updateTracks,
-                }}
-              />
-              <PrivateRoute
-                exact
-                path={'/selectionReport'}
-                component={StudentSelectionReport}
-                data={{
-                  tracks,
-                  units,
-                }}
-              />
+        <StudentState>
+          <div className='app'>
+            <Navbar />
+            <Notifications />
+            <AnimatePresence exitBeforeEnter>
+              <Switch location={location} key={location.pathname}>
+                <Route exact path='/login' component={Login} />
+                <PrivateRoute
+                  exact
+                  path={'/unitSelection'}
+                  component={UnitSelection}
+                  data={{
+                    units,
+                    updateUnits,
+                  }}
+                />
+                <PrivateRoute
+                  exact
+                  path={'/trackSelection'}
+                  component={TrackSelection}
+                  data={{
+                    tracks,
+                    updateTracks,
+                  }}
+                />
+                <PrivateRoute
+                  exact
+                  path={'/selectionReport'}
+                  component={StudentSelectionReport}
+                  data={{
+                    tracks,
+                    units,
+                  }}
+                />
 
-              <StudentState>
                 <AdminPrivateRoute
                   path='/adminConsole'
                   component={AdminConsole}
@@ -85,11 +85,11 @@ function App() {
                     units,
                   }}
                 />
-              </StudentState>
-            </Switch>
-          </AnimatePresence>
-          <Footer />
-        </div>
+              </Switch>
+            </AnimatePresence>
+            <Footer />
+          </div>
+        </StudentState>
       </NotificationState>
     </AuthState>
   );
