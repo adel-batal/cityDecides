@@ -8,10 +8,18 @@ import {
   CLEAR_FILTER,
   CHECK_STUDENT,
   UNCHECK_STUDENT,
+  GET_STUDENTS,
+  STUDENT_ERROR,
 } from '../Types';
 
 export default (state, action) => {
   switch (action.type) {
+    case GET_STUDENTS:
+      return {
+        ...state,
+        students: action.payload,
+        loading: false
+      };
     case ADD_STUDENT:
       return {
         ...state,
@@ -29,6 +37,11 @@ export default (state, action) => {
           (checkedStudent) => checkedStudent !== action.payload
         ),
       };
+      case STUDENT_ERROR:
+        return {
+          ...state,
+          error: action.payload
+        };
     default:
       return state;
   }

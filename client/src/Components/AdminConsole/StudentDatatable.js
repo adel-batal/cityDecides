@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   TableCell,
   Table,
@@ -16,8 +16,14 @@ import StudentContext from '../../Context/Student/StudentContext';
 
 export default function StudentDatatable() {
   const studentContext = useContext(StudentContext);
-  const { students } = studentContext;
+  const { students, getStudents, loading } = studentContext;
   
+  useEffect(() => {
+    getStudents();
+    // eslint-disable-next-line
+  }, []);
+
+  console.log(students)
   return (
     <TableContainer component={Paper} >
       <Table aria-label='collapsible table'>

@@ -44,13 +44,7 @@ export const updateStudent = async (req, res) => {
 };
 
 export const addStudent = async (req, res) => {
-  const {
-    regNumber,
-    firstName,
-    lastName,
-    email,
-    creditCount,
-  } = req.body;
+  const { regNumber, firstName, lastName, email, creditCount } = req.body;
 
   try {
     const existingUser = await Student.findOne({ email });
@@ -66,9 +60,10 @@ export const addStudent = async (req, res) => {
     //token video jwt mern 1:42:00
     res.status(200).json({ result });
   } catch (error) {
-    res.status(500).json({ msg: 'something went wrong',error });
+    res.status(500).json({ msg: 'something went wrong', error });
   }
 };
+
 
 export const submitSelections = async (req, res) => {
   const id = req.body._id;

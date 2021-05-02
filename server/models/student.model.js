@@ -23,8 +23,8 @@ const studentSchema = mongoose.Schema({
         // required: true,
         trim: true,
     },
-    selectedTracks: [String],
-    selectedUnits: [String],
+    selectedTracks: [Object],
+    selectedUnits: [Object],
     creditCount: {
         type: Number,
         default: 0
