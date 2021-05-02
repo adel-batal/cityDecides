@@ -3,6 +3,8 @@ import axios from 'axios';
 import StudentContext from './StudentContext';
 import StudentReducer from './StudentReducer';
 import {
+  GET_STUDENTS,
+  STUDENT_ERROR,
   ADD_STUDENT,
   DELETE_STUDENT,
   SET_CURRENT,
@@ -18,7 +20,7 @@ import {
 
 const StudentState = (props) => {
   const initialState = {
-    students: [
+    students: [] /* [
       {
         email: 'adel@gmail.com',
         firstName: 'Adel',
@@ -388,24 +390,43 @@ const StudentState = (props) => {
           { id: 3, trackName: 'business infromatics' },
         ],
         selectedUnits: [
-          { id: 2, unitName: 'Data Structures and Algorithms' },
-          { id: 6, unitName: 'Object Oriented Programming' },
-          { id: 3, unitName: 'Web Development' },
-          { id: 4, unitName: 'Operating Systems' },
-          { id: 1, unitName: 'Software Engineering' },
-          { id: 5, unitName: 'Network Security' },
+          { id: 2, unitName: "Data Structures and Algorithms" },
+          { id: 6, unitName: "Object Oriented Programming" },
+          { id: 3, unitName: "Web Development" },
+          { id: 4, unitName: "Operating Systems" },
+          { id: 1, unitName: "Software Engineering" },
+          { id: 5, unitName: "Network Security" },
         ],
         creditCount: 60,
       },
-    ],
+    ], */,
     checkedStudents: [],
+    loading: true
   };
 
   const [state, dispatch] = useReducer(StudentReducer, initialState);
 
+  //get students
+
+  const getStudents = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/students');
+
+      dispatch({
+        type: GET_STUDENTS,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({
+        type: STUDENT_ERROR,
+        payload: err.response.msg,
+      });
+    }
+  };
+
   // add student
 
-  const addStudent = async student => {
+  const addStudent = async (student) => {
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -417,12 +438,15 @@ const StudentState = (props) => {
         student,
         config
       );
-      dispatch({type: ADD_STUDENT, payload: {student, res}})
-    } catch (error) {
-    
-    }
-  }
+      dispatch({ type: ADD_STUDENT, payload: { student, res } });
+    } catch (error) {}
+  };
 
+  // add students
+
+  const addStudents = (students) => {
+    students.forEach((student) => addStudent(student));
+  };
 
   // delete student
 
@@ -438,19 +462,18 @@ const StudentState = (props) => {
 
   // check student
 
-  const checkStudent = checkedStudentEmail => {
-    dispatch({type: CHECK_STUDENT, payload: checkedStudentEmail})
-  }
-
-  const uncheckStudent = uncheckedStudentEmail => {
-    dispatch({type: UNCHECK_STUDENT, payload: uncheckedStudentEmail})
-  }
+  const checkStudent = (checkedStudentEmail) => {
+    dispatch({ type: CHECK_STUDENT, payload: checkedStudentEmail });
+  };
 
   //clear students
 
   const clearStudents = () => {
     dispatch({type: CLEAR_STUDENTS})
   }
+  const uncheckStudent = (uncheckedStudentEmail) => {
+    dispatch({ type: UNCHECK_STUDENT, payload: uncheckedStudentEmail });
+  };
 
   return (
     <StudentContext.Provider
@@ -458,9 +481,11 @@ const StudentState = (props) => {
         students: state.students,
         checkedStudents: state.checkedStudents,
         addStudent,
+        addStudents,
         checkStudent,
         uncheckStudent,
         clearStudents
+        getStudents
       }}
     >
       {props.children}
