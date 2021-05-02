@@ -16,17 +16,28 @@ export default (state, action) => {
       return {
         ...state,
         isAuthenticated: true,
-        lodaing: false,
+        loading: false,
         user: action.payload,
       };
     case REGISTER_SUCCESS:
       return {
         ...state,
-        token: null,
-        isAuthenticated: false,
+        ...action.payload,
+        //isAuthenticated: false,
         loading: false,
       };
+    case LOGIN_SUCCESS:
+      localStorage.setItem('token', action.payload.token);
+      return {
+        ...state,
+        ...action.payload,
+        isAuthenticated: true,
+        loading: false,
+        //user: action.payload.result,
+      };
     case AUTH_ERROR:
+    case LOGIN_FAIL:
+    case LOGOUT:
       localStorage.removeItem('token');
       return {
         ...state,

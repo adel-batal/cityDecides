@@ -1,5 +1,4 @@
-import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState, useEffect } from 'react';
 
 import clsx from 'clsx';
 import {
@@ -19,11 +18,13 @@ import { motion } from 'framer-motion';
 import { useStyles } from '../../Hooks/StylesHook';
 import { SlideInOut } from '../../Animations/SlideAnimation';
 import cityLogo from '../../Images/city-logo.png';
-import axios from 'axios';
 import NotificationContext from '../../Context/Notification/NotificationContext';
 
-export default function Login() {
+import AuthContext from '../../Context/Auth/AuthContext';
+
+export default function Login(props) {
   const classes = useStyles();
+  const authContext = useContext(AuthContext);
   const notificationContext = useContext(NotificationContext);
   const { setNotification } = notificationContext;
   const [loginData, setLoginData] = useState({
@@ -31,9 +32,22 @@ export default function Login() {
     password: '',
     showPassword: false,
   });
+  const { user, login, error, clearErrors, isAuthenticated } = authContext;
 
   const { email, password, showPassword } = loginData;
-  const [clickedLoginBtn, setClickedLoginButton] = useState('');
+  //experimental
+  useEffect(() => {
+    if (isAuthenticated) {
+      user && user.role !== null && user.role === 'student'
+        ? props.history.push('/trackSelection')
+        : props.history.push('/adminConsole');
+    }
+    if (error === 'invalid credentials') {
+      setNotification(error, 'error', true);
+      clearErrors();
+    }
+    // eslint-disable-next-line
+  }, [error, isAuthenticated, props.history]);
 
   const handleChange = (prop) => (e) => {
     setLoginData({ ...loginData, [prop]: e.target.value });
@@ -48,29 +62,16 @@ export default function Login() {
   };
 
   const handleSignIn = (e) => {
+    e.preventDefault();
     if (email === '' || password === '') {
-      setNotification('Please enter all fields', 'error', true);
+      setNotification('Please fill in all fields', 'error', true);
       return;
     }
-    if (clickedLoginBtn === 'studentLogin') {
-      const signedInStudent = {
-        email: email,
-        password: password,
-      };
+    login({
+      email,
+      password,
+    });
 
-      axios
-        .post('http://localhost:5000/students/studentLogin', signedInStudent)
-        .then((res) => console.log(res.data));
-    } else if (clickedLoginBtn === 'adminLogin') {
-      const signedInAdmin = {
-        email: email,
-        password: password,
-      };
-
-      axios
-        .post('http/localhost:5000/admins/adminLogin', signedInAdmin)
-        .then((res) => console.log(res.data));
-    }
     setLoginData({ email: '', password: '' });
   };
   return (
@@ -142,29 +143,15 @@ export default function Login() {
                 labelWidth={70}
               />
             </FormControl>
-          </Grid>
-          <Grid container direction='row' justify='center' alignItems='center'>
-            <div className={classes.root}>
-              <Link to='/trackSelection'>
-                <Button
-                  variant='outlined'
-                  color='primary'
-                  //onClick={handleSignIn}
-                  onMouseOver={() => setClickedLoginButton('studentLogin')}
-                >
-                  Student Login
-                </Button>
-              </Link>
-              <Link to='/adminConsole'>
-                <Button
-                  variant='outlined'
-                  color='primary'
-                  //onClick={handleSignIn}
-                  onMouseOver={() => setClickedLoginButton('adminLogin')}
-                >
-                  Admin Login
-                </Button>
-              </Link>
+            <div className={`${classes.fullWidth} ${classes.mt1}`}>
+              <Button
+                className={classes.btnFullWidth}
+                variant='outlined'
+                color='primary'
+                onClick={handleSignIn}
+              >
+                Login
+              </Button>
             </div>
           </Grid>
         </form>

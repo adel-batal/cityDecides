@@ -20,10 +20,7 @@ export default function AdminConsole() {
   const [data, setData] = useState([]);
   const [addStudentPopupOpen, setAddStudentPopupOpen] = useState(false);
 
-  useEffect(() => {
-    loadUser();
-    // eslint-disable-next-line
-  }, []);
+
 
   const handleAddStudentPopupOpen = () => {
     setAddStudentPopupOpen(true);
@@ -33,11 +30,6 @@ export default function AdminConsole() {
     setAddStudentPopupOpen(false);
   };
 
-  useEffect(() => {
-    fetch('http://dummy.restapiexample.com/api/v1/employees')
-      .then((response) => response.json())
-      .then((json) => setData(json.data));
-  }, []);
 
   return (
     <>
