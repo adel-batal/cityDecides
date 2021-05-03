@@ -1,20 +1,28 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Paper } from '@material-ui/core';
-import { usePaperStyles } from '../../Hooks/StylesHook';
+import { usePaperStyles, useChartHeaderStyles } from '../../Hooks/StylesHook';
 import BarChart from './Charts/BarChart';
 import StudentContext from '../../Context/Student/StudentContext';
 import AuthContext from '../../Context/Auth/AuthContext';
+import ChartPanel from './ChartPanel';
 
 export default function DecisionReport({ tracks, units }) {
   const studentContext = useContext(StudentContext);
-  const { students } = studentContext;
-  const classes = usePaperStyles();
-
+  const { students, getStudents } = studentContext;
+  const [filteredStudents, setFilteredStudents] = useState(students)
+  const paperClasses = usePaperStyles();
+  useEffect(() => {
+    getStudents();
+    // eslint-disable-next-line
+  }, []);
   function produceChoicesData(studentList, limit, type) {
     let arr = [];
     for (let i = 0; i < limit; i++) {
       let curr = studentList
+        .filter((student) => student.selectedTracks.length > 0)
         .map((student) =>
+          student.selectedTracks.length > 0 &&
+          student.selectedUnits.length > 0 &&
           type === 'tracks'
             ? student.selectedTracks[i].id
             : student.selectedUnits[i].id
@@ -28,6 +36,10 @@ export default function DecisionReport({ tracks, units }) {
       arr.push([...curr.entries()].sort());
     }
     return arr.map((tcs) => tcs.map((tc) => tc[1]));
+  }
+
+  function filterStudentsByCreditCount(minCreditCount) {
+    setFilteredStudents(students.filter((student) => student.creditCount >= minCreditCount));
   }
 
   function produceDataSets(choicesList) {
@@ -44,24 +56,27 @@ export default function DecisionReport({ tracks, units }) {
     return datasets;
   }
 
-  console.log(produceChoicesData(students, 6, 'units'));
+  console.log(students);
+  //console.log(students.filter((student) => student.creditCount >= 100));
 
   return (
-    <div className={`${classes.root} decisionReportContainer`}>
+    <div className={`${paperClasses.root} decisionReportContainer`}>
       <Paper className='decisionReport' elevation={3}>
         <h2>This Is Your Decision Report!</h2>
         <br />
-        <h2>Tracks</h2>
-        <BarChart
-          datasets={produceDataSets(produceChoicesData(students, 3, 'tracks'))}
+        <ChartPanel
+          minCreditCount={filterStudentsByCreditCount}
+          datasets={produceDataSets(produceChoicesData(filteredStudents, 3, 'tracks'))}
           elements={tracks}
+          title={'Tracks'}
         />
         <br />
         <br />
-        <h2>Units</h2>
-        <BarChart
-          datasets={produceDataSets(produceChoicesData(students, 6, 'units'))}
+        <ChartPanel
+          minCreditCount={filterStudentsByCreditCount}
+          datasets={produceDataSets(produceChoicesData(filteredStudents, 6, 'units'))}
           elements={units}
+          title={'Units'}
         />
       </Paper>
     </div>

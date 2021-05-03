@@ -23,7 +23,7 @@ export default function StudentDatatable() {
     // eslint-disable-next-line
   }, []);
 
-  console.log(students)
+
   return (
     <TableContainer component={Paper} >
       <Table aria-label='collapsible table'>

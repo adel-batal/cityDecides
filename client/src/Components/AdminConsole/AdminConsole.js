@@ -66,7 +66,7 @@ export default function AdminConsole() {
         <StudentDatatable data={data} />
         <Paper elevation={3} className={`${paperClasses.paper} ${classes.mt1}`}>
           <div className={classes.justifyRight}>
-            <Link to='/decisionReport'>
+            <a href='/decisionReport'>
               <Button
                 type='button'
                 variant='contained'
@@ -76,7 +76,7 @@ export default function AdminConsole() {
               >
                 generate report
               </Button>
-            </Link>
+            </a>
           </div>
         </Paper>
       </div>
