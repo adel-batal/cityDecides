@@ -21,8 +21,8 @@ import AuthState from './Context/Auth/AuthState';
 import NotificationState from './Context/Notification/NotificationState';
 import setAuthToken from './Utils/setAuthToken';
 
-import PrivateRoute from './Components/Routing/PrivateRoute';
 import AdminPrivateRoute from './Components/Routing/AdminPrivateRoute';
+import StudentPrivateRoute from './Components/Routing/StudentPrivateRoute';
 
 //load user
 
@@ -38,40 +38,41 @@ function App() {
     <AuthState>
       <NotificationState>
         <StudentState>
-          <div className='app'>
-            <Navbar />
-            <Notifications />
-            <AnimatePresence exitBeforeEnter>
-              <Switch location={location} key={location.pathname}>
-                <Route exact path='/login' component={Login} />
-                <PrivateRoute
-                  exact
-                  path={'/unitSelection'}
-                  component={UnitSelection}
-                  data={{
-                    units,
-                    updateUnits,
-                  }}
-                />
-                <PrivateRoute
-                  exact
-                  path={'/trackSelection'}
-                  component={TrackSelection}
-                  data={{
-                    tracks,
-                    updateTracks,
-                  }}
-                />
-                <PrivateRoute
-                  exact
-                  path={'/selectionReport'}
-                  component={StudentSelectionReport}
-                  data={{
-                    tracks,
-                    units,
-                  }}
-                />
+        <div className='app'>
+          <Navbar />
+          <Notifications />
+          <AnimatePresence exitBeforeEnter>
+            <Switch location={location} key={location.pathname}>
+              <Route exact path='/login' component={Login} />
+              <StudentPrivateRoute
+                exact
+                path={'/unitSelection'}
+                component={UnitSelection}
+                data={{
+                  units,
+                  updateUnits,
+                }}
+              />
+              <StudentPrivateRoute
+                exact
+                path={'/trackSelection'}
+                component={TrackSelection}
+                data={{
+                  tracks,
+                  updateTracks,
+                }}
+              />
+              <StudentPrivateRoute
+                exact
+                path={'/selectionReport'}
+                component={StudentSelectionReport}
+                data={{
+                  tracks,
+                  units,
+                }}
+              />
 
+              
                 <AdminPrivateRoute
                   path='/adminConsole'
                   component={AdminConsole}
@@ -85,11 +86,11 @@ function App() {
                     units,
                   }}
                 />
-              </Switch>
-            </AnimatePresence>
-            <Footer />
-          </div>
-        </StudentState>
+            </Switch>
+          </AnimatePresence>
+          <Footer />
+        </div>
+              </StudentState>
       </NotificationState>
     </AuthState>
   );

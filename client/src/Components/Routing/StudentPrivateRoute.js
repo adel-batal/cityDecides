@@ -2,14 +2,15 @@ import React, { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import AuthContext from '../../Context/Auth/AuthContext';
 
-const PrivateRoute = ({ component: Component, data, ...rest }) => {
+const StudentPrivateRoute = ({ component: Component, data, ...rest }) => {
   const authContext = useContext(AuthContext);
-  const { isAuthenticated, loading } = authContext;
+  const { isAuthenticated, loading, user } = authContext;
   return (
     <Route
       {...rest}
-      render={props =>
-        !isAuthenticated && !loading ? (
+      render={(props) =>
+        (!isAuthenticated && !loading) ||
+        (user !== null && user.role !== 'student') ? (
           <Redirect to='/login' />
         ) : (
           <Component {...props} {...data} />
@@ -19,4 +20,4 @@ const PrivateRoute = ({ component: Component, data, ...rest }) => {
   );
 };
 
-export default PrivateRoute;
+export default StudentPrivateRoute;

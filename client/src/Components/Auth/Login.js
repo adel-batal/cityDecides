@@ -38,9 +38,9 @@ export default function Login(props) {
   //experimental
   useEffect(() => {
     if (isAuthenticated) {
-      user && user.role !== null && user.role === 'student'
-        ? props.history.push('/trackSelection')
-        : props.history.push('/adminConsole');
+      user && user.role === 'admin'
+        ? props.history.push('/adminConsole')
+        : props.history.push('/trackSelection');
     }
     if (error === 'invalid credentials') {
       setNotification(error, 'error', true);
