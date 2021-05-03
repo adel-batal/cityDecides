@@ -419,7 +419,7 @@ const StudentState = (props) => {
     } catch (err) {
       dispatch({
         type: STUDENT_ERROR,
-        payload: err.response.msg,
+        payload: err.response,
       });
     }
   };

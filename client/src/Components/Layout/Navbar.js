@@ -9,7 +9,7 @@ export default function Navbar({ title, logo }) {
   const studentContext = useContext(StudentContext);
 
   const { loadUser, isAuthenticated, logout, user } = authContext;
-  const { clearStudents } = studentContext;
+  const {  clearStudents } = studentContext;
 
   useEffect(() => {
     loadUser();

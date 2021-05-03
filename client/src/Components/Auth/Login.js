@@ -40,7 +40,7 @@ export default function Login(props) {
     if (isAuthenticated) {
       user && user.role === 'admin'
         ? props.history.push('/adminConsole')
-        : props.history.push('/trackSelection');
+        : props.history.push('/trackSelection')
     }
     if (error === 'invalid credentials') {
       setNotification(error, 'error', true);
