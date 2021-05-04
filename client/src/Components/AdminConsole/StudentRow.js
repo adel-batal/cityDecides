@@ -21,6 +21,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 export default function StudentRow(props) {
   const {
+    _id,
     email,
     firstName,
     lastName,
@@ -31,9 +32,9 @@ export default function StudentRow(props) {
   } = props;
   const studentContext = useContext(StudentContext);
 
-  const { checkStudent, uncheckStudent } = studentContext;
+  const {  checkedStudents, checkStudent, uncheckStudent } = studentContext;
   const [checkedStudentBox, setCheckedStudentBox] = useState({
-    studentEmail: '',
+    studentId: '',
     checked: false,
   });
   const [open, setOpen] = useState(false);
@@ -41,16 +42,22 @@ export default function StudentRow(props) {
 
   const handleBoxCheck = (e) => {
     setCheckedStudentBox({
-      studentEmail: e.target.name,
+      studentId: e.target.name,
       checked: !checkedStudentBox.checked,
     });
     if (!checkedStudentBox.checked) {
-      checkStudent(e.target.name);
+      checkStudent({
+        _id: e.target.name,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        regNumber: regNumber,
+        creditCount: creditCount,
+      });
     } else {
-      uncheckStudent(e.target.name);
+      uncheckStudent({ _id: _id });
     }
   };
-  //console.log(studentContext);
   return (
     <>
       <TableRow className={classes.root}>
@@ -58,9 +65,9 @@ export default function StudentRow(props) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={checkedStudentBox.checked}
+                checked={checkedStudents.length === 0 ? false : checkedStudentBox.checked}
                 onChange={handleBoxCheck}
-                name={email}
+                name={_id}
                 color='primary'
               />
             }

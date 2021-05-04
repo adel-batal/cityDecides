@@ -8,6 +8,7 @@ import {
   CLEAR_FILTER,
   CHECK_STUDENT,
   UNCHECK_STUDENT,
+  SET_CHECKED_STUDENT,
   CLEAR_STUDENTS,
   GET_STUDENTS,
   STUDENT_ERROR,
@@ -19,12 +20,19 @@ export default (state, action) => {
       return {
         ...state,
         students: action.payload,
-        loading: false
+        loading: false,
       };
     case ADD_STUDENT:
       return {
         ...state,
         students: [...state.students, action.payload.student],
+      };
+    case UPDATE_STUDENT:
+      return {
+        ...state,
+        students: state.students.map((student) =>
+          student._id === action.payload._id ? action.payload : student
+        ),
       };
     case CHECK_STUDENT:
       return {
@@ -35,7 +43,7 @@ export default (state, action) => {
       return {
         ...state,
         checkedStudents: state.checkedStudents.filter(
-          (checkedStudent) => checkedStudent !== action.payload
+          (checkedStudent) => checkedStudent.id !== action.payload.id
         ),
       };
     case CLEAR_STUDENTS:
@@ -43,12 +51,21 @@ export default (state, action) => {
         ...state,
         students: null,
       };
-
-      case STUDENT_ERROR:
-        return {
-          ...state,
-          error: action.payload
-        };
+    case SET_CURRENT:
+      return {
+        ...state,
+        current: action.payload,
+      };
+    case CLEAR_CURRENT:
+      return {
+        ...state,
+        current: null,
+      };
+    case STUDENT_ERROR:
+      return {
+        ...state,
+        error: action.payload,
+      };
 
     default:
       return state;

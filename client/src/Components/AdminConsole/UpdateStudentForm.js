@@ -14,35 +14,51 @@ import {
 } from '@material-ui/core';
 import { useStyles } from '../../Hooks/StylesHook';
 
-export default function AddStudentPopup({
-  handleAddStudentPopupClose,
-  addStudentPopupOpen,
+export default function UpdateStudentForm({
+  handleUpdateStudentFormClose,
+  updateStudentFormOpen,
 }) {
   const classes = useStyles();
   const studentContext = useContext(StudentContext);
   const authContext = useContext(AuthContext);
   const notificationContext = useContext(NotificationContext);
+  const {
+    uncheckStudent,
+    updateStudent,
+    currentStudent,
+    clearCurrentStudent,
+    checkedStudents,
+  } = studentContext;
+
+  useEffect(() => {
+    if (currentStudent !== null) {
+      setStudent(currentStudent);
+    } else {
+      setStudent({
+        email: '',
+        firstName: '',
+        lastName: '',
+        regNumber: '',
+        creditCount: 0,
+      });
+    }
+  }, [studentContext, currentStudent]);
+
   const [student, setStudent] = useState({
+    _id: '',
     email: '',
     firstName: '',
     lastName: '',
-    password: '',
     regNumber: '',
     creditCount: 0,
   });
 
-  const {
-    email,
-    firstName,
-    lastName,
-    password,
-    regNumber,
-    creditCount,
-  } = student;
+  const { _id, email, firstName, lastName, regNumber, creditCount } = student;
 
   const { setNotification } = notificationContext;
-  const { register, error, clearErrors } = authContext;
-  const { addStudent } = studentContext;
+
+  const { error, clearErrors } = authContext;
+
   //experimental
   useEffect(() => {
     if (error === 'user already exists') {
@@ -61,37 +77,24 @@ export default function AddStudentPopup({
 
   function onSubmit(e) {
     e.preventDefault();
-    addStudent({
-      email: email,
-      firstName: firstName,
-      lastName: lastName,
-      regNumber: regNumber,
-      creditCount: creditCount,
-    });
-    register({
-      email: email,
-      password: password,
-      role: 'student',
-    });
-
-    setStudent({
-      email: '',
-      firstName: '',
-      lastName: '',
-      password: '',
-      regNumber: '',
-      creditCount: 0,
-    });
+    //todo update from backend
+    updateStudent(student);
     if (error === null) {
-      handleAddStudentPopupClose();
+      uncheckStudent({ studentId: _id, checked: false });
+      clearCurrentStudent();
+      handleUpdateStudentFormClose();
     }
   }
+  console.log(checkedStudents);
   return (
     <>
-      <Dialog open={addStudentPopupOpen} onClose={handleAddStudentPopupClose}>
+      <Dialog
+        open={updateStudentFormOpen}
+        onClose={handleUpdateStudentFormClose}
+      >
         <form>
           <DialogTitle name='form-dialog-title'>
-            Add Student To Current List
+            Update Student: {`${student.firstName} ${student.lastName}`}
           </DialogTitle>
           <DialogContent>
             <Input
@@ -124,15 +127,6 @@ export default function AddStudentPopup({
             />
             <Input
               className={classes.mb1}
-              name='password'
-              placeholder='Password'
-              type='text'
-              value={password}
-              onChange={onChange}
-              fullWidth
-            />
-            <Input
-              className={classes.mb1}
               name='regNumber'
               placeholder='Registration Number'
               type='text'
@@ -151,23 +145,17 @@ export default function AddStudentPopup({
             />
             <br />
             <br />
-            <DialogContentText>
-              *Please note that after adding a student you will not be able
-              update their password as it will be automatically encrypted and
-              inserted in the database, alternatively you can delete your entry
-              and make a new one with a new password.
-            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
               type='button'
-              onClick={handleAddStudentPopupClose}
+              onClick={handleUpdateStudentFormClose}
               color='secondary'
             >
               Cancel
             </Button>
             <Button variant='contained' onClick={onSubmit} color='primary'>
-              Add
+              Update
             </Button>
           </DialogActions>
         </form>

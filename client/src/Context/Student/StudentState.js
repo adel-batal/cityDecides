@@ -4,6 +4,7 @@ import StudentContext from './StudentContext';
 import StudentReducer from './StudentReducer';
 import {
   GET_STUDENTS,
+  GET_STUDENT,
   STUDENT_ERROR,
   ADD_STUDENT,
   DELETE_STUDENT,
@@ -13,15 +14,16 @@ import {
   FILTER_STUDENTS,
   CLEAR_FILTER,
   CHECK_STUDENT,
+  SET_CHECKED_STUDENT,
   UNCHECK_STUDENT,
   ADD_STUDENT_FAIL,
-  CLEAR_STUDENTS
+  CLEAR_STUDENTS,
 } from '../Types';
 
 const StudentState = (props) => {
   const initialState = {
-    students: [] /* [
-      {
+    students: [
+      /* {
         email: 'adel@gmail.com',
         firstName: 'Adel',
         lastName: 'Batal',
@@ -399,9 +401,11 @@ const StudentState = (props) => {
         ],
         creditCount: 60,
       },
-    ], */,
+    */
+    ],
     checkedStudents: [],
-    loading: true
+    current: null,
+    loading: true,
   };
 
   const [state, dispatch] = useReducer(StudentReducer, initialState);
@@ -442,6 +446,25 @@ const StudentState = (props) => {
     } catch (error) {}
   };
 
+  // update student
+  const updateStudent = async (student) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.patch(
+        `http://localhost:5000/students/${student._id}`,
+        student,
+        config
+      );
+      dispatch({ type: UPDATE_STUDENT, payload: res.data });
+    } catch (error) {
+      dispatch({ type: STUDENT_ERROR, payload: error.response.msg });
+    }
+  };
+
   // add students
 
   const addStudents = (students) => {
@@ -451,28 +474,34 @@ const StudentState = (props) => {
   // delete student
 
   // set current student
+  const setCurrentStudent = (student) => {
+    dispatch({ type: SET_CURRENT, payload: student });
+  };
 
   // clear current student
-
-  // update student
+  const clearCurrentStudent = () => {
+    dispatch({ type: CLEAR_CURRENT });
+  };
 
   // filter students
 
   // clear filter
 
-  // check student
+  // check student;
 
-  const checkStudent = (checkedStudentEmail) => {
-    dispatch({ type: CHECK_STUDENT, payload: checkedStudentEmail });
+  //uncheck student
+  const uncheckStudent = (student) => {
+    dispatch({ type: UNCHECK_STUDENT, payload: student });
+  };
+
+  //set checked student
+  const checkStudent = (student) => {
+    dispatch({ type: CHECK_STUDENT, payload: student });
   };
 
   //clear students
-
   const clearStudents = () => {
-    dispatch({type: CLEAR_STUDENTS})
-  }
-  const uncheckStudent = (uncheckedStudentEmail) => {
-    dispatch({ type: UNCHECK_STUDENT, payload: uncheckedStudentEmail });
+    dispatch({ type: CLEAR_STUDENTS });
   };
 
   return (
@@ -480,12 +509,16 @@ const StudentState = (props) => {
       value={{
         students: state.students,
         checkedStudents: state.checkedStudents,
+        currentStudent: state.current,
         addStudent,
         addStudents,
         checkStudent,
         uncheckStudent,
         clearStudents,
-        getStudents
+        getStudents,
+        setCurrentStudent,
+        clearCurrentStudent,
+        updateStudent,
       }}
     >
       {props.children}

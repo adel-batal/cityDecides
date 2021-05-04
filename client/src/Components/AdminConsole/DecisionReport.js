@@ -1,20 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Paper } from '@material-ui/core';
-import { usePaperStyles, useChartHeaderStyles } from '../../Hooks/StylesHook';
-import BarChart from './Charts/BarChart';
+import { usePaperStyles } from '../../Hooks/StylesHook';
 import StudentContext from '../../Context/Student/StudentContext';
-import AuthContext from '../../Context/Auth/AuthContext';
 import ChartPanel from './ChartPanel';
 
 export default function DecisionReport({ tracks, units }) {
   const studentContext = useContext(StudentContext);
   const { students, getStudents } = studentContext;
-  const [filteredStudents, setFilteredStudents] = useState(students)
+  const [filteredStudents, setFilteredStudents] = useState(students);
   const paperClasses = usePaperStyles();
   useEffect(() => {
     getStudents();
     // eslint-disable-next-line
   }, []);
+
   function produceChoicesData(studentList, limit, type) {
     let arr = [];
     for (let i = 0; i < limit; i++) {
@@ -39,7 +38,9 @@ export default function DecisionReport({ tracks, units }) {
   }
 
   function filterStudentsByCreditCount(minCreditCount) {
-    setFilteredStudents(students.filter((student) => student.creditCount >= minCreditCount));
+    setFilteredStudents(
+      students.filter((student) => student.creditCount >= minCreditCount)
+    );
   }
 
   function produceDataSets(choicesList) {
@@ -66,7 +67,9 @@ export default function DecisionReport({ tracks, units }) {
         <br />
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
-          datasets={produceDataSets(produceChoicesData(filteredStudents, 3, 'tracks'))}
+          datasets={produceDataSets(
+            produceChoicesData(filteredStudents, 3, 'tracks')
+          )}
           elements={tracks}
           title={'Tracks'}
         />
@@ -74,7 +77,9 @@ export default function DecisionReport({ tracks, units }) {
         <br />
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
-          datasets={produceDataSets(produceChoicesData(filteredStudents, 6, 'units'))}
+          datasets={produceDataSets(
+            produceChoicesData(filteredStudents, 6, 'units')
+          )}
           elements={units}
           title={'Units'}
         />
