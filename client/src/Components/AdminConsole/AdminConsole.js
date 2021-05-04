@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import AddStudentPopup from './AddStudentPopup';
+import UpdateStudentForm from './UpdateStudentForm';
 import { Paper, Button } from '@material-ui/core';
 
 import StudentDatatable from './StudentDatatable';
@@ -12,16 +13,32 @@ import UpdateIcon from '@material-ui/icons/Cached';
 import { Link } from 'react-router-dom';
 
 import AuthContext from '../../Context/Auth/AuthContext';
+import NotificationContext from '../../Context/Notification/NotificationContext';
+import StudentContext from '../../Context/Student/StudentContext';
 
 export default function AdminConsole() {
-  const { loadUser } = useContext(AuthContext);
+  const studentContext = useContext(StudentContext);
+  const { students, getStudents, checkedStudents, setCurrentStudent } = studentContext;
   const classes = useStyles();
   const paperClasses = usePaperStyles();
-  const [data, setData] = useState([]);
   const [addStudentPopupOpen, setAddStudentPopupOpen] = useState(false);
+  const [updateStudentFormOpen, setUpdateStudentFormOpen] = useState(false);
+  const notificationContext = useContext(NotificationContext);
 
+  const { setNotification } = notificationContext;
 
+  /*   useEffect(() => {
+    if (error === 'user already exists') {
+      setNotification(error, 'error', true);
+      clearErrors();
+    }
+    // eslint-disable-next-line
+  }, [error]); */
 
+  useEffect(() => {
+    getStudents();
+    // eslint-disable-next-line
+  }, []);
   const handleAddStudentPopupOpen = () => {
     setAddStudentPopupOpen(true);
   };
@@ -29,14 +46,34 @@ export default function AdminConsole() {
   const handleAddStudentPopupClose = () => {
     setAddStudentPopupOpen(false);
   };
+  const handleUpdateStudentFromOpen = () => {
+    if(checkedStudents.length === 0){
+      setNotification('Please Select At Least One Student', 'error', true)
+      return
+    } else if(checkedStudents.length > 1){
+      setNotification('Please Select One Student At a Time To Update', 'error', true)
+      return
+    }
+    setCurrentStudent(checkedStudents[0])
+    setUpdateStudentFormOpen(true);
+  };
 
-
+  const handleUpdateStudentFormClose = () => {
+    setUpdateStudentFormOpen(false);
+  };
+console.log(checkedStudents)
   return (
     <>
       {addStudentPopupOpen && (
         <AddStudentPopup
           handleAddStudentPopupClose={handleAddStudentPopupClose}
           addStudentPopupOpen={addStudentPopupOpen}
+        />
+      )}
+      {updateStudentFormOpen && (
+        <UpdateStudentForm
+          handleUpdateStudentFormClose={handleUpdateStudentFormClose}
+          updateStudentFormOpen={updateStudentFormOpen}
         />
       )}
       <div className='admin_admin-console'>
@@ -54,7 +91,7 @@ export default function AdminConsole() {
               type='button'
               color='primary'
               startIcon={<UpdateIcon />}
-              onClick={handleAddStudentPopupOpen}
+              onClick={handleUpdateStudentFromOpen}
             >
               Update Student
             </Button>
@@ -63,7 +100,7 @@ export default function AdminConsole() {
             </Button>
           </div>
         </Paper>
-        <StudentDatatable data={data} />
+        <StudentDatatable />
         <Paper elevation={3} className={`${paperClasses.paper} ${classes.mt1}`}>
           <div className={classes.justifyRight}>
             <a href='/decisionReport'>

@@ -18,10 +18,6 @@ export default function StudentDatatable() {
   const studentContext = useContext(StudentContext);
   const { students, getStudents, loading } = studentContext;
   
-  useEffect(() => {
-    getStudents();
-    // eslint-disable-next-line
-  }, []);
 
 
   return (
@@ -41,6 +37,7 @@ export default function StudentDatatable() {
         <TableBody>
           {students.map(
             ({
+              _id,
               email,
               firstName,
               lastName,
@@ -50,7 +47,8 @@ export default function StudentDatatable() {
               selectedUnits,
             }) => (
               <StudentRow
-                key={email}
+                key={_id}
+                _id={_id}
                 email={email}
                 firstName={firstName}
                 lastName={lastName}

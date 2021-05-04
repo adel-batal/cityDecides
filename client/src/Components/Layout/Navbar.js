@@ -20,7 +20,6 @@ export default function Navbar({ title, logo }) {
     logout();
     clearStudents();
   };
-  console.log(user);
   return (
     <div className='navbar bg-primary'>
       <h1 className='navbar_title'>
