@@ -55,7 +55,7 @@ export default function StudentRow(props) {
         creditCount: creditCount,
       });
     } else {
-      uncheckStudent({ _id: _id });
+      uncheckStudent({ _id: e.target.name});
     }
   };
   return (

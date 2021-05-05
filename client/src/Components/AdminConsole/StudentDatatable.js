@@ -18,7 +18,11 @@ export default function StudentDatatable() {
   const studentContext = useContext(StudentContext);
   const { students, getStudents, loading } = studentContext;
   
+ useEffect(() => {
+   getStudents();
+    // eslint-disable-next-line
 
+  }, []);
 
   return (
     <TableContainer component={Paper} >

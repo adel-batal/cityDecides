@@ -80,7 +80,7 @@ export default function UpdateStudentForm({
     //todo update from backend
     updateStudent(student);
     if (error === null) {
-      uncheckStudent({ studentId: _id, checked: false });
+      uncheckStudent(student);
       clearCurrentStudent();
       handleUpdateStudentFormClose();
     }

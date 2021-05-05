@@ -18,7 +18,16 @@ import StudentContext from '../../Context/Student/StudentContext';
 
 export default function AdminConsole() {
   const studentContext = useContext(StudentContext);
-  const { students, getStudents, checkedStudents, setCurrentStudent } = studentContext;
+  const authContext = useContext(AuthContext);
+  const {
+    students,
+    deleteStudents,
+    getStudents,
+    checkedStudents,
+    clearCheckedStudnts,
+    setCurrentStudent,
+  } = studentContext;
+  const { deleteUsers } = authContext;
   const classes = useStyles();
   const paperClasses = usePaperStyles();
   const [addStudentPopupOpen, setAddStudentPopupOpen] = useState(false);
@@ -35,10 +44,6 @@ export default function AdminConsole() {
     // eslint-disable-next-line
   }, [error]); */
 
-  useEffect(() => {
-    getStudents();
-    // eslint-disable-next-line
-  }, []);
   const handleAddStudentPopupOpen = () => {
     setAddStudentPopupOpen(true);
   };
@@ -47,21 +52,31 @@ export default function AdminConsole() {
     setAddStudentPopupOpen(false);
   };
   const handleUpdateStudentFromOpen = () => {
-    if(checkedStudents.length === 0){
-      setNotification('Please Select At Least One Student', 'error', true)
-      return
-    } else if(checkedStudents.length > 1){
-      setNotification('Please Select One Student At a Time To Update', 'error', true)
-      return
+    if (checkedStudents.length === 0) {
+      setNotification('Please Select At Least One Student', 'error', true);
+      return;
+    } else if (checkedStudents.length > 1) {
+      setNotification(
+        'Please Select One Student At a Time To Update',
+        'error',
+        true
+      );
+      return;
     }
-    setCurrentStudent(checkedStudents[0])
+    setCurrentStudent(checkedStudents[0]);
     setUpdateStudentFormOpen(true);
   };
 
   const handleUpdateStudentFormClose = () => {
     setUpdateStudentFormOpen(false);
   };
-console.log(checkedStudents)
+
+  const handleDeleteStudents = () => {
+    deleteStudents(checkedStudents);
+    deleteUsers(checkedStudents);
+    clearCheckedStudnts();
+  };
+  console.log(checkedStudents);
   return (
     <>
       {addStudentPopupOpen && (
@@ -95,7 +110,12 @@ console.log(checkedStudents)
             >
               Update Student
             </Button>
-            <Button type='button' color='primary' startIcon={<DeleteIcon />}>
+            <Button
+              type='button'
+              color='primary'
+              startIcon={<DeleteIcon />}
+              onClick={handleDeleteStudents}
+            >
               Remove
             </Button>
           </div>
