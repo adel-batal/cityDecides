@@ -12,7 +12,7 @@ const router = express.Router();
 
 router.post('/add', /* middleWareAuth,  */addUser);
 router.get('/auth',  middleWareAuth, getLoggedInUser);
-router.delete('/:id', middleWareAuth, deleteUser);
+router.delete('/:email', /* middleWareAuth, */ deleteUser);
 router.post('/login', login);
 
 export default router;

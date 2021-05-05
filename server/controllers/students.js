@@ -58,7 +58,7 @@ export const addStudent = async (req, res) => {
       creditCount,
     });
     //token video jwt mern 1:42:00
-    res.status(200).json({ result });
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ msg: 'something went wrong', error });
   }

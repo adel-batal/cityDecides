@@ -24,6 +24,7 @@ const StudentState = (props) => {
   const initialState = {
     students: [
       /* {
+        _id: 1,
         email: 'adel@gmail.com',
         firstName: 'Adel',
         lastName: 'Batal',
@@ -45,6 +46,7 @@ const StudentState = (props) => {
         creditCount: 120,
       },
       {
+        _id: 2,
         email: 'john@gmail.com',
         firstName: 'john',
         lastName: 'Doe',
@@ -66,6 +68,7 @@ const StudentState = (props) => {
         creditCount: 100,
       },
       {
+        _id: 3,
         email: 'jane@gmail.com',
         firstName: 'jane',
         lastName: 'Smith',
@@ -87,6 +90,7 @@ const StudentState = (props) => {
         creditCount: 110,
       },
       {
+        _id: 4,
         email: 'sam@gmail.com',
         firstName: 'Sam',
         lastName: 'Smith',
@@ -108,6 +112,7 @@ const StudentState = (props) => {
         creditCount: 100,
       },
       {
+        _id: 5,
         email: 'becca@gmail.com',
         firstName: 'Becca',
         lastName: 'White',
@@ -129,6 +134,7 @@ const StudentState = (props) => {
         creditCount: 120,
       },
       {
+        _id: 6,
         email: 'christian@gmail.com',
         firstName: 'Christian',
         lastName: 'Jackson',
@@ -150,6 +156,7 @@ const StudentState = (props) => {
         creditCount: 110,
       },
       {
+        _id: 7,
         email: 'ahmad@gmail.com',
         firstName: 'Ahmad',
         lastName: 'Sabbagh',
@@ -171,6 +178,7 @@ const StudentState = (props) => {
         creditCount: 100,
       },
       {
+        _id: 8,
         email: 'mixalis@gmail.com',
         firstName: 'Michalis',
         lastName: 'Dimitriou',
@@ -192,6 +200,7 @@ const StudentState = (props) => {
         creditCount: 70,
       },
       {
+        _id: 9,
         email: 'alex@gmail.com',
         firstName: 'Alex',
         lastName: 'Green',
@@ -213,6 +222,7 @@ const StudentState = (props) => {
         creditCount: 90,
       },
       {
+        _id: 10,
         email: 'thanos@gmail.com',
         firstName: 'Thanos',
         lastName: 'Mak',
@@ -234,6 +244,7 @@ const StudentState = (props) => {
         creditCount: 80,
       },
       {
+        _id: 11,
         email: 'Jack@gmail.com',
         firstName: 'Jack',
         lastName: 'Johnes',
@@ -255,6 +266,7 @@ const StudentState = (props) => {
         creditCount: 80,
       },
       {
+        _id: 12,
         email: 'Micky@gmail.com',
         firstName: 'Micky',
         lastName: 'Mouse',
@@ -276,6 +288,7 @@ const StudentState = (props) => {
         creditCount: 70,
       },
       {
+        _id: 13,
         email: 'John@gmail.com',
         firstName: 'John',
         lastName: 'Snow',
@@ -297,6 +310,7 @@ const StudentState = (props) => {
         creditCount: 80,
       },
       {
+        _id: 14,
         email: 'Jesse@gmail.com',
         firstName: 'Jesse',
         lastName: 'Pinkman',
@@ -318,6 +332,7 @@ const StudentState = (props) => {
         creditCount: 20,
       },
       {
+        _id: 15,
         email: 'kevin@gmail.com',
         firstName: 'Kevin',
         lastName: 'Hart',
@@ -339,6 +354,7 @@ const StudentState = (props) => {
         creditCount: 30,
       },
       {
+        _id: 16,
         email: 'stanley@gmail.com',
         firstName: 'Stanley',
         lastName: 'Lincoln',
@@ -360,6 +376,7 @@ const StudentState = (props) => {
         creditCount: 40,
       },
       {
+        _id: 17,
         email: 'teddy@gmail.com',
         firstName: 'Teddy',
         lastName: 'Johnson',
@@ -381,6 +398,7 @@ const StudentState = (props) => {
         creditCount: 50,
       },
       {
+        _id: 18,
         email: 'Mary@gmail.com',
         firstName: 'Mary',
         lastName: 'Mcgill',
@@ -392,16 +410,15 @@ const StudentState = (props) => {
           { id: 3, trackName: 'business infromatics' },
         ],
         selectedUnits: [
-          { id: 2, unitName: "Data Structures and Algorithms" },
-          { id: 6, unitName: "Object Oriented Programming" },
-          { id: 3, unitName: "Web Development" },
-          { id: 4, unitName: "Operating Systems" },
-          { id: 1, unitName: "Software Engineering" },
-          { id: 5, unitName: "Network Security" },
+          { id: 2, unitName: 'Data Structures and Algorithms' },
+          { id: 6, unitName: 'Object Oriented Programming' },
+          { id: 3, unitName: 'Web Development' },
+          { id: 4, unitName: 'Operating Systems' },
+          { id: 1, unitName: 'Software Engineering' },
+          { id: 5, unitName: 'Network Security' },
         ],
         creditCount: 60,
-      },
-    */
+      }, */
     ],
     checkedStudents: [],
     current: null,
@@ -442,7 +459,8 @@ const StudentState = (props) => {
         student,
         config
       );
-      dispatch({ type: ADD_STUDENT, payload: { student, res } });
+      dispatch({ type: ADD_STUDENT, payload: res.data  });
+      console.log(res.data)
     } catch (error) {}
   };
 
@@ -472,6 +490,30 @@ const StudentState = (props) => {
   };
 
   // delete student
+  const deleteStudent = async (student) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.delete(
+        `http://localhost:5000/students/${student._id}`,
+        student,
+        config
+      );
+      dispatch({ type: DELETE_STUDENT, payload: {result: res.data, student: student} });
+    } catch (error) {
+      dispatch({ type: STUDENT_ERROR, payload: error.response.msg });
+    }
+  };
+  // delete students
+  const deleteStudents = (students) => {
+    students.forEach((student) => deleteStudent(student));
+  };
+
+  
+  
 
   // set current student
   const setCurrentStudent = (student) => {
@@ -487,16 +529,20 @@ const StudentState = (props) => {
 
   // clear filter
 
-  // check student;
+
 
   //uncheck student
   const uncheckStudent = (student) => {
     dispatch({ type: UNCHECK_STUDENT, payload: student });
   };
 
-  //set checked student
+  // check student;
   const checkStudent = (student) => {
     dispatch({ type: CHECK_STUDENT, payload: student });
+  };
+
+  const clearCheckedStudnts = () => {
+    state.checkedStudents.forEach((student) => uncheckStudent(student));
   };
 
   //clear students
@@ -519,6 +565,8 @@ const StudentState = (props) => {
         setCurrentStudent,
         clearCurrentStudent,
         updateStudent,
+        deleteStudents,
+        clearCheckedStudnts,
       }}
     >
       {props.children}
