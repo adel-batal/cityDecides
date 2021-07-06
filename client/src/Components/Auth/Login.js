@@ -148,7 +148,8 @@ export default function Login(props) {
                 className={classes.btnFullWidth}
                 variant='outlined'
                 color='primary'
-                onClick={handleSignIn}
+                type='submit'
+          
               >
                 Login
               </Button>
