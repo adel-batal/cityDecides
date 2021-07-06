@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const studentSchema = mongoose.Schema({
+const studentSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -29,10 +29,14 @@ const studentSchema = mongoose.Schema({
         type: Number,
         default: 0
     },
+    academicYear: {
+        type: String,
+        trim: true,
+    },
     createdAt: {
         type: Date,
         default: new Date()
-    }
+    },
 })
 
 const Student = mongoose.model('Student', studentSchema);

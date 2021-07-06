@@ -1,20 +1,39 @@
 import React, { useState, useEffect, useContext } from 'react';
 import AddStudentPopup from './AddStudentPopup';
+import LaunchCampaignForm from './LaunchCampaignForm';
 import UpdateStudentForm from './UpdateStudentForm';
-import { Paper, Button } from '@material-ui/core';
+import CampaignListForm from './CampaignListForm';
+import {
+  Paper,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  NativeSelect,
+} from '@material-ui/core';
 
 import StudentDatatable from './StudentDatatable';
-import { useStyles, usePaperStyles } from '../../Hooks/StylesHook';
+import {
+  useStyles,
+  usePaperStyles,
+  useformControlStyles,
+} from '../../Hooks/StylesHook';
 
+import AddCampaignIcon from '@material-ui/icons/Add';
 import GenerateIcon from '@material-ui/icons/ArrowForward';
 import AddIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import UpdateIcon from '@material-ui/icons/Cached';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import PanToolIcon from '@material-ui/icons/PanTool';
+
 import { Link } from 'react-router-dom';
 
 import AuthContext from '../../Context/Auth/AuthContext';
 import NotificationContext from '../../Context/Notification/NotificationContext';
 import StudentContext from '../../Context/Student/StudentContext';
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 
 export default function AdminConsole() {
   const studentContext = useContext(StudentContext);
@@ -30,12 +49,22 @@ export default function AdminConsole() {
   const { deleteUsers } = authContext;
   const classes = useStyles();
   const paperClasses = usePaperStyles();
+  const formControlClasses = useformControlStyles();
   const [addStudentPopupOpen, setAddStudentPopupOpen] = useState(false);
   const [updateStudentFormOpen, setUpdateStudentFormOpen] = useState(false);
+  const [launchCampaignFormOpen, setLaunchCampaignFormOpen] = useState(false);
+  const [viewCampaignsFormOpen, setViewCampaignsFormOpen] = useState(false);
+  const [currentYear, setCurrentYear] = useState('');
+  //const [academicYear, setAcademicYear] = useState('');
   const notificationContext = useContext(NotificationContext);
-
+  const campaignContext = useContext(CampaignContext);
+  const { academicYear, getCampaigns, campaigns, setAcademicYear } =
+    campaignContext;
   const { setNotification } = notificationContext;
 
+  const handleYearChange = (event) => {
+    setAcademicYear(event.target.value);
+  };
   /*   useEffect(() => {
     if (error === 'user already exists') {
       setNotification(error, 'error', true);
@@ -43,6 +72,10 @@ export default function AdminConsole() {
     }
     // eslint-disable-next-line
   }, [error]); */
+
+  useEffect(() => {
+    getCampaigns();
+  }, []);
 
   const handleAddStudentPopupOpen = () => {
     setAddStudentPopupOpen(true);
@@ -67,6 +100,20 @@ export default function AdminConsole() {
     setUpdateStudentFormOpen(true);
   };
 
+  const handleLaunchCampaignFormOpen = () => {
+    setLaunchCampaignFormOpen(true);
+  };
+  const handleLaunchCampaignFormClose = () => {
+    setLaunchCampaignFormOpen(false);
+  };
+
+  const handleViewCampaignsFormOpen = () => {
+    setViewCampaignsFormOpen(true);
+  };
+  const handleViewCampaignsFormClose = () => {
+    setViewCampaignsFormOpen(false);
+  };
+
   const handleUpdateStudentFormClose = () => {
     setUpdateStudentFormOpen(false);
   };
@@ -76,7 +123,10 @@ export default function AdminConsole() {
     deleteUsers(checkedStudents);
     clearCheckedStudnts();
   };
-  console.log(checkedStudents);
+
+  const handleMoveToDifferentYear = () => {};
+
+  console.log(students);
   return (
     <>
       {addStudentPopupOpen && (
@@ -91,9 +141,60 @@ export default function AdminConsole() {
           updateStudentFormOpen={updateStudentFormOpen}
         />
       )}
+      {launchCampaignFormOpen && (
+        <LaunchCampaignForm
+          handleLaunchCampaignFormClose={handleLaunchCampaignFormClose}
+          launchCampaignFormOpen={launchCampaignFormOpen}
+        />
+      )}
+      {viewCampaignsFormOpen && (
+        <CampaignListForm
+          handleViewCampaignsFormClose={handleViewCampaignsFormClose}
+          viewCampaignsFormOpen={viewCampaignsFormOpen}
+        />
+      )}
       <div className='admin_admin-console'>
         <Paper elevation={3} className={`${paperClasses.paper} ${classes.mb1}`}>
-          <div className={classes.root}>
+          <div className={`${classes.rowDirection} ${classes.alignItems}`}>
+            <FormControl variant='filled' className={formControlClasses.root}>
+              <InputLabel id='demo-simple-select-filled-label'>
+                Academic Year
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-filled-label'
+                id='demo-simple-select-filled'
+                value={academicYear}
+                onChange={handleYearChange}
+              >
+                <MenuItem value=''>
+                  <em>All Years</em>
+                </MenuItem>
+                {campaigns.map((campaign) => (
+                  <MenuItem value={campaign.academicYear}>
+                    {campaign.academicYear}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/*             <FormControl className={classes.formControl} error>
+              <InputLabel htmlFor='name-native-error'>Name</InputLabel>
+              <NativeSelect
+              value={academicYear}
+              onChange={handleYearChange}
+              >
+                <option value='All Years'>
+                  All Years
+                </option>
+                 {campaigns.map((campaign) => (
+                  <option value={campaign.academicYear}>
+                    {campaign.academicYear}
+                  </option>
+                ))}
+              
+              </NativeSelect>
+            
+            </FormControl> */}
             <Button
               type='button'
               color='primary'
@@ -118,9 +219,54 @@ export default function AdminConsole() {
             >
               Remove
             </Button>
+            {/*  <FormControl className={`${classes.fulSize} ${classes.noMargin}`}>
+              <InputLabel id='demo-simple-select-filled-label'>
+              Move to Another Academic Year              </InputLabel>
+              <Select
+                labelId='demo-simple-select-filled-label'
+                id='demo-simple-select-filled'
+                value={currentYear}
+                onChange={handleYearChange}
+                className={`${classes.fulSize} ${classes.noMargin}`}
+              >
+                {campaigns.map((campaign) => (
+                  <MenuItem value={campaign.academicYear}>
+                    {campaign.academicYear}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl> */}
+            <Button
+              type='button'
+              color='primary'
+              startIcon={<PanToolIcon />}
+              onClick={handleMoveToDifferentYear}
+            >
+              Move to a Different Year
+            </Button>
+            <Button
+              type='button'
+              variant='outlined'
+              color='primary'
+              endIcon={<AddCampaignIcon />}
+              onClick={handleLaunchCampaignFormOpen}
+            >
+              Launch New Campaign
+            </Button>
+            <Button
+              type='button'
+              variant='outlined'
+              color='primary'
+              endIcon={<VisibilityIcon />}
+              onClick={handleViewCampaignsFormOpen}
+            >
+              View Campaigns
+            </Button>
           </div>
         </Paper>
+
         <StudentDatatable />
+
         <Paper elevation={3} className={`${paperClasses.paper} ${classes.mt1}`}>
           <div className={classes.justifyRight}>
             <a href='/decisionReport'>

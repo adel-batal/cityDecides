@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import StudentContext from '../../Context/Student/StudentContext';
 import AuthContext from '../../Context/Auth/AuthContext';
 import NotificationContext from '../../Context/Notification/NotificationContext';
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 
 import {
   Button,
@@ -10,18 +11,26 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
+  Select,
+  MenuItem,
   DialogTitle,
+  FormControl,
+  InputLabel,
 } from '@material-ui/core';
-import { useStyles } from '../../Hooks/StylesHook';
+import { useStyles, useformControlStyles } from '../../Hooks/StylesHook';
 
 export default function AddStudentPopup({
   handleAddStudentPopupClose,
   addStudentPopupOpen,
 }) {
   const classes = useStyles();
+  const formControlClasses = useformControlStyles();
   const studentContext = useContext(StudentContext);
   const authContext = useContext(AuthContext);
+  const campaignContext = useContext(CampaignContext);
   const notificationContext = useContext(NotificationContext);
+  const [currentYear, setCurrentYear] = useState('');
+
   const [student, setStudent] = useState({
     email: '',
     firstName: '',
@@ -29,8 +38,10 @@ export default function AddStudentPopup({
     password: '',
     regNumber: '',
     creditCount: 0,
+    academicYear: '',
   });
 
+  const { campaigns } = campaignContext;
   const {
     email,
     firstName,
@@ -43,6 +54,7 @@ export default function AddStudentPopup({
   const { setNotification } = notificationContext;
   const { register, error, clearErrors } = authContext;
   const { addStudent } = studentContext;
+
   //experimental
   useEffect(() => {
     if (error === 'user already exists') {
@@ -51,6 +63,10 @@ export default function AddStudentPopup({
     }
     // eslint-disable-next-line
   }, [error]);
+
+  const handleYearChange = (event) => {
+    setCurrentYear(event.target.value);
+  };
 
   function onChange(e) {
     setStudent({
@@ -67,6 +83,7 @@ export default function AddStudentPopup({
       lastName: lastName,
       regNumber: regNumber,
       creditCount: creditCount,
+      academicYear: currentYear,
     });
     register({
       email: email,
@@ -81,6 +98,7 @@ export default function AddStudentPopup({
       password: '',
       regNumber: '',
       creditCount: 0,
+      academicYear: '',
     });
     if (error === null) {
       handleAddStudentPopupClose();
@@ -89,7 +107,7 @@ export default function AddStudentPopup({
   return (
     <>
       <Dialog open={addStudentPopupOpen} onClose={handleAddStudentPopupClose}>
-        <form>
+        <form className={formControlClasses.root}>
           <DialogTitle name='form-dialog-title'>
             Add Student To Current List
           </DialogTitle>
@@ -149,6 +167,26 @@ export default function AddStudentPopup({
               onChange={onChange}
               fullWidth
             />
+
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-filled-label'>
+                Academic Year
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-filled-label'
+                id='demo-simple-select-filled'
+                value={currentYear}
+                onChange={handleYearChange}
+                fullWidth
+              >
+                {campaigns.map((campaign) => (
+                  <MenuItem value={campaign.academicYear}>
+                    {campaign.academicYear}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
             <br />
             <br />
             <DialogContentText>

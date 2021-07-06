@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import studentRoutes from './routes/students.js'
 import adminRoutes from './routes/admins.js'
 import userRoutes from './routes/users.js'
+import campaignRoutes from './routes/campaigns.js'
 
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(cors());
 app.use('/students', studentRoutes)
 app.use('/admins', adminRoutes)
 app.use('/users', userRoutes)
+app.use('/campaigns', campaignRoutes)
 
 const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })

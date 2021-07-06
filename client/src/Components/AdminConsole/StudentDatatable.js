@@ -8,24 +8,29 @@ import {
   TableRow,
   Paper,
 } from '@material-ui/core';
-import StudentRow from './StudentRow'
+import StudentRow from './StudentRow';
 
 import StudentContext from '../../Context/Student/StudentContext';
-
-
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 
 export default function StudentDatatable() {
   const studentContext = useContext(StudentContext);
+  const campaignContext = useContext(CampaignContext);
   const { students, getStudents, loading } = studentContext;
-  
- useEffect(() => {
-   getStudents();
-    // eslint-disable-next-line
+  const { academicYear, setCurrentYear, clearCurrentYear } = campaignContext;
 
+  useEffect(() => {
+    getStudents();
+    // eslint-disable-next-line
   }, []);
 
+  const filteredStudents =
+    academicYear !== ''
+      ? students.filter((student) => student.academicYear === academicYear)
+      : students;
+
   return (
-    <TableContainer component={Paper} >
+    <TableContainer component={Paper}>
       <Table aria-label='collapsible table'>
         <TableHead>
           <TableRow>
@@ -39,7 +44,7 @@ export default function StudentDatatable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students.map(
+          {filteredStudents.map(
             ({
               _id,
               email,
