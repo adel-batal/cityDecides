@@ -58,8 +58,14 @@ export default function AdminConsole() {
   //const [academicYear, setAcademicYear] = useState('');
   const notificationContext = useContext(NotificationContext);
   const campaignContext = useContext(CampaignContext);
-  const { academicYear, getCampaigns, campaigns, setAcademicYear } =
-    campaignContext;
+  const {
+    academicYear,
+    getCampaigns,
+    campaigns,
+    setAcademicYear,
+    getCurrentCampaign,
+    currentCampaign,
+  } = campaignContext;
   const { setNotification } = notificationContext;
 
   const handleYearChange = (event) => {

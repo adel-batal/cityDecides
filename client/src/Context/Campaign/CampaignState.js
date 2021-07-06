@@ -9,6 +9,9 @@ import {
   DELETE_CAMPAIGN,
   UPDATE_CAMPAIGN,
   SET_ACADEMIC_YEAR,
+  SET_CURRENT_CAMPAIGN,
+  CLEAR_CURRENT_CAMPAIGN,
+  GET_CURRENT_CAMPAIGN,
   CLEAR_ACADEMIC_YEAR,
   UPDATE_CURRENT_CHOICES,
 } from '../Types';
@@ -16,7 +19,8 @@ import {
 const CampaignState = (props) => {
   const initialState = {
     campaigns: [],
-    academicYear: ''
+    academicYear: '',
+    currentCampaign: null,
   };
 
   const [state, dispatch] = useReducer(CampaignReducer, initialState);
@@ -67,12 +71,14 @@ const CampaignState = (props) => {
       const res = await axios.delete(
         `http://localhost:5000/campaigns/${campaign._id}`,
         campaign,
-        config,
+        config
       );
-      dispatch({ type: DELETE_CAMPAIGN, payload: {data: res.data, campaign: campaign} });
+      dispatch({
+        type: DELETE_CAMPAIGN,
+        payload: { data: res.data, campaign: campaign },
+      });
     } catch (error) {}
   };
-
 
   //update campaign
   const updateCampaign = async (campaign) => {
@@ -85,7 +91,7 @@ const CampaignState = (props) => {
       const res = await axios.patch(
         `http://localhost:5000/campaigns/${campaign._id}`,
         campaign,
-        config,
+        config
       );
       dispatch({ type: UPDATE_CAMPAIGN, payload: res.data });
       console.log(res.data);
@@ -99,20 +105,40 @@ const CampaignState = (props) => {
 
   const setAcademicYear = (ay) => {
     dispatch({ type: SET_ACADEMIC_YEAR, payload: ay });
+  };
 
-  }
+  const setCurrentCampaign = (campaign) => {
+    dispatch({ type: SET_CURRENT_CAMPAIGN, payload: campaign });
+  };
 
-  
+  const getCurrentCampaign = async () => {
+    const allCampaigns = [...state.campaigns];
+    let currentCampaign = null;
+    allCampaigns.forEach((c) => {
+      if (c.current) {
+        currentCampaign = c;
+      }
+    });
+    dispatch({ type: GET_CURRENT_CAMPAIGN, payload: currentCampaign });
+  };
+  const ClearCurrentCampaign = () => {
+    dispatch({ type: CLEAR_CURRENT_CAMPAIGN });
+  };
+
   return (
     <CampaignContext.Provider
       value={{
         campaigns: state.campaigns,
         academicYear: state.academicYear,
+        currentCampaign: state.currentCampaign,
         getCampaigns,
         createCampaign,
         updateCampaign,
         deleteCampaign,
-        setAcademicYear
+        setAcademicYear,
+        setCurrentCampaign,
+        ClearCurrentCampaign,
+        getCurrentCampaign,
       }}
     >
       {props.children}

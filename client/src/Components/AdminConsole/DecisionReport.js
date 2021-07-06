@@ -2,11 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Paper } from '@material-ui/core';
 import { usePaperStyles } from '../../Hooks/StylesHook';
 import StudentContext from '../../Context/Student/StudentContext';
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 import ChartPanel from './ChartPanel';
 
 export default function DecisionReport({ tracks, units }) {
   const studentContext = useContext(StudentContext);
+  const campaignContext = useContext(CampaignContext);
   const { students, getStudents } = studentContext;
+  const { currentCampaign } = campaignContext;
   const [filteredStudents, setFilteredStudents] = useState(students);
   const paperClasses = usePaperStyles();
   useEffect(() => {
@@ -57,6 +60,7 @@ export default function DecisionReport({ tracks, units }) {
     return datasets;
   }
 
+
   console.log(students);
   //console.log(students.filter((student) => student.creditCount >= 100));
 
@@ -68,7 +72,7 @@ export default function DecisionReport({ tracks, units }) {
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
-            produceChoicesData(filteredStudents, 3, 'tracks')
+            produceChoicesData(filteredStudents, currentCampaign && currentCampaign.tracks.length, 'tracks')
           )}
           elements={tracks}
           title={'Tracks'}
@@ -78,7 +82,7 @@ export default function DecisionReport({ tracks, units }) {
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
-            produceChoicesData(filteredStudents, 6, 'units')
+            produceChoicesData(filteredStudents, currentCampaign && currentCampaign.units.length, 'units')
           )}
           elements={units}
           title={'Units'}
