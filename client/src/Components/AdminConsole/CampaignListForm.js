@@ -34,16 +34,20 @@ export default function CampaignListForm({
   const {
     campaigns,
     getCampaigns,
-    currentYear,
     updateCampaign,
     deleteCampaign,
+    setCurrentCampaign,
+    clearCurrentCampaign,
+    currentCampaign,
+    getCurrentCampaign
   } = campaignContext;
   const { setNotification } = notificationContext;
   const { register, error, clearErrors } = authContext;
 
   useEffect(() => {
     getCampaigns();
-  }, []);
+    getCurrentCampaign()
+      }, [currentCampaign]);
 
   /*   //experimental
   useEffect(() => {
@@ -64,9 +68,11 @@ export default function CampaignListForm({
           campaign.current = true;
         }
         updateCampaign(campaign);
+        setCurrentCampaign(campaign);
       } else {
         campaign.current = false;
         updateCampaign(campaign);
+        clearCurrentCampaign(campaign);
       }
     });
   }
@@ -78,7 +84,7 @@ export default function CampaignListForm({
       //todo here add "are you sure you want to delete current, the whole system will stop working"
     }
   }
-
+  
   return (
     <>
       <Dialog

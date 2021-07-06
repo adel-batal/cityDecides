@@ -7,6 +7,9 @@ import {
   UPDATE_CURRENT_CHOICES,
   SET_ACADEMIC_YEAR,
   CLEAR_ACADEMIC_YEAR,
+  CLEAR_CURRENT_CAMPAIGN,
+  SET_CURRENT_CAMPAIGN,
+  GET_CURRENT_CAMPAIGN,
 } from '../Types';
 
 export default (state, action) => {
@@ -39,6 +42,17 @@ export default (state, action) => {
       return {
         ...state,
         academicYear: action.payload,
+      };
+    case SET_CURRENT_CAMPAIGN:
+    case GET_CURRENT_CAMPAIGN:
+      return {
+        ...state,
+        currentCampaign: action.payload,
+      };
+    case CLEAR_CURRENT_CAMPAIGN:
+      return {
+        ...state,
+        currentCampaign: null,
       };
     default:
       return state;
