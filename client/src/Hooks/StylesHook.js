@@ -9,6 +9,9 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
+  rowDirection: {
+    flexDirection: 'row',
+  },
   margin: {
     margin: theme.spacing(1),
   },
@@ -42,6 +45,36 @@ export const useStyles = makeStyles((theme) => ({
   btnFullWidth: {
     width: '100%',
   },
+
+  alignItems: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+  },
+  helperText: {
+    marginTop: '-15px',
+  },
+
+  sameLine: {
+    display: 'flex',
+    direction: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+
+  noMargin: {
+    margin: '0px',
+  },
+  titleActionSpace: {
+    display: 'grid',
+    gridGap: '10em',
+    gridAutoFlow: 'column'
+  
+  },
+  fulSize: {
+    display: 'inline-block',
+    width: '16em'
+  }
 }));
 
 export const useRowStyles = makeStyles({
@@ -98,5 +131,15 @@ export const useChartHeaderStyles = makeStyles((theme) => ({
   },
   mb2: {
     marginBottom: '2em',
+  },
+}));
+
+export const useformControlStyles = makeStyles((theme) => ({
+  root: {
+    margin: theme.spacing(1),
+    minWidth: 150,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
   },
 }));

@@ -18,11 +18,14 @@ import {
   UNCHECK_STUDENT,
   ADD_STUDENT_FAIL,
   CLEAR_STUDENTS,
+  UPDATE_OWN_SELECTIONS,
+  SUBMIT_SELECTIONS
 } from '../Types';
 
 const StudentState = (props) => {
   const initialState = {
     students: [
+
       /* {
         _id: 1,
         email: 'adel@gmail.com',
@@ -550,6 +553,26 @@ const StudentState = (props) => {
     dispatch({ type: CLEAR_STUDENTS });
   };
 
+  const submitSelections = async (email, selectedTracks, selectedUnits) => {
+    const selections = {selectedTracks, selectedUnits}
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.patch(
+        `http://localhost:5000/students/submitSelections/${email}`,
+        selections,
+        config
+      );
+      dispatch({ type: SUBMIT_SELECTIONS, payload: res.data });
+    } catch (error) {
+      dispatch({ type: STUDENT_ERROR, payload: error.response.msg });
+    }
+  }
+
+
   return (
     <StudentContext.Provider
       value={{
@@ -567,6 +590,7 @@ const StudentState = (props) => {
         updateStudent,
         deleteStudents,
         clearCheckedStudnts,
+        submitSelections,
       }}
     >
       {props.children}

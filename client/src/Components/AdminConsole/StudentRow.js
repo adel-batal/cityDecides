@@ -32,7 +32,13 @@ export default function StudentRow(props) {
   } = props;
   const studentContext = useContext(StudentContext);
 
-  const {  checkedStudents, checkStudent, uncheckStudent } = studentContext;
+  const {
+    checkedStudents,
+    checkStudent,
+    uncheckStudent,
+    students,
+    updateStudent,
+  } = studentContext;
   const [checkedStudentBox, setCheckedStudentBox] = useState({
     studentId: '',
     checked: false,
@@ -55,8 +61,18 @@ export default function StudentRow(props) {
         creditCount: creditCount,
       });
     } else {
-      uncheckStudent({ _id: e.target.name});
+      uncheckStudent({ _id: e.target.name });
     }
+  };
+
+  const handleCreditChange = (e) => {
+    students.forEach((student) => {
+      if (student._id === _id) {
+        const newStudent = { ...student };
+        newStudent.creditCount = e.target.value;
+        updateStudent(newStudent);
+      }
+    });
   };
   return (
     <>
@@ -65,7 +81,11 @@ export default function StudentRow(props) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={checkedStudents.length === 0 ? false : checkedStudentBox.checked}
+                checked={
+                  checkedStudents.length === 0
+                    ? false
+                    : checkedStudentBox.checked
+                }
                 onChange={handleBoxCheck}
                 name={_id}
                 color='primary'
@@ -98,6 +118,7 @@ export default function StudentRow(props) {
             id='outlined-basic'
             variant='outlined'
             defaultValue={creditCount}
+            onChange={(e) => handleCreditChange(e)}
           />
         </TableCell>
       </TableRow>

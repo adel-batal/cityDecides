@@ -12,6 +12,8 @@ import {
   CLEAR_STUDENTS,
   GET_STUDENTS,
   STUDENT_ERROR,
+  UPDATE_OWN_SELECTIONS,
+  SUBMIT_SELECTIONS
 } from '../Types';
 
 export default (state, action) => {
@@ -73,6 +75,14 @@ export default (state, action) => {
       return {
         ...state,
         error: action.payload,
+      };
+    case SUBMIT_SELECTIONS:
+      return {
+        ...state,
+        students: state.students.map(student => (
+          student.email !== action.payload ? student :
+          action.payload
+        ))
       };
 
     default:

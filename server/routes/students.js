@@ -18,6 +18,6 @@ router.patch('/:id', /* middleWareAuth, */ updateStudent);
 router.get('/:id', middleWareAuth, getStudent);
 
 //route to do:
-router.post('/submitSelections', middleWareAuth, submitSelections);
+router.patch('/submitSelections/:email', /* middleWareAuth, */ submitSelections);
 
 export default router;

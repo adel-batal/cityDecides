@@ -23,15 +23,6 @@ export const addUser = async (req, res) => {
   }
 };
 
-/* export const deleteUser = async (req, res) => {
-  const { id: _id } = req.params;
-  if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.status(404).send('No user with that ID');
-
-  await User.findByIdAndRemove(_id);
-
-  res.json('user deleted');
-}; */
 export const deleteUser = async (req, res) => {
   const { email } = req.params;
 
