@@ -47,7 +47,7 @@ export default function CampaignListForm({
   useEffect(() => {
     getCampaigns();
     getCurrentCampaign()
-      }, [currentCampaign]);
+      }, []);
 
   /*   //experimental
   useEffect(() => {

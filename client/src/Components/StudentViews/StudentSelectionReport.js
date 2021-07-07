@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 
 import { motion } from 'framer-motion';
 import { Grid, Button } from '@material-ui/core';
@@ -7,24 +7,40 @@ import SubmitIcon from '@material-ui/icons/ArrowForwardIos';
 
 import { useStyles } from '../../Hooks/StylesHook';
 import { SlideInOut } from '../../Animations/SlideAnimation';
-import CampaignContext from '../../Context/Campaign/CampaignContext';
+import SelectionsContext from '../../Context/Selections/SelectionsContext';
 import AuthContext from '../../Context/Auth/AuthContext';
 import StudentContext from '../../Context/Student/StudentContext';
 
 export default function StudentSelectionReport() {
+  const LOCAL_STORAGE_KEY_TRACKS_ORDERED =
+    'cityDecides.selections.tracks.ordered';
+  const LOCAL_STORAGE_KEY_UNITS_ORDERED =
+    'cityDecides.selections.units.ordered';
   const classes = useStyles();
-  const campaignContext = useContext(CampaignContext);
+  const selectionsContext = useContext(SelectionsContext);
   const authContext = useContext(AuthContext);
   const studentContext = useContext(StudentContext);
 
-  const { currentChoices } = campaignContext;
+  const { setSelections, tracks, units } = selectionsContext;
   const { submitSelections } = studentContext;
   const { user } = authContext;
-  const handleSubmitSelections = () => {
-    submitSelections(user.email, currentChoices.selectedTracks, currentChoices.selectedUnits);
-  };
-  console.log(currentChoices)
 
+  useEffect(() => {
+    const TracksJson = localStorage.getItem(LOCAL_STORAGE_KEY_TRACKS_ORDERED);
+    const UnitsJson = localStorage.getItem(LOCAL_STORAGE_KEY_UNITS_ORDERED);
+    if (TracksJson != '' && UnitsJson != '') {
+      setSelections({
+        tracks: JSON.parse(TracksJson),
+        units: JSON.parse(UnitsJson),
+      });
+    }
+  }, []);
+
+  const handleSubmitSelections = () => {
+    submitSelections(user.email, tracks, units);
+  };
+
+  console.log(tracks, units);
   return (
     <motion.div
       className='centered-container report-container'
@@ -43,10 +59,10 @@ export default function StudentSelectionReport() {
         <Grid item xs={6}>
           <h4>Tracks in the order you selected</h4>
           <ul>
-            {currentChoices.selectedTracks.map(({ id, trackName }) => {
+            {tracks.map(({ id, name }) => {
               return (
                 <li className={classes.indented} key={id}>
-                  {trackName}
+                  {name}
                 </li>
               );
             })}
@@ -55,10 +71,10 @@ export default function StudentSelectionReport() {
         <Grid item xs={6}>
           <h4>Units in the order you selected</h4>
           <ul>
-            {currentChoices.selectedUnits.map(({ id, unitName }) => {
+            {units.map(({ id, name }) => {
               return (
                 <li className={classes.indented} key={id}>
-                  {unitName}
+                  {name}
                 </li>
               );
             })}
