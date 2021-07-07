@@ -15,6 +15,7 @@ export default (state, action) => {
     case USER_LOADED:
       return {
         ...state,
+        ...action.payload,
         isAuthenticated: true,
         loading: false,
         user: action.payload,
@@ -30,7 +31,7 @@ export default (state, action) => {
       localStorage.setItem('token', action.payload.token);
       return {
         ...state,
-        ...action.payload,
+        user: action.payload.result,
         isAuthenticated: true,
         loading: false,
         //user: action.payload.result,

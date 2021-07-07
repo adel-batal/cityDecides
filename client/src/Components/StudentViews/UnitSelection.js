@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import { Grid, Button } from '@material-ui/core';
@@ -9,24 +9,54 @@ import { motion } from 'framer-motion';
 import { SlideInOut } from '../../Animations/SlideAnimation';
 import { useStyles } from '../../Hooks/StylesHook';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
+import SelectionsContext from '../../Context/Selections/SelectionsContext';
 
 export default function UnitSelection() {
+  const LOCAL_STORAGE_KEY = 'cityDecides.selections';
+  const LOCAL_STORAGE_KEY_UNITS_ORDERED =
+  'cityDecides.selections.units.ordered';
   const campaignContext = useContext(CampaignContext);
+  const selectionsContext = useContext(SelectionsContext);
+  const { getCurrentCampaign, currentCampaign } = campaignContext;
+  const { setSelections, units, tracks } = selectionsContext;
 
-  const {updateCurrentChoices, currentChoices, units } = campaignContext;
   const [isDiv, setIsDiv] = useState(false);
-  const [thisUnits, updateThisUnits] = useState(units);
+  const [thisUnits, updateThisUnits] = useState(currentCampaign.units);
   const classes = useStyles();
   const AnimatedDiv = isDiv ? 'div' : motion.div;
+  useEffect(() => {
+    getCurrentCampaign();
+  }, []);
+
+  useEffect(() => {
+    const CampaignJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+    updateThisUnits(JSON.parse(CampaignJSON).units);
+  }, []);
+
+  useEffect(() => {
+    currentCampaign &&
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentCampaign));
+  }, [currentCampaign]);
+  useEffect(() => {
+      localStorage.setItem(LOCAL_STORAGE_KEY_UNITS_ORDERED, JSON.stringify(thisUnits));
+  }, [thisUnits]);
 
   function handleOnDragEnd(result) {
     if (!result.destination) return;
     const items = Array.from(thisUnits);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
-    updateCurrentChoices({selectedTracks: currentChoices.selectedTracks, selectedUnits: items});
+
     updateThisUnits(items);
   }
+  
+  function handleNext() {
+    
+    setIsDiv(false);
+  }
+
+  console.log(tracks);
+
   return (
     <AnimatedDiv
       initial='initial'
@@ -54,22 +84,23 @@ export default function UnitSelection() {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {thisUnits.map(({ id, unitName }, index) => {
-                  return (
-                    <Draggable key={id} draggableId={id} index={index}>
-                      {(provided) => (
-                        <div
-                          className='track-selection__track-option'
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          ref={provided.innerRef}
-                        >
-                          {unitName}
-                        </div>
-                      )}
-                    </Draggable>
-                  );
-                })}
+                {thisUnits &&
+                  thisUnits.map(({ id, name }, index) => {
+                    return (
+                      <Draggable key={id} draggableId={id} index={index}>
+                        {(provided) => (
+                          <div
+                            className='track-selection__track-option'
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                          >
+                            {name}
+                          </div>
+                        )}
+                      </Draggable>
+                    );
+                  })}
                 {provided.placeholder}
               </Grid>
             )}
@@ -84,7 +115,7 @@ export default function UnitSelection() {
               color='primary'
               className={`${classes.button} ${classes.mb1}`}
               endIcon={<SendIcon />}
-              onClick={() => setIsDiv(false)}
+              onClick={handleNext}
             >
               Show me my selections
             </Button>

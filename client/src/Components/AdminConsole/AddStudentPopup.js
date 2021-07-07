@@ -29,7 +29,6 @@ export default function AddStudentPopup({
   const authContext = useContext(AuthContext);
   const campaignContext = useContext(CampaignContext);
   const notificationContext = useContext(NotificationContext);
-  const [currentYear, setCurrentYear] = useState('');
 
   const [student, setStudent] = useState({
     email: '',
@@ -38,7 +37,7 @@ export default function AddStudentPopup({
     password: '',
     regNumber: '',
     creditCount: 0,
-    academicYear: '',
+    academicYear: '333',
   });
 
   const { campaigns } = campaignContext;
@@ -49,6 +48,7 @@ export default function AddStudentPopup({
     password,
     regNumber,
     creditCount,
+    academicYear,
   } = student;
 
   const { setNotification } = notificationContext;
@@ -64,9 +64,6 @@ export default function AddStudentPopup({
     // eslint-disable-next-line
   }, [error]);
 
-  const handleYearChange = (event) => {
-    setCurrentYear(event.target.value);
-  };
 
   function onChange(e) {
     setStudent({
@@ -83,7 +80,7 @@ export default function AddStudentPopup({
       lastName: lastName,
       regNumber: regNumber,
       creditCount: creditCount,
-      academicYear: currentYear,
+      academicYear: academicYear,
     });
     register({
       email: email,
@@ -104,6 +101,7 @@ export default function AddStudentPopup({
       handleAddStudentPopupClose();
     }
   }
+console.log(student)
   return (
     <>
       <Dialog open={addStudentPopupOpen} onClose={handleAddStudentPopupClose}>
@@ -175,8 +173,9 @@ export default function AddStudentPopup({
               <Select
                 labelId='demo-simple-select-filled-label'
                 id='demo-simple-select-filled'
-                value={currentYear}
-                onChange={handleYearChange}
+                value={academicYear}
+                name='academicYear'
+                onChange={onChange}
                 fullWidth
               >
                 {campaigns.map((campaign) => (

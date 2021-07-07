@@ -20,7 +20,7 @@ const CampaignState = (props) => {
   const initialState = {
     campaigns: [],
     academicYear: '',
-    currentCampaign: null,
+    currentCampaign: '',
   };
 
   const [state, dispatch] = useReducer(CampaignReducer, initialState);
@@ -98,10 +98,7 @@ const CampaignState = (props) => {
     } catch (error) {}
   };
 
-  // update current choices
-  const updateCurrentChoices = (choices) => {
-    dispatch({ type: UPDATE_CURRENT_CHOICES, payload: choices });
-  };
+
 
   const setAcademicYear = (ay) => {
     dispatch({ type: SET_ACADEMIC_YEAR, payload: ay });
@@ -112,15 +109,22 @@ const CampaignState = (props) => {
   };
 
   const getCurrentCampaign = async () => {
-    const allCampaigns = [...state.campaigns];
-    let currentCampaign = null;
-    allCampaigns.forEach((c) => {
-      if (c.current) {
-        currentCampaign = c;
-      }
-    });
-    dispatch({ type: GET_CURRENT_CAMPAIGN, payload: currentCampaign });
+    try {
+      const res = await axios.get('http://localhost:5000/campaigns');
+      const allCampaigns = res.data;
+      allCampaigns.forEach((c) => {
+        if (c.current) {
+          dispatch({ type: GET_CURRENT_CAMPAIGN, payload: c });
+        }
+      });
+    } catch(err) {
+      dispatch({
+        type: CAMPAIGN_ERROR,
+        payload: err.response,
+      });
+    }
   };
+
   const ClearCurrentCampaign = () => {
     dispatch({ type: CLEAR_CURRENT_CAMPAIGN });
   };

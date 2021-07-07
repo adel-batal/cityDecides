@@ -15,14 +15,11 @@ import StudentState from './Context/Student/StudentState';
 import AuthState from './Context/Auth/AuthState';
 import NotificationState from './Context/Notification/NotificationState';
 import CampaignState from './Context/Campaign/CampaignState';
+import SelectionsState from './Context/Selections/SelectionsState';
 import setAuthToken from './Utils/setAuthToken';
 
 import AdminPrivateRoute from './Components/Routing/AdminPrivateRoute';
 import StudentPrivateRoute from './Components/Routing/StudentPrivateRoute';
-
-
-
-
 
 //load user
 if (localStorage.token) {
@@ -30,61 +27,70 @@ if (localStorage.token) {
 }
 function App() {
   const location = useLocation();
-  
+
   return (
     <AuthState>
       <NotificationState>
         <StudentState>
           <CampaignState>
-            <div className='app'>
-              <Navbar />
-              <Notifications />
-              <AnimatePresence exitBeforeEnter>
-                <Switch location={location} key={location.pathname}>
-                  <Route exact path='/login' component={Login} />
-                  <StudentPrivateRoute
-                    exact
-                    path={'/unitSelection'}
-                    component={UnitSelection}
-                    data={{
-                     /*  units, */
-                    }}
-                  />
-                  <StudentPrivateRoute
-                    exact
-                    path={'/trackSelection'}
-                    component={TrackSelection}
-                    data={{
-                      /* tracks, */
-                    }}
-                  />
-                  <StudentPrivateRoute
-                    exact
-                    path={'/selectionReport'}
-                    component={StudentSelectionReport}
-                    data={{
-                      /* tracks,
+            <SelectionsState>
+              <div className='app'>
+                <Navbar />
+                <Notifications />
+                <AnimatePresence exitBeforeEnter>
+                  <Switch location={location} key={location.pathname}>
+                    <Route exact path='/login' component={Login} />
+                    <StudentPrivateRoute
+                      exact
+                      path={'/unitSelection'}
+                      component={UnitSelection}
+                      data={
+                        {
+                          /*  units, */
+                        }
+                      }
+                    />
+                    <StudentPrivateRoute
+                      exact
+                      path={'/trackSelection'}
+                      component={TrackSelection}
+                      data={
+                        {
+                          /* tracks, */
+                        }
+                      }
+                    />
+                    <StudentPrivateRoute
+                      exact
+                      path={'/selectionReport'}
+                      component={StudentSelectionReport}
+                      data={
+                        {
+                          /* tracks,
                       units, */
-                    }}
-                  />
+                        }
+                      }
+                    />
+                    <AdminPrivateRoute
+                      path='/adminConsole'
+                      component={AdminConsole}
+                    />
 
-                  <AdminPrivateRoute
-                    path='/adminConsole'
-                    component={AdminConsole}
-                  />
-
-                  <AdminPrivateRoute
-                    path='/decisionReport'
-                    component={DecisionReport}
-                    data={{
-                      /* tracks,
+                    <AdminPrivateRoute
+                      path='/decisionReport'
+                      component={DecisionReport}
+                      data={
+                        {
+                          /* tracks anaadel@adel.cod	,
                       units, */
-                    }}
-                  />
-                </Switch>
-              </AnimatePresence>
-              <Footer />
-            </div>
+                        }
+                      }
+                    />
+                  </Switch>
+                </AnimatePresence>
+                <Footer />
+              </div>
+            </SelectionsState>
           </CampaignState>
         </StudentState>
       </NotificationState>

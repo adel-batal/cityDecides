@@ -141,14 +141,14 @@ export default function StudentRow(props) {
                     <TableCell component='tr'>
                       <TableCell component='td' style={{ border: 'none' }}>
                         {selectedTracks.map((track) => (
-                          <div key={track.id}>{track.trackName}</div>
+                          <div key={track.id}>{track.name}</div>
                         ))}
                       </TableCell>
                     </TableCell>
                     <TableCell component='tr'>
                       <TableCell component='td' style={{ border: 'none' }}>
                         {selectedUnits.map((unit) => (
-                          <div key={unit.id}>{unit.unitName}</div>
+                          <div key={unit.id}>{unit.name}</div>
                         ))}
                       </TableCell>
                     </TableCell>
