@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Grid, Button } from '@material-ui/core';
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 import SubmitIcon from '@material-ui/icons/ArrowForwardIos';
-
+import { Link } from 'react-router-dom';
 import { useStyles } from '../../Hooks/StylesHook';
 import { SlideInOut } from '../../Animations/SlideAnimation';
 import SelectionsContext from '../../Context/Selections/SelectionsContext';
@@ -28,12 +28,13 @@ export default function StudentSelectionReport() {
   useEffect(() => {
     const TracksJson = localStorage.getItem(LOCAL_STORAGE_KEY_TRACKS_ORDERED);
     const UnitsJson = localStorage.getItem(LOCAL_STORAGE_KEY_UNITS_ORDERED);
-    if (TracksJson != '' && UnitsJson != '') {
+    if (TracksJson !== '' && UnitsJson !== '') {
       setSelections({
         tracks: JSON.parse(TracksJson),
         units: JSON.parse(UnitsJson),
       });
     }
+    // eslint-disable-next-line
   }, []);
 
   const handleSubmitSelections = () => {
@@ -88,6 +89,7 @@ export default function StudentSelectionReport() {
         alignItems='center'
       >
         <div className='selectionListComponent__next-button'>
+          <Link to={'./unitSelection'}> 
           <Button
             variant='contained'
             color='primary'
@@ -96,6 +98,7 @@ export default function StudentSelectionReport() {
           >
             Back
           </Button>
+          </Link>
         </div>
         <div className='selectionListComponent__next-button'>
           <Button

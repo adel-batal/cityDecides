@@ -1,12 +1,12 @@
 import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
-export default function TracksChart({ datasets, elements }) {
+export default function BarChart({ datasets, elements }) {
   return (
     <div>
       <Bar
         data={{
-          labels: elements.map(element => (element.name)),
+          labels: elements && elements.map(element => (element.name)),
           datasets: datasets,
         }}
         height={400}

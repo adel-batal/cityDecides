@@ -98,8 +98,6 @@ const CampaignState = (props) => {
     } catch (error) {}
   };
 
-
-
   const setAcademicYear = (ay) => {
     dispatch({ type: SET_ACADEMIC_YEAR, payload: ay });
   };
@@ -110,14 +108,12 @@ const CampaignState = (props) => {
 
   const getCurrentCampaign = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/campaigns');
-      const allCampaigns = res.data;
-      allCampaigns.forEach((c) => {
-        if (c.current) {
-          dispatch({ type: GET_CURRENT_CAMPAIGN, payload: c });
-        }
-      });
-    } catch(err) {
+      const res = await axios.get(
+        'http://localhost:5000/campaigns/currentCampaign'
+      );
+
+      dispatch({ type: GET_CURRENT_CAMPAIGN, payload: res.data });
+    } catch (err) {
       dispatch({
         type: CAMPAIGN_ERROR,
         payload: err.response,
@@ -125,7 +121,7 @@ const CampaignState = (props) => {
     }
   };
 
-  const ClearCurrentCampaign = () => {
+  const clearCurrentCampaign = () => {
     dispatch({ type: CLEAR_CURRENT_CAMPAIGN });
   };
 
@@ -141,7 +137,7 @@ const CampaignState = (props) => {
         deleteCampaign,
         setAcademicYear,
         setCurrentCampaign,
-        ClearCurrentCampaign,
+        clearCurrentCampaign,
         getCurrentCampaign,
       }}
     >

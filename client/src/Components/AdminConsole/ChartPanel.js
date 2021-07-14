@@ -1,9 +1,12 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useChartHeaderStyles } from '../../Hooks/StylesHook';
 import { ButtonGroup, Button } from '@material-ui/core';
 import BarChart from './Charts/BarChart';
 export default function ChartPanel({minCreditCount, datasets, elements, title}) {
-    const chartHeaderClasses = useChartHeaderStyles();
+  const chartHeaderClasses = useChartHeaderStyles();
+
+  
+
   return (
     <>
       <div
@@ -17,13 +20,13 @@ export default function ChartPanel({minCreditCount, datasets, elements, title}) 
             aria-label='outlined primary button group'
           >
             <Button onClick={() => minCreditCount(50)}>
-              50 &gt;=
+              {'50 <='}
             </Button>
             <Button onClick={() => minCreditCount(70)}>
-              70 &gt;=
+              {'70 <='}
             </Button>
             <Button onClick={() => minCreditCount(100)}>
-              100 &gt;=
+              {'100 <='}
             </Button>
           </ButtonGroup>
         </div>

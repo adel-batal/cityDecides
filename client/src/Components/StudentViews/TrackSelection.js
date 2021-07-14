@@ -9,36 +9,42 @@ import { motion } from 'framer-motion';
 import { useStyles } from '../../Hooks/StylesHook';
 import { SlideInOut } from '../../Animations/SlideAnimation';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
-import SelectionsContext from '../../Context/Selections/SelectionsContext';
 
+
+/* import SelectionsContext from '../../Context/Selections/SelectionsContext';
+ */
 export default function TrackSelction() {
   const LOCAL_STORAGE_KEY = 'cityDecides.selections';
   const LOCAL_STORAGE_KEY_TRACKS_ORDERED =
     'cityDecides.selections.tracks.ordered';
   const campaignContext = useContext(CampaignContext);
-  const selectionsContext = useContext(SelectionsContext);
-
+  /*   const selectionsContext = useContext(SelectionsContext);
+   */
   const { getCurrentCampaign, currentCampaign } = campaignContext;
-  const { setSelections } = selectionsContext;
+  /* const { setSelections } = selectionsContext; */
   const [isDiv, setIsDiv] = useState(false);
   const [thisTracks, updateThisTracks] = useState(null);
   const classes = useStyles();
   const AnimatedDiv = isDiv ? 'div' : motion.div;
   useEffect(() => {
     getCurrentCampaign();
+    // eslint-disable-next-line
   }, []);
-
   useEffect(() => {
     const CampaignJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
-    updateThisTracks(JSON.parse(CampaignJSON).tracks);
+    CampaignJSON && updateThisTracks(JSON.parse(CampaignJSON).tracks);
   }, []);
 
   useEffect(() => {
     currentCampaign &&
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentCampaign));
+    updateThisTracks(currentCampaign.tracks);
   }, [currentCampaign]);
   useEffect(() => {
-      localStorage.setItem(LOCAL_STORAGE_KEY_TRACKS_ORDERED, JSON.stringify(thisTracks));
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY_TRACKS_ORDERED,
+      JSON.stringify(thisTracks)
+    );
   }, [thisTracks]);
 
   function handleOnDragEnd(result) {
@@ -54,7 +60,7 @@ export default function TrackSelction() {
     /* setSelections({tracks: thisTracks}) */
     setIsDiv(false);
   }
-  console.log(thisTracks);
+  console.log(currentCampaign.tracks);
   return (
     <AnimatedDiv
       initial='initial'

@@ -16,8 +16,8 @@ import CampaignContext from '../../Context/Campaign/CampaignContext';
 export default function StudentDatatable() {
   const studentContext = useContext(StudentContext);
   const campaignContext = useContext(CampaignContext);
-  const { students, getStudents, loading } = studentContext;
-  const { academicYear, setCurrentYear, clearCurrentYear } = campaignContext;
+  const { students, getStudents, /* loading */ } = studentContext;
+  const { academicYear } = campaignContext;
 
   useEffect(() => {
     getStudents();

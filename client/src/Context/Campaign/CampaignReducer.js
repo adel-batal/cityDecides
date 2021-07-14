@@ -52,7 +52,7 @@ export default (state, action) => {
     case CLEAR_CURRENT_CAMPAIGN:
       return {
         ...state,
-        currentCampaign: null,
+        currentCampaign: '',
       };
     default:
       return state;
