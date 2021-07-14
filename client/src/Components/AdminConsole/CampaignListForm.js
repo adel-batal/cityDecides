@@ -1,18 +1,15 @@
-import React, { useState, useContext, useEffect } from 'react';
-import StudentContext from '../../Context/Student/StudentContext';
+import React, { useContext, useEffect } from 'react';
+/* import StudentContext from '../../Context/Student/StudentContext';
 import AuthContext from '../../Context/Auth/AuthContext';
-import NotificationContext from '../../Context/Notification/NotificationContext';
+import NotificationContext from '../../Context/Notification/NotificationContext'; */
 import CampaignContext from '../../Context/Campaign/CampaignContext';
 
 import Fab from '@material-ui/core/Fab';
-import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 
 import {
   Button,
-  FormHelperText,
-  Input,
   Switch,
   Dialog,
   DialogActions,
@@ -27,10 +24,9 @@ export default function CampaignListForm({
   viewCampaignsFormOpen,
 }) {
   const classes = useStyles();
-  const authContext = useContext(AuthContext);
   const campaignContext = useContext(CampaignContext);
-  const notificationContext = useContext(NotificationContext);
-
+/*   const notificationContext = useContext(NotificationContext);
+ */
   const {
     campaigns,
     getCampaigns,
@@ -38,15 +34,15 @@ export default function CampaignListForm({
     deleteCampaign,
     setCurrentCampaign,
     clearCurrentCampaign,
-    currentCampaign,
+    /* currentCampaign, */
     getCurrentCampaign
   } = campaignContext;
-  const { setNotification } = notificationContext;
-  const { register, error, clearErrors } = authContext;
+  /* const { setNotification } = notificationContext; */
 
   useEffect(() => {
     getCampaigns();
     getCurrentCampaign()
+    // eslint-disable-next-line
       }, []);
 
   /*   //experimental

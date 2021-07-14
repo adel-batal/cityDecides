@@ -11,14 +11,17 @@ import { useStyles } from '../../Hooks/StylesHook';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
 import SelectionsContext from '../../Context/Selections/SelectionsContext';
 
+
+import BackIcon from '@material-ui/icons/ArrowBackIos';
+
 export default function UnitSelection() {
   const LOCAL_STORAGE_KEY = 'cityDecides.selections';
   const LOCAL_STORAGE_KEY_UNITS_ORDERED =
-  'cityDecides.selections.units.ordered';
+    'cityDecides.selections.units.ordered';
   const campaignContext = useContext(CampaignContext);
   const selectionsContext = useContext(SelectionsContext);
   const { getCurrentCampaign, currentCampaign } = campaignContext;
-  const { setSelections, units, tracks } = selectionsContext;
+  const { /* setSelections, units, */ tracks } = selectionsContext;
 
   const [isDiv, setIsDiv] = useState(false);
   const [thisUnits, updateThisUnits] = useState(currentCampaign.units);
@@ -26,6 +29,7 @@ export default function UnitSelection() {
   const AnimatedDiv = isDiv ? 'div' : motion.div;
   useEffect(() => {
     getCurrentCampaign();
+    // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -38,7 +42,10 @@ export default function UnitSelection() {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentCampaign));
   }, [currentCampaign]);
   useEffect(() => {
-      localStorage.setItem(LOCAL_STORAGE_KEY_UNITS_ORDERED, JSON.stringify(thisUnits));
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY_UNITS_ORDERED,
+      JSON.stringify(thisUnits)
+    );
   }, [thisUnits]);
 
   function handleOnDragEnd(result) {
@@ -49,9 +56,8 @@ export default function UnitSelection() {
 
     updateThisUnits(items);
   }
-  
+
   function handleNext() {
-    
     setIsDiv(false);
   }
 
@@ -109,17 +115,38 @@ export default function UnitSelection() {
         <div
           className={`selectionListComponent__next-button-container ${classes.mr2}`}
         >
-          <Link to={'./selectionReport'}>
-            <Button
-              variant='contained'
-              color='primary'
-              className={`${classes.button} ${classes.mb1}`}
-              endIcon={<SendIcon />}
-              onClick={handleNext}
-            >
-              Show me my selections
-            </Button>
-          </Link>
+          <Grid
+            container
+            direction='row'
+            justify='space-between'
+            alignItems='center'
+          >
+            <div className='selectionListComponent__next-button'>
+              <Link to={'./trackSelection'}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  className={`${classes.button} ${classes.mb1}`}
+                  startIcon={<BackIcon />}
+                >
+                  Back
+                </Button>
+              </Link>
+            </div>
+            <div className='selectionListComponent__next-button'>
+              <Link to={'./selectionReport'}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  className={`${classes.button} ${classes.mb1}`}
+                  endIcon={<SendIcon />}
+                  onClick={handleNext}
+                >
+                  Show me my selections
+                </Button>
+              </Link>
+            </div>
+          </Grid>
         </div>
       </Grid>
     </AnimatedDiv>

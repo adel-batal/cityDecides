@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react';
-import StudentContext from '../../Context/Student/StudentContext';
-import AuthContext from '../../Context/Auth/AuthContext';
-import NotificationContext from '../../Context/Notification/NotificationContext';
-import CampaignContext from '../../Context/Campaign/CampaignContext';
+import React, { useState, useContext } from 'react';
+/* import StudentContext from '../../Context/Student/StudentContext';
+ */import AuthContext from '../../Context/Auth/AuthContext';
+/* import NotificationContext from '../../Context/Notification/NotificationContext';
+ */import CampaignContext from '../../Context/Campaign/CampaignContext';
 
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
@@ -20,8 +20,8 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 import { useStyles } from '../../Hooks/StylesHook';
-import CampaignState from '../../Context/Campaign/CampaignState';
-
+/* import CampaignState from '../../Context/Campaign/CampaignState';
+ */
 export default function AddStudentPopup({
   handleLaunchCampaignFormClose,
   launchCampaignFormOpen,
@@ -29,8 +29,8 @@ export default function AddStudentPopup({
   const classes = useStyles();
   const authContext = useContext(AuthContext);
   const campaignContext = useContext(CampaignContext);
-  const notificationContext = useContext(NotificationContext);
-  const [campaign, setCampaign] = useState({
+/*   const notificationContext = useContext(NotificationContext);
+ */  const [campaign, setCampaign] = useState({
     academicYear: '',
     tracks: [],
     units: [],
@@ -45,8 +45,8 @@ export default function AddStudentPopup({
 
   const { academicYear, tracks, units, current } = campaign;
   const { createCampaign, campaigns, updateCampaign } = campaignContext;
-  const { setNotification } = notificationContext;
-  const { register, error, clearErrors } = authContext;
+/*   const { setNotification } = notificationContext;
+ */  const { /* register,  */error/* , clearErrors */ } = authContext;
 
   /*   //experimental
   useEffect(() => {

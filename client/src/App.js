@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Switch, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Login from './Components/Auth/Login';
@@ -26,7 +26,7 @@ if (localStorage.token) {
   setAuthToken(localStorage.token);
 }
 function App() {
-  const location = useLocation();
+  /* const location = useLocation() */;
 
   return (
     <AuthState>
@@ -38,38 +38,21 @@ function App() {
                 <Navbar />
                 <Notifications />
                 <AnimatePresence exitBeforeEnter>
-                  <Switch location={location} key={location.pathname}>
-                    <Route exact path='/login' component={Login} />
+                  <Switch /* location={location} key={location.pathname} */>
                     <StudentPrivateRoute
                       exact
                       path={'/unitSelection'}
                       component={UnitSelection}
-                      data={
-                        {
-                          /*  units, */
-                        }
-                      }
                     />
                     <StudentPrivateRoute
                       exact
                       path={'/trackSelection'}
                       component={TrackSelection}
-                      data={
-                        {
-                          /* tracks, */
-                        }
-                      }
                     />
                     <StudentPrivateRoute
                       exact
                       path={'/selectionReport'}
                       component={StudentSelectionReport}
-                      data={
-                        {
-                          /* tracks,
-                      units, */
-                        }
-                      }
                     />
                     <AdminPrivateRoute
                       path='/adminConsole'
@@ -79,13 +62,8 @@ function App() {
                     <AdminPrivateRoute
                       path='/decisionReport'
                       component={DecisionReport}
-                      data={
-                        {
-                          /* tracks anaadel@adel.cod	,
-                      units, */
-                        }
-                      }
                     />
+                    <Route exact path='/' component={Login} />
                   </Switch>
                 </AnimatePresence>
                 <Footer />

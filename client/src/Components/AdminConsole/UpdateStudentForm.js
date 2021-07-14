@@ -9,7 +9,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
 } from '@material-ui/core';
 import { useStyles } from '../../Hooks/StylesHook';
@@ -53,7 +52,7 @@ export default function UpdateStudentForm({
     creditCount: 0,
   });
 
-  const { _id, email, firstName, lastName, regNumber, creditCount } = student;
+  const { email, firstName, lastName, regNumber, creditCount } = student;
 
   const { setNotification } = notificationContext;
 

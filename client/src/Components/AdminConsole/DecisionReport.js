@@ -5,15 +5,20 @@ import StudentContext from '../../Context/Student/StudentContext';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
 import ChartPanel from './ChartPanel';
 
-export default function DecisionReport({ tracks, units }) {
+export default function DecisionReport() {
+  const LOCAL_STORAGE_KEY_CHOICES = 'cityDecides.selections.choices';
   const studentContext = useContext(StudentContext);
   const campaignContext = useContext(CampaignContext);
   const { students, getStudents } = studentContext;
-  const { currentCampaign } = campaignContext;
-  const [filteredStudents, setFilteredStudents] = useState(students);
+  const { currentCampaign, getCurrentCampaign } = campaignContext;
+  const [filteredStudents, setFilteredStudents] = useState(
+    filterStudentsByYear(currentCampaign.academicYear)
+  );
   const paperClasses = usePaperStyles();
+
   useEffect(() => {
     getStudents();
+    getCurrentCampaign();
     // eslint-disable-next-line
   }, []);
 
@@ -45,10 +50,14 @@ export default function DecisionReport({ tracks, units }) {
       students.filter((student) => student.creditCount >= minCreditCount)
     );
   }
+  function filterStudentsByYear(year) {
+    const filteredByYear = [...students]
+    return filteredByYear.filter((student) => student.academicYear === year);
+  }
 
   function produceDataSets(choicesList) {
     let label = 1;
-    const datasets = choicesList.map((tc) => ({
+    return choicesList.map((tc) => ({
       label: `#${label++} Choices`,
       data: tc,
       backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
@@ -57,24 +66,28 @@ export default function DecisionReport({ tracks, units }) {
 
       borderWidth: 2,
     }));
-    return datasets;
   }
 
+  console.log(filteredStudents);
 
-  console.log(students);
   //console.log(students.filter((student) => student.creditCount >= 100));
-
+  console.log('s');
   return (
     <div className={`${paperClasses.root} decisionReportContainer`}>
       <Paper className='decisionReport' elevation={3}>
         <h2>This Is Your Decision Report!</h2>
-        <br />
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
-            produceChoicesData(filteredStudents, currentCampaign && currentCampaign.tracks.length, 'tracks')
+            produceChoicesData(
+              filteredStudents,
+              currentCampaign && currentCampaign.tracks.length,
+              'tracks'
+            )
           )}
-          elements={tracks}
+          elements={
+            currentCampaign.tracks /* currentCampaign && currentCampaign.tracks */
+          }
           title={'Tracks'}
         />
         <br />
@@ -82,11 +95,18 @@ export default function DecisionReport({ tracks, units }) {
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
-            produceChoicesData(filteredStudents, currentCampaign && currentCampaign.units.length, 'units')
+            produceChoicesData(
+              filteredStudents,
+              currentCampaign && currentCampaign.units.length,
+              'units'
+            )
           )}
-          elements={units}
+          elements={
+            currentCampaign.units /* currentCampaign &&  currentCampaign.units */
+          }
           title={'Units'}
         />
+        <br />
       </Paper>
     </div>
   );

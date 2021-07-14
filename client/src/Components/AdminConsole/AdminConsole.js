@@ -3,6 +3,8 @@ import AddStudentPopup from './AddStudentPopup';
 import LaunchCampaignForm from './LaunchCampaignForm';
 import UpdateStudentForm from './UpdateStudentForm';
 import CampaignListForm from './CampaignListForm';
+import { Link } from 'react-router-dom';
+
 import {
   Paper,
   Button,
@@ -10,7 +12,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  NativeSelect,
 } from '@material-ui/core';
 
 import StudentDatatable from './StudentDatatable';
@@ -28,8 +29,6 @@ import UpdateIcon from '@material-ui/icons/Cached';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import PanToolIcon from '@material-ui/icons/PanTool';
 
-import { Link } from 'react-router-dom';
-
 import AuthContext from '../../Context/Auth/AuthContext';
 import NotificationContext from '../../Context/Notification/NotificationContext';
 import StudentContext from '../../Context/Student/StudentContext';
@@ -41,7 +40,6 @@ export default function AdminConsole() {
   const {
     students,
     deleteStudents,
-    getStudents,
     checkedStudents,
     clearCheckedStudnts,
     setCurrentStudent,
@@ -54,18 +52,10 @@ export default function AdminConsole() {
   const [updateStudentFormOpen, setUpdateStudentFormOpen] = useState(false);
   const [launchCampaignFormOpen, setLaunchCampaignFormOpen] = useState(false);
   const [viewCampaignsFormOpen, setViewCampaignsFormOpen] = useState(false);
-  const [currentYear, setCurrentYear] = useState('');
-  //const [academicYear, setAcademicYear] = useState('');
   const notificationContext = useContext(NotificationContext);
   const campaignContext = useContext(CampaignContext);
-  const {
-    academicYear,
-    getCampaigns,
-    campaigns,
-    setAcademicYear,
-    getCurrentCampaign,
-    currentCampaign,
-  } = campaignContext;
+  const { academicYear, getCampaigns, campaigns, setAcademicYear, currentCampaign } =
+    campaignContext;
   const { setNotification } = notificationContext;
 
   const handleYearChange = (event) => {
@@ -81,6 +71,7 @@ export default function AdminConsole() {
 
   useEffect(() => {
     getCampaigns();
+    // eslint-disable-next-line
   }, []);
 
   const handleAddStudentPopupOpen = () => {
@@ -132,7 +123,7 @@ export default function AdminConsole() {
 
   const handleMoveToDifferentYear = () => {};
 
-  console.log(students);
+ 
   return (
     <>
       {addStudentPopupOpen && (
@@ -275,7 +266,7 @@ export default function AdminConsole() {
 
         <Paper elevation={3} className={`${paperClasses.paper} ${classes.mt1}`}>
           <div className={classes.justifyRight}>
-            <a href='/decisionReport'>
+            <Link to='/decisionReport'>
               <Button
                 type='button'
                 variant='contained'
@@ -283,10 +274,13 @@ export default function AdminConsole() {
                 className={classes.button}
                 endIcon={<GenerateIcon />}
               >
-                generate report
+                generate report*
+               
               </Button>
-            </a>
+            </Link>
           </div>
+          <br/>
+              <p>*Only students that are included in the current campaign will be included in the report.</p>
         </Paper>
       </div>
     </>
