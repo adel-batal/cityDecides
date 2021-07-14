@@ -6,7 +6,6 @@ export default function ChartPanel({minCreditCount, datasets, elements, title}) 
   const chartHeaderClasses = useChartHeaderStyles();
 
   
-
   return (
     <>
       <div

@@ -92,7 +92,7 @@ export default function CampaignListForm({
           <DialogContent>
             {campaigns.map((campaign) => (
               <div
-                key={campaign.id}
+                key={campaign._id}
                 className={`${classes.sameLine} ${classes.titleActionSpace}`}
               >
                 <DialogContentText className={classes.noMargin}>

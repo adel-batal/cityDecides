@@ -186,6 +186,7 @@ export default function AddStudentPopup({
               e.g. 2021-2022
             </FormHelperText>
             <br />
+            <DialogContentText>Tracks</DialogContentText>
             {renderElementList(tracks, 'track')}
             <Fab
               size='small'
@@ -196,6 +197,8 @@ export default function AddStudentPopup({
             >
               <AddIcon />
             </Fab>
+            <br/>
+            <br/>
             <DialogContentText>Units</DialogContentText>
             {renderElementList(units, 'unit')}
             <Fab

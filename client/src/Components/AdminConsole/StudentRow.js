@@ -29,6 +29,7 @@ export default function StudentRow(props) {
     creditCount,
     selectedTracks,
     selectedUnits,
+    academicYear
   } = props;
   const studentContext = useContext(StudentContext);
 
@@ -59,21 +60,13 @@ export default function StudentRow(props) {
         lastName: lastName,
         regNumber: regNumber,
         creditCount: creditCount,
+        academicYear: academicYear,
       });
     } else {
       uncheckStudent({ _id: e.target.name });
     }
   };
 
-  const handleCreditChange = (e) => {
-    students.forEach((student) => {
-      if (student._id === _id) {
-        const newStudent = { ...student };
-        newStudent.creditCount = e.target.value;
-        updateStudent(newStudent);
-      }
-    });
-  };
   return (
     <>
       <TableRow className={classes.root}>
@@ -112,14 +105,14 @@ export default function StudentRow(props) {
         <TableCell component='th' scope='row'>
           {lastName}
         </TableCell>
-        <TableCell>{regNumber}</TableCell>
-        <TableCell>
-          <TextField
-            id='outlined-basic'
-            variant='outlined'
-            defaultValue={creditCount}
-            onChange={(e) => handleCreditChange(e)}
-          />
+        <TableCell component='th' scope='row'>
+          {regNumber}
+        </TableCell>
+        <TableCell component='th' scope='row'>
+          {creditCount}
+        </TableCell>
+        <TableCell component='th' scope='row'>
+          {academicYear}
         </TableCell>
       </TableRow>
       <TableRow>

@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import StudentContext from '../../Context/Student/StudentContext';
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 import AuthContext from '../../Context/Auth/AuthContext';
 import NotificationContext from '../../Context/Notification/NotificationContext';
 
@@ -10,6 +11,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@material-ui/core';
 import { useStyles } from '../../Hooks/StylesHook';
 
@@ -21,6 +26,7 @@ export default function UpdateStudentForm({
   const studentContext = useContext(StudentContext);
   const authContext = useContext(AuthContext);
   const notificationContext = useContext(NotificationContext);
+  const campaignContext = useContext(CampaignContext);
   const {
     uncheckStudent,
     updateStudent,
@@ -28,6 +34,7 @@ export default function UpdateStudentForm({
     clearCurrentStudent,
     checkedStudents,
   } = studentContext;
+  const { campaigns } = campaignContext;
 
   useEffect(() => {
     if (currentStudent !== null) {
@@ -39,6 +46,7 @@ export default function UpdateStudentForm({
         lastName: '',
         regNumber: '',
         creditCount: 0,
+        academicYear: '',
       });
     }
   }, [studentContext, currentStudent]);
@@ -50,9 +58,11 @@ export default function UpdateStudentForm({
     lastName: '',
     regNumber: '',
     creditCount: 0,
+    academicYear: '',
   });
 
-  const { email, firstName, lastName, regNumber, creditCount } = student;
+  const { email, firstName, lastName, regNumber, creditCount, academicYear } =
+    student;
 
   const { setNotification } = notificationContext;
 
@@ -84,7 +94,7 @@ export default function UpdateStudentForm({
       handleUpdateStudentFormClose();
     }
   }
-  console.log(checkedStudents);
+  console.log(currentStudent.academicYear);
   return (
     <>
       <Dialog
@@ -142,6 +152,25 @@ export default function UpdateStudentForm({
               onChange={onChange}
               fullWidth
             />
+            <FormControl fullWidth>
+              <InputLabel id='demo-simple-select-filled-label'>
+                Academic Year
+              </InputLabel>
+              <Select
+                labelId='demo-simple-select-filled-label'
+                id='demo-simple-select-filled'
+                value={academicYear}
+                name='academicYear'
+                onChange={onChange}
+                fullWidth
+              >
+                {campaigns.map((campaign) => (
+                  <MenuItem value={campaign.academicYear}>
+                    {campaign.academicYear}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <br />
             <br />
           </DialogContent>

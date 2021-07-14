@@ -29,7 +29,7 @@ export default function Navbar({ title, logo }) {
         <ul>
           <li>{user && user.email}</li>
           <li>
-            <a onClick={handleLogout} href='/login'>
+            <a onClick={handleLogout} href='/'>
               <span>Logout </span>
             </a>
           </li>

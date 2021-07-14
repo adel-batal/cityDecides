@@ -11,22 +11,21 @@ export default function DecisionReport() {
   const campaignContext = useContext(CampaignContext);
   const { students, getStudents } = studentContext;
   const { currentCampaign, getCurrentCampaign } = campaignContext;
-  const [filteredStudents, setFilteredStudents] = useState(
-    filterStudentsByYear(currentCampaign.academicYear)
-  );
-  const paperClasses = usePaperStyles();
+  const [filteredStudents, setFilteredStudents] = useState(students);
+    const paperClasses = usePaperStyles();
+    useEffect(() => {
+      getStudents();
+      getCurrentCampaign();
+      // eslint-disable-next-line
+    }, []);
 
-  useEffect(() => {
-    getStudents();
-    getCurrentCampaign();
-    // eslint-disable-next-line
-  }, []);
 
-  function produceChoicesData(studentList, limit, type) {
+  function produceChoicesData(studentList, limit, type, year) {
     let arr = [];
     for (let i = 0; i < limit; i++) {
       let curr = studentList
         .filter((student) => student.selectedTracks.length > 0)
+        .filter((student) => student.academicYear === year)
         .map((student) =>
           student.selectedTracks.length > 0 &&
           student.selectedUnits.length > 0 &&
@@ -77,12 +76,14 @@ export default function DecisionReport() {
       <Paper className='decisionReport' elevation={3}>
         <h2>This Is Your Decision Report!</h2>
         <ChartPanel
+        
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
             produceChoicesData(
               filteredStudents,
               currentCampaign && currentCampaign.tracks.length,
-              'tracks'
+              'tracks',
+              currentCampaign.academicYear
             )
           )}
           elements={
@@ -98,7 +99,8 @@ export default function DecisionReport() {
             produceChoicesData(
               filteredStudents,
               currentCampaign && currentCampaign.units.length,
-              'units'
+              'units',
+              currentCampaign.academicYear
             )
           )}
           elements={

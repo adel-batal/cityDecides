@@ -167,7 +167,7 @@ export default function AdminConsole() {
                   <em>All Years</em>
                 </MenuItem>
                 {campaigns.map((campaign) => (
-                  <MenuItem value={campaign.academicYear}>
+                  <MenuItem key={campaign._id}value={campaign.academicYear}>
                     {campaign.academicYear}
                   </MenuItem>
                 ))}
