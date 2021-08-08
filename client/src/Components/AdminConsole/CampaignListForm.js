@@ -4,6 +4,8 @@ import AuthContext from '../../Context/Auth/AuthContext';
 import NotificationContext from '../../Context/Notification/NotificationContext'; */
 import CampaignContext from '../../Context/Campaign/CampaignContext';
 
+import ConfirmationDialogue from '../Layout/ConfirmationDialogue';
+
 import Fab from '@material-ui/core/Fab';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
@@ -25,8 +27,8 @@ export default function CampaignListForm({
 }) {
   const classes = useStyles();
   const campaignContext = useContext(CampaignContext);
-/*   const notificationContext = useContext(NotificationContext);
- */
+  /*   const notificationContext = useContext(NotificationContext);
+   */
   const {
     campaigns,
     getCampaigns,
@@ -35,15 +37,15 @@ export default function CampaignListForm({
     setCurrentCampaign,
     clearCurrentCampaign,
     /* currentCampaign, */
-    getCurrentCampaign
+    getCurrentCampaign,
   } = campaignContext;
   /* const { setNotification } = notificationContext; */
 
   useEffect(() => {
     getCampaigns();
-    getCurrentCampaign()
+    getCurrentCampaign();
     // eslint-disable-next-line
-      }, []);
+  }, []);
 
   /*   //experimental
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function CampaignListForm({
     // eslint-disable-next-line
   }, [error]); */
 
-  function handleSetCurrentYear(e, c) {
+  function handleToggleCurrentYear(e, c) {
     const isChecked = e.target.checked;
     campaigns.forEach((campaign) => {
       if (isChecked) {
@@ -73,14 +75,33 @@ export default function CampaignListForm({
     });
   }
 
-  function handleDeleteCampaign(e, c) {
-    if (!e.target.checked) {
+  function handleDeleteCampaign(c) {
+    if (c.current) {
+      return (
+        <ConfirmationDialogue
+          title={`Delete Campaign ${c.academicYear}`}
+          content={`Are you sure you would like to delete the campaign of the academic year ${c.academicYear}, This is permanent and cannot be reversed!`}
+        />
+      );
+    }
+    else {
+
+    }
+  }
+  /*   if (!e.target.checked) {
       deleteCampaign(c);
     } else {
       //todo here add "are you sure you want to delete current, the whole system will stop working"
     }
-  }
+  } /*  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
   
+  <Button variant="outlined" color="primary" onClick={handleClickOpen}>
+  Open alert dialog
+</Button> */
+
   return (
     <>
       <Dialog
@@ -104,7 +125,7 @@ export default function CampaignListForm({
                   </DialogContentText>
                   <Switch
                     checked={campaign.current}
-                    onChange={(e) => handleSetCurrentYear(e, campaign)}
+                    onChange={(e) => handleToggleCurrentYear(e, campaign)}
                     color='primary'
                     name='currentYear'
                     inputProps={{ 'aria-label': 'primary checkbox' }}
@@ -122,7 +143,7 @@ export default function CampaignListForm({
                     color='secondary'
                     aria-label='delete'
                     className={classes.margin}
-                    onClick={(e) => handleDeleteCampaign(e, campaign)}
+                    onClick={() => handleDeleteCampaign(campaign)}
                   >
                     <DeleteIcon />
                   </Fab>

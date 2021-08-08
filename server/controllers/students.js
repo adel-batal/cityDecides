@@ -44,21 +44,20 @@ export const updateStudent = async (req, res) => {
 };
 
 export const addStudent = async (req, res) => {
-  const { regNumber, firstName, lastName, email, creditCount, academicYear } = req.body;
+  const { regNumber, email, creditCount, academicYear, firstName, lastName } = req.body;
 
   try {
     const existingUser = await Student.findOne({ email });
     if (existingUser)
       return res.status(400).json({ msg: 'user already exists' });
     const result = await Student.create({
-      email,
       firstName,
       lastName,
+      email,
       regNumber,
       creditCount,
       academicYear,
     });
-    //token video jwt mern 1:42:00
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ msg: 'something went wrong', error });

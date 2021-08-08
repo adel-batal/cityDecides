@@ -29,7 +29,7 @@ export default function AddStudentPopup({
   const authContext = useContext(AuthContext);
   const campaignContext = useContext(CampaignContext);
   const notificationContext = useContext(NotificationContext);
-
+  
   const [student, setStudent] = useState({
     email: '',
     firstName: '',
@@ -37,9 +37,9 @@ export default function AddStudentPopup({
     password: '',
     regNumber: '',
     creditCount: 0,
-    academicYear: '333',
+    academicYear: '',
   });
-
+  
   const { campaigns } = campaignContext;
   const {
     email,
@@ -50,11 +50,11 @@ export default function AddStudentPopup({
     creditCount,
     academicYear,
   } = student;
-
+  
+  const { register, error, clearErrors, lodaing } = authContext;
   const { setNotification } = notificationContext;
-  const { register, error, clearErrors } = authContext;
   const { addStudent } = studentContext;
-
+  
   //experimental
   useEffect(() => {
     if (error === 'user already exists') {
@@ -63,8 +63,7 @@ export default function AddStudentPopup({
     }
     // eslint-disable-next-line
   }, [error]);
-
-
+  
   function onChange(e) {
     setStudent({
       ...student,
@@ -72,8 +71,30 @@ export default function AddStudentPopup({
     });
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
+
+    if (
+      email === '' ||
+      firstName === '' ||
+      lastName === '' ||
+      regNumber === '' ||
+      academicYear === '' ||
+      email === ''
+    ) {
+      setNotification(
+        'Please fill all fields marked with a star',
+        'error',
+        true
+      );
+      return;
+    }
+
+    await register({
+      email: email,
+      password: password,
+      role: 'student',
+    });
     addStudent({
       email: email,
       firstName: firstName,
@@ -82,26 +103,22 @@ export default function AddStudentPopup({
       creditCount: creditCount,
       academicYear: academicYear,
     });
-    register({
-      email: email,
-      password: password,
-      role: 'student',
-    });
-
-    setStudent({
-      email: '',
-      firstName: '',
-      lastName: '',
-      password: '',
-      regNumber: '',
-      creditCount: 0,
-      academicYear: '',
-    });
     if (error === null) {
+      setStudent({
+        email: '',
+        firstName: '',
+        lastName: '',
+        password: '',
+        regNumber: '',
+        creditCount: 0,
+        academicYear: '',
+      });
       handleAddStudentPopupClose();
+     
     }
   }
-console.log(student)
+
+  console.log(error);
   return (
     <>
       <Dialog open={addStudentPopupOpen} onClose={handleAddStudentPopupClose}>
@@ -115,7 +132,7 @@ console.log(student)
               className={classes.mb1}
               name='email'
               type='email'
-              placeholder='Email Address'
+              placeholder='Email Address*'
               value={email}
               onChange={onChange}
               fullWidth
@@ -123,7 +140,7 @@ console.log(student)
             <Input
               className={classes.mb1}
               name='firstName'
-              placeholder='First Name'
+              placeholder='First Name*'
               type='text'
               value={firstName}
               onChange={onChange}
@@ -132,7 +149,7 @@ console.log(student)
             <Input
               className={classes.mb1}
               name='lastName'
-              placeholder='Last Name'
+              placeholder='Last Name*'
               type='text'
               value={lastName}
               onChange={onChange}
@@ -141,7 +158,7 @@ console.log(student)
             <Input
               className={classes.mb1}
               name='password'
-              placeholder='Password'
+              placeholder='Password*'
               type='text'
               value={password}
               onChange={onChange}
@@ -150,7 +167,7 @@ console.log(student)
             <Input
               className={classes.mb1}
               name='regNumber'
-              placeholder='Registration Number'
+              placeholder='Registration Number*'
               type='text'
               value={regNumber}
               onChange={onChange}
@@ -168,7 +185,7 @@ console.log(student)
 
             <FormControl fullWidth>
               <InputLabel id='demo-simple-select-filled-label'>
-                Academic Year
+                Academic Year*
               </InputLabel>
               <Select
                 labelId='demo-simple-select-filled-label'
@@ -179,7 +196,7 @@ console.log(student)
                 fullWidth
               >
                 {campaigns.map((campaign) => (
-                  <MenuItem value={campaign.academicYear}>
+                  <MenuItem key={campaign._id} value={campaign.academicYear}>
                     {campaign.academicYear}
                   </MenuItem>
                 ))}

@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { useStyles } from '../../Hooks/StylesHook';
 import { SlideInOut } from '../../Animations/SlideAnimation';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
+import AuthContext from '../../Context/Auth/AuthContext';
 
 
 /* import SelectionsContext from '../../Context/Selections/SelectionsContext';
@@ -18,14 +19,21 @@ export default function TrackSelction() {
   const LOCAL_STORAGE_KEY_TRACKS_ORDERED =
     'cityDecides.selections.tracks.ordered';
   const campaignContext = useContext(CampaignContext);
+  const authContext = useContext(AuthContext);
   /*   const selectionsContext = useContext(SelectionsContext);
    */
   const { getCurrentCampaign, currentCampaign } = campaignContext;
+  const { loadStudentUser } = authContext;
   /* const { setSelections } = selectionsContext; */
   const [isDiv, setIsDiv] = useState(false);
   const [thisTracks, updateThisTracks] = useState(null);
   const classes = useStyles();
   const AnimatedDiv = isDiv ? 'div' : motion.div;
+
+  useEffect(() => {
+    loadStudentUser();
+    // eslint-disable-next-line
+  }, []);
   useEffect(() => {
     getCurrentCampaign();
     // eslint-disable-next-line
@@ -75,7 +83,8 @@ export default function TrackSelction() {
         justify='space-between'
         alignItems='center'
         className={'centered-container standard-container'}
-      >
+        >
+        <p className={classes.indented}>Drag and drop tracks according to your preference.</p>
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId='tracks'>
             {(provided) => (

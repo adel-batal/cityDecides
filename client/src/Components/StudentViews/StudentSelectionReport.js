@@ -43,6 +43,7 @@ export default function StudentSelectionReport() {
 
   console.log(tracks, units);
   return (
+    
     <motion.div
       className='centered-container report-container'
       initial='initial'
@@ -50,6 +51,7 @@ export default function StudentSelectionReport() {
       exit='out'
       variants={SlideInOut}
     >
+
       <Grid
         container
         direction='row'

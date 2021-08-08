@@ -5,20 +5,25 @@ import AuthContext from '../../Context/Auth/AuthContext';
 import StudentContext from '../../Context/Student/StudentContext';
 
 export default function Navbar({ title, logo }) {
+  /*  useEffect(() => {
+    if (user && user.role === 'admin') {
+      loadAdminUser();
+    } else {
+      loadStudentUser();
+    }
+    // eslint-disable-next-line
+  }, []); */
+  
   const authContext = useContext(AuthContext);
   const studentContext = useContext(StudentContext);
 
-  const { loadUser, isAuthenticated, logout, user } = authContext;
-  const {  clearStudents } = studentContext;
-
-  useEffect(() => {
-    loadUser();
-    // eslint-disable-next-line
-  }, []);
+  const { loadAdminUser, loadStudentUser, isAuthenticated, logout, user } =
+    authContext;
+  const { clearStudents } = studentContext;
 
   const handleLogout = () => {
-    logout();
     clearStudents();
+    logout();
   };
   return (
     <div className='navbar bg-primary'>

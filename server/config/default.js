@@ -1,5 +1,6 @@
 
 export  const config =
 {
-    jwtSecret: "secret"
+    jwtAdminSecret: "adminSecret",
+    jwtStudentSecret: "studentSecret"
 }

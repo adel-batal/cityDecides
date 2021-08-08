@@ -37,8 +37,8 @@ export default function AddStudentPopup({
     current: false,
   });
   const [elementsCount, setElementsCount] = useState({
-    tracksCount: 0,
-    unitsCount: 0,
+    tracksCount: 1,
+    unitsCount: 1,
   });
 
   const { tracksCount, unitsCount } = elementsCount;
@@ -140,7 +140,7 @@ export default function AddStudentPopup({
           className={classes.mb1}
           name={listElement.id.toString()}
           type='text'
-          placeholder={`${type}#${listElement.id}`}
+          placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)} #${listElement.id}`}
           onChange={(e) => onchange(e, type)}
         />
 

@@ -28,21 +28,34 @@ const AuthState = (props) => {
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
   // load user
-  const loadUser = async () => {
+  const loadAdminUser = async () => {
     setAuthToken(localStorage.token);
 
     try {
-      const res = await axios.get('http://localhost:5000/users/auth');
+      const res = await axios.get('http://localhost:5000/users/AdminAuth');
 
       dispatch({
         type: USER_LOADED,
-        payload: res.data
+        payload: res.data,
       });
     } catch (err) {
       dispatch({ type: AUTH_ERROR });
     }
   };
-  
+  const loadStudentUser = async () => {
+    setAuthToken(localStorage.token);
+
+    try {
+      const res = await axios.get('http://localhost:5000/users/studentAuth');
+
+      dispatch({
+        type: USER_LOADED,
+        payload: res.data,
+      });
+    } catch (err) {
+      dispatch({ type: AUTH_ERROR });
+    }
+  };
 
   // register user
   const register = async (formData) => {
@@ -59,7 +72,7 @@ const AuthState = (props) => {
       );
       dispatch({
         type: REGISTER_SUCCESS,
-        payload: res.data,
+        payload: res.data.result,
       });
     } catch (error) {
       dispatch({
@@ -68,6 +81,7 @@ const AuthState = (props) => {
       });
     }
   };
+
   // login user
   const login = async (formData) => {
     const config = {
@@ -86,12 +100,15 @@ const AuthState = (props) => {
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
-      
-      loadUser();
+      if (res.data.result.role === 'admin') {
+        loadAdminUser();
+      } else {
+        loadStudentUser();
+      }
     } catch (error) {
       dispatch({
         type: LOGIN_FAIL,
-        payload: error
+        payload: error,
       });
     }
   };
@@ -104,27 +121,26 @@ const AuthState = (props) => {
   // delete user
 
   const deleteUser = async (userEmail) => {
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.delete(
+        `http://localhost:5000/users/${userEmail}`,
+        config
+      );
+      dispatch({ type: DELETE_USER, payload: res.data });
+    } catch (error) {
+      dispatch({ type: AUTH_ERROR, payload: error.response.msg });
+    }
   };
-  try {
-    const res = await axios.delete(
-      `http://localhost:5000/users/${userEmail}`,
-      config
-    );
-    dispatch({ type: DELETE_USER, payload: res.data });
-  } catch (error) {
-    dispatch({ type: AUTH_ERROR, payload: error.response.msg });
-  }
-};
 
-// delete users
-const deleteUsers = (users) => {
-  users.forEach((user) => deleteUser(user.email));
-};
-
+  // delete users
+  const deleteUsers = (users) => {
+    users.forEach((user) => deleteUser(user.email));
+  };
 
   return (
     <AuthContext.Provider
@@ -137,9 +153,10 @@ const deleteUsers = (users) => {
         register,
         clearErrors,
         login,
-        loadUser,
+        loadAdminUser,
+        loadStudentUser,
         logout,
-        deleteUsers
+        deleteUsers,
       }}
     >
       {props.children}

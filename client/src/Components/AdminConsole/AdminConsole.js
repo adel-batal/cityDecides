@@ -3,6 +3,7 @@ import AddStudentPopup from './AddStudentPopup';
 import LaunchCampaignForm from './LaunchCampaignForm';
 import UpdateStudentForm from './UpdateStudentForm';
 import CampaignListForm from './CampaignListForm';
+import UploadStudentsForm from './UploadStudentsForm';
 import { Link } from 'react-router-dom';
 
 import {
@@ -27,8 +28,7 @@ import AddIcon from '@material-ui/icons/AddCircleOutline';
 import DeleteIcon from '@material-ui/icons/DeleteOutline';
 import UpdateIcon from '@material-ui/icons/Cached';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import PanToolIcon from '@material-ui/icons/PanTool';
-
+import UploadIcon from '@material-ui/icons/Publish';
 import AuthContext from '../../Context/Auth/AuthContext';
 import NotificationContext from '../../Context/Notification/NotificationContext';
 import StudentContext from '../../Context/Student/StudentContext';
@@ -44,7 +44,7 @@ export default function AdminConsole() {
     clearCheckedStudnts,
     setCurrentStudent,
   } = studentContext;
-  const { deleteUsers } = authContext;
+  const { deleteUsers, loadAdminUser, user } = authContext;
   const classes = useStyles();
   const paperClasses = usePaperStyles();
   const formControlClasses = useformControlStyles();
@@ -52,10 +52,16 @@ export default function AdminConsole() {
   const [updateStudentFormOpen, setUpdateStudentFormOpen] = useState(false);
   const [launchCampaignFormOpen, setLaunchCampaignFormOpen] = useState(false);
   const [viewCampaignsFormOpen, setViewCampaignsFormOpen] = useState(false);
+  const [uploadStudentsFormOpen, setUploadStudentsFormOpen] = useState(false);
   const notificationContext = useContext(NotificationContext);
   const campaignContext = useContext(CampaignContext);
-  const { academicYear, getCampaigns, campaigns, setAcademicYear, currentCampaign } =
-    campaignContext;
+  const {
+    academicYear,
+    getCampaigns,
+    campaigns,
+    setAcademicYear,
+    currentCampaign,
+  } = campaignContext;
   const { setNotification } = notificationContext;
 
   const handleYearChange = (event) => {
@@ -68,7 +74,10 @@ export default function AdminConsole() {
     }
     // eslint-disable-next-line
   }, [error]); */
-
+  useEffect(() => {
+    loadAdminUser();
+    // eslint-disable-next-line
+  }, []);
   useEffect(() => {
     getCampaigns();
     // eslint-disable-next-line
@@ -81,11 +90,17 @@ export default function AdminConsole() {
   const handleAddStudentPopupClose = () => {
     setAddStudentPopupOpen(false);
   };
+  const handleUploadStudentsFromOpen = () => {
+    setUploadStudentsFormOpen(true);
+  };
+  const handleUploadStudentsFormClose = () => {
+    setUploadStudentsFormOpen(false);
+  };
   const handleUpdateStudentFromOpen = () => {
     if (checkedStudents.length === 0) {
       setNotification('Please Select At Least One Student', 'error', true);
       return;
-    } else if (checkedStudents.length > 1) {
+    } else if ((checkedStudents.length < 1)){
       setNotification(
         'Please Select One Student At a Time To Update',
         'error',
@@ -116,14 +131,15 @@ export default function AdminConsole() {
   };
 
   const handleDeleteStudents = () => {
-    deleteStudents(checkedStudents);
-    deleteUsers(checkedStudents);
-    clearCheckedStudnts();
+    if (checkedStudents.length < 1) {
+      setNotification('Please Select At Least One Student', 'error', true);
+    } else {
+      deleteStudents(checkedStudents);
+      deleteUsers(checkedStudents);
+      clearCheckedStudnts();
+    }
   };
-
-  const handleMoveToDifferentYear = () => {};
-
- 
+console.log(user)
   return (
     <>
       {addStudentPopupOpen && (
@@ -142,6 +158,12 @@ export default function AdminConsole() {
         <LaunchCampaignForm
           handleLaunchCampaignFormClose={handleLaunchCampaignFormClose}
           launchCampaignFormOpen={launchCampaignFormOpen}
+        />
+      )}
+      {uploadStudentsFormOpen && (
+        <UploadStudentsForm
+        handleUploadStudentsFormClose={handleUploadStudentsFormClose}
+        uploadStudentsFormOpen={uploadStudentsFormOpen}
         />
       )}
       {viewCampaignsFormOpen && (
@@ -167,31 +189,13 @@ export default function AdminConsole() {
                   <em>All Years</em>
                 </MenuItem>
                 {campaigns.map((campaign) => (
-                  <MenuItem key={campaign._id}value={campaign.academicYear}>
+                  <MenuItem key={campaign._id} value={campaign.academicYear}>
                     {campaign.academicYear}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
 
-            {/*             <FormControl className={classes.formControl} error>
-              <InputLabel htmlFor='name-native-error'>Name</InputLabel>
-              <NativeSelect
-              value={academicYear}
-              onChange={handleYearChange}
-              >
-                <option value='All Years'>
-                  All Years
-                </option>
-                 {campaigns.map((campaign) => (
-                  <option value={campaign.academicYear}>
-                    {campaign.academicYear}
-                  </option>
-                ))}
-              
-              </NativeSelect>
-            
-            </FormControl> */}
             <Button
               type='button'
               color='primary'
@@ -216,30 +220,14 @@ export default function AdminConsole() {
             >
               Remove
             </Button>
-            {/*  <FormControl className={`${classes.fulSize} ${classes.noMargin}`}>
-              <InputLabel id='demo-simple-select-filled-label'>
-              Move to Another Academic Year              </InputLabel>
-              <Select
-                labelId='demo-simple-select-filled-label'
-                id='demo-simple-select-filled'
-                value={currentYear}
-                onChange={handleYearChange}
-                className={`${classes.fulSize} ${classes.noMargin}`}
-              >
-                {campaigns.map((campaign) => (
-                  <MenuItem value={campaign.academicYear}>
-                    {campaign.academicYear}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl> */}
+
             <Button
               type='button'
               color='primary'
-              startIcon={<PanToolIcon />}
-              onClick={handleMoveToDifferentYear}
+              startIcon={<UploadIcon />}
+               onClick={handleUploadStudentsFromOpen}
             >
-              Move to a Different Year
+              Upload a list of students
             </Button>
             <Button
               type='button'
@@ -275,12 +263,14 @@ export default function AdminConsole() {
                 endIcon={<GenerateIcon />}
               >
                 generate report*
-               
               </Button>
             </Link>
           </div>
-          <br/>
-              <p>*Only students that are included in the current campaign will be included in the report.</p>
+          <br />
+          <p>
+            *Only students that are included in the current campaign will be
+            included in the report.
+          </p>
         </Paper>
       </div>
     </>

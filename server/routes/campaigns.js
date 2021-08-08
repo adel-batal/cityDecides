@@ -7,7 +7,7 @@ import {
   getCurrentCampaign,
 } from '../controllers/campaigns.js';
 
-import middleWareAuth from '../middleware/middleWareAuth.js';
+import adminAuth from '../middleware/adminAuth.js';
 
 const router = express.Router();
 
