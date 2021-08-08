@@ -51,8 +51,8 @@ export default (state, action) => {
     case REGISTER_FAIL:
       return {
         ...state,
-        token: null,
-        isAuthenticated: false,
+       /*  token: null, */
+       /*  isAuthenticated: false, */
         loading: false,
         error: action.payload,
       };

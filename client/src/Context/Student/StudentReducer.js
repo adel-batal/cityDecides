@@ -13,7 +13,8 @@ import {
   GET_STUDENTS,
   STUDENT_ERROR,
   UPDATE_OWN_SELECTIONS,
-  SUBMIT_SELECTIONS
+  SUBMIT_SELECTIONS,
+  ADD_STUDENT_FAIL
 } from '../Types';
 
 export default (state, action) => {
@@ -71,6 +72,7 @@ export default (state, action) => {
         ...state,
         current: null,
       };
+    case ADD_STUDENT_FAIL:
     case STUDENT_ERROR:
       return {
         ...state,

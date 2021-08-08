@@ -22,11 +22,11 @@ import AdminPrivateRoute from './Components/Routing/AdminPrivateRoute';
 import StudentPrivateRoute from './Components/Routing/StudentPrivateRoute';
 
 //load user
-if (localStorage.token) {
-  setAuthToken(localStorage.token);
-}
 function App() {
   /* const location = useLocation() */;
+  if (localStorage.token) {
+    setAuthToken(localStorage.token);
+  }
 
   return (
     <AuthState>

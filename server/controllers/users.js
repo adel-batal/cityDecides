@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import { config } from '../config/default.js';
 
 export const addUser = async (req, res) => {
-  const { email, password, role } = req.body;
+  const { email, password, role, firstName, lastName } = req.body;
 
   try {
     const user = await User.findOne({ email });
@@ -15,6 +15,8 @@ export const addUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
+      firstName,
+      lastName
     });
     //token video jwt mern 1:42:00
     res.status(200).json({ result });
@@ -47,7 +49,13 @@ export const login = async (req, res) => {
         id: user._id,
       },
     };
-    const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '1h' });
+    let token = null;
+    if(user.role === 'admin'){
+      token = jwt.sign(payload, config.jwtAdminSecret, { expiresIn: '1h' });
+    } else {
+      token = jwt.sign(payload, config.jwtStudentSecret, { expiresIn: '1h' });
+    }
+    
     res.status(200).json({ result: user, token });
   } catch (error) {
     res.status(500).send('server error');

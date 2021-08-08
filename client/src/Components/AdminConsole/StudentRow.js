@@ -29,7 +29,7 @@ export default function StudentRow(props) {
     creditCount,
     selectedTracks,
     selectedUnits,
-    academicYear
+    academicYear,
   } = props;
   const studentContext = useContext(StudentContext);
 
@@ -118,18 +118,19 @@ export default function StudentRow(props) {
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
-            <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
-                Selections
-              </Typography>
-              <Table size='small' aria-label='purchases'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Selected Tracks</TableCell>
-                    <TableCell>Selected Units</TableCell>
-                  </TableRow>
-                </TableHead>
-                {selectedTracks && (
+            {selectedTracks.length > 0 ? (
+              <Box margin={1}>
+                <Typography variant='h6' gutterBottom component='div'>
+                  Submitted Preferences
+                </Typography>
+                <Table size='small' aria-label='purchases'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Preferred Tracks</TableCell>
+                      <TableCell>Preferred Units</TableCell>
+                    </TableRow>
+                  </TableHead>
+
                   <TableBody>
                     <TableCell component='tr'>
                       <TableCell component='td' style={{ border: 'none' }}>
@@ -146,9 +147,11 @@ export default function StudentRow(props) {
                       </TableCell>
                     </TableCell>
                   </TableBody>
-                )}
-              </Table>
-            </Box>
+                </Table>
+              </Box>
+            ) : (
+              <h3>This Student has not submitted prefrences yet.</h3>
+            )}
           </Collapse>
         </TableCell>
       </TableRow>

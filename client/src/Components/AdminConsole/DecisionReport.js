@@ -4,6 +4,7 @@ import { usePaperStyles } from '../../Hooks/StylesHook';
 import StudentContext from '../../Context/Student/StudentContext';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
 import ChartPanel from './ChartPanel';
+import randomColor from '../../Utils/randomRgbColor';
 
 export default function DecisionReport() {
   const LOCAL_STORAGE_KEY_CHOICES = 'cityDecides.selections.choices';
@@ -12,13 +13,12 @@ export default function DecisionReport() {
   const { students, getStudents } = studentContext;
   const { currentCampaign, getCurrentCampaign } = campaignContext;
   const [filteredStudents, setFilteredStudents] = useState(students);
-    const paperClasses = usePaperStyles();
-    useEffect(() => {
-      getStudents();
-      getCurrentCampaign();
-      // eslint-disable-next-line
-    }, []);
-
+  const paperClasses = usePaperStyles();
+  useEffect(() => {
+    getStudents();
+    getCurrentCampaign();
+    // eslint-disable-next-line
+  }, []);
 
   function produceChoicesData(studentList, limit, type, year) {
     let arr = [];
@@ -27,11 +27,9 @@ export default function DecisionReport() {
         .filter((student) => student.selectedTracks.length > 0)
         .filter((student) => student.academicYear === year)
         .map((student) =>
-          student.selectedTracks.length > 0 &&
-          student.selectedUnits.length > 0 &&
           type === 'tracks'
-            ? student.selectedTracks[i].id
-            : student.selectedUnits[i].id
+            ? parseInt(student.selectedTracks[i].id)
+            : parseInt(student.selectedUnits[i].id)
         )
         .reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
       for (let j = 1; j <= limit; j++) {
@@ -50,7 +48,7 @@ export default function DecisionReport() {
     );
   }
   function filterStudentsByYear(year) {
-    const filteredByYear = [...students]
+    const filteredByYear = [...students];
     return filteredByYear.filter((student) => student.academicYear === year);
   }
 
@@ -59,24 +57,54 @@ export default function DecisionReport() {
     return choicesList.map((tc) => ({
       label: `#${label++} Choices`,
       data: tc,
-      backgroundColor: `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(
-        Math.random() * 100
-      )}, ${Math.floor(Math.random() * 153)}, 0.3)`,
-
+      backgroundColor: randomColor(),
       borderWidth: 2,
     }));
   }
 
-  console.log(filteredStudents);
+  /*   students.forEach((student) => {
+    student.selectedTracks.forEach(function callback(value, index) {
+      console.log(
+        `student name: ${student.firstName} ${student.lastName}, track id: ${value.id}, track position: ${index}`
+      );
+    });
+  }); */
 
-  //console.log(students.filter((student) => student.creditCount >= 100));
-  console.log('s');
+  function getNumberOfStudentsSubmitted() {
+    let count = 0;
+    filterStudentsByYear(currentCampaign.academicYear).forEach(
+      (student) => student.selectedTracks.length > 0 && (count += 1)
+    );
+    return count;
+  }
+
+  function getUnsubmittedStudents() {
+    return filterStudentsByYear(currentCampaign.academicYear).filter(
+      (student) => student.selectedTracks.length < 1
+    );
+  }
   return (
     <div className={`${paperClasses.root} decisionReportContainer`}>
       <Paper className='decisionReport' elevation={3}>
         <h2>This Is Your Decision Report!</h2>
+        <br />
+        <h4>
+          Number of students who have already submitted preferences:{' '}
+          {getNumberOfStudentsSubmitted()} out of{' '}
+          {filterStudentsByYear(currentCampaign.academicYear).length}
+        </h4>
+        <br />
+
+        <h4>
+          Students who have not submitted yet:{' '}
+          {getUnsubmittedStudents().map((student) => (
+            <span>
+              {student.firstName} {student.lastName},{' '}
+            </span>
+          ))}
+        </h4>
+        <br />
         <ChartPanel
-        
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
             produceChoicesData(

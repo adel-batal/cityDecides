@@ -11,7 +11,6 @@ import { useStyles } from '../../Hooks/StylesHook';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
 import SelectionsContext from '../../Context/Selections/SelectionsContext';
 
-
 import BackIcon from '@material-ui/icons/ArrowBackIos';
 
 export default function UnitSelection() {
@@ -78,6 +77,10 @@ export default function UnitSelection() {
         alignItems='center'
         className='centered-container standard-container'
       >
+        <p className={classes.indented}>
+          Drag and drop units according to your preference.
+        </p>
+
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId='units'>
             {(provided) => (
@@ -112,16 +115,14 @@ export default function UnitSelection() {
             )}
           </Droppable>
         </DragDropContext>
-        <div
-          className={`selectionListComponent__next-button-container ${classes.mr2}`}
-        >
+        <div>
           <Grid
             container
             direction='row'
-            justify='space-between'
+            justifyContent='space-between'
             alignItems='center'
           >
-            <div className='selectionListComponent__next-button'>
+            <div>
               <Link to={'./trackSelection'}>
                 <Button
                   variant='contained'
@@ -133,12 +134,12 @@ export default function UnitSelection() {
                 </Button>
               </Link>
             </div>
-            <div className='selectionListComponent__next-button'>
+            <div>
               <Link to={'./selectionReport'}>
                 <Button
                   variant='contained'
                   color='primary'
-                  className={`${classes.button} ${classes.mb1}`}
+                  className={`${classes.button} ${classes.mb1} ${classes.indented}`}
                   endIcon={<SendIcon />}
                   onClick={handleNext}
                 >

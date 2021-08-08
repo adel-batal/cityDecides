@@ -10,17 +10,17 @@ const studentSchema = new mongoose.Schema({
     },
     firstName: {
         type: String,
-        // required: true,
+        /* required: true, */
         trim: true,
     },
     lastName: {
         type: String,
-        // required: true,
+        /* required: true, */
         trim: true,
     },
     regNumber: {
         type: String,
-        // required: true,
+        /* required: true, */
         trim: true,
     },
     selectedTracks: [Object],
@@ -38,7 +38,6 @@ const studentSchema = new mongoose.Schema({
         default: new Date()
     },
 })
-
 const Student = mongoose.model('Student', studentSchema);
 
 export default Student;
