@@ -58,7 +58,6 @@ export default function DecisionReport() {
       label: `#${label++} Choices`,
       data: tc,
       backgroundColor: randomColor(),
-
       borderWidth: 2,
     }));
   }

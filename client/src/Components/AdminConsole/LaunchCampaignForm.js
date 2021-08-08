@@ -156,12 +156,7 @@ export default function AddStudentPopup({
       </div>
     ));
   }
-  console.log(
-    'tracks: ' + tracks.map((track) => track.name),
-    'units: ' + units.map((unit) => unit.name)
-  );
-  /*     console.log(current)
-   */ return (
+ return (
     <>
       <Dialog
         open={launchCampaignFormOpen}
