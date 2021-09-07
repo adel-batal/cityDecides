@@ -1,11 +1,10 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {useChartHeaderStyles } from '../../Hooks/StylesHook';
 import { ButtonGroup, Button } from '@material-ui/core';
 import BarChart from './Charts/BarChart';
+
 export default function ChartPanel({minCreditCount, datasets, elements, title}) {
   const chartHeaderClasses = useChartHeaderStyles();
-
-  
   return (
     <>
       <div
@@ -37,3 +36,4 @@ export default function ChartPanel({minCreditCount, datasets, elements, title}) 
     </>
   );
 }
+

@@ -7,7 +7,6 @@ import ChartPanel from './ChartPanel';
 import randomColor from '../../Utils/randomRgbColor';
 
 export default function DecisionReport() {
-  const LOCAL_STORAGE_KEY_CHOICES = 'cityDecides.selections.choices';
   const studentContext = useContext(StudentContext);
   const campaignContext = useContext(CampaignContext);
   const { students, getStudents } = studentContext;
@@ -20,26 +19,44 @@ export default function DecisionReport() {
     // eslint-disable-next-line
   }, []);
 
-  function produceChoicesData(studentList, limit, type, year) {
+  function producePreferenceData(studentList, limit, type, year) {
+    // declare empty array
     let arr = [];
+    //loop until the limit of elements (tracks or units)  
     for (let i = 0; i < limit; i++) {
+      // In each loop create a new variable that has the student list to get
+      // each student
       let curr = studentList
+        // Filter out the students who have not submited prefrences yet
         .filter((student) => student.selectedTracks.length > 0)
+        // Filter out the students who do not belong to the year put in the arguments
         .filter((student) => student.academicYear === year)
+        // Map through each student
         .map((student) =>
+        // If the argument type is tracks map through the tracks of the student
+        // and get the id of each selection element
           type === 'tracks'
             ? parseInt(student.selectedTracks[i].id)
+        // otherwise loops through units and do the same
             : parseInt(student.selectedUnits[i].id)
         )
+        // create a map each time the loop loops once and insert the id of selections
+        // as a key, and the times it was selected by students as a value
         .reduce((acc, e) => acc.set(e, (acc.get(e) || 0) + 1), new Map());
-      for (let j = 1; j <= limit; j++) {
-        if (![...curr.keys()].includes(j)) {
-          curr.set(j, 0);
+        // if one of the tracks or units isn't chosen by any student in a certain
+        // position, then add a map entry, set the key as the loop iterator
+        // and the value as 0
+        for (let j = 1; j <= limit; j++) {
+          if (![...curr.keys()].includes(j)) {
+            curr.set(j, 0);
+          }
         }
-      }
+      // Push the current entries in the array as an array and sort them
       arr.push([...curr.entries()].sort());
     }
-    return arr.map((tcs) => tcs.map((tc) => tc[1]));
+    // Return an array of arrays of integers instead of array of arrays of pairs
+    // by exluding the keys
+    return arr.map((cs) => cs.map((c) => c[1]));
   }
 
   function filterStudentsByCreditCount(minCreditCount) {
@@ -53,22 +70,15 @@ export default function DecisionReport() {
   }
 
   function produceDataSets(choicesList) {
-    let label = 1;
-    return choicesList.map((tc) => ({
-      label: `#${label++} Choices`,
-      data: tc,
+    let choiceNum = 1;
+    return choicesList.map((c) => ({
+      label: `#${choiceNum++} Choices`,
+      data: c,
       backgroundColor: randomColor(),
       borderWidth: 2,
     }));
   }
 
-  /*   students.forEach((student) => {
-    student.selectedTracks.forEach(function callback(value, index) {
-      console.log(
-        `student name: ${student.firstName} ${student.lastName}, track id: ${value.id}, track position: ${index}`
-      );
-    });
-  }); */
 
   function getNumberOfStudentsSubmitted() {
     let count = 0;
@@ -83,6 +93,7 @@ export default function DecisionReport() {
       (student) => student.selectedTracks.length < 1
     );
   }
+ 
   return (
     <div className={`${paperClasses.root} decisionReportContainer`}>
       <Paper className='decisionReport' elevation={3}>
@@ -107,7 +118,7 @@ export default function DecisionReport() {
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
-            produceChoicesData(
+            producePreferenceData(
               filteredStudents,
               currentCampaign && currentCampaign.tracks.length,
               'tracks',
@@ -115,7 +126,7 @@ export default function DecisionReport() {
             )
           )}
           elements={
-            currentCampaign.tracks /* currentCampaign && currentCampaign.tracks */
+            currentCampaign.tracks 
           }
           title={'Tracks'}
         />
@@ -124,7 +135,7 @@ export default function DecisionReport() {
         <ChartPanel
           minCreditCount={filterStudentsByCreditCount}
           datasets={produceDataSets(
-            produceChoicesData(
+            producePreferenceData(
               filteredStudents,
               currentCampaign && currentCampaign.units.length,
               'units',
@@ -132,7 +143,7 @@ export default function DecisionReport() {
             )
           )}
           elements={
-            currentCampaign.units /* currentCampaign &&  currentCampaign.units */
+            currentCampaign.units 
           }
           title={'Units'}
         />

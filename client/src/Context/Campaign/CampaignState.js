@@ -2,18 +2,17 @@ import React, { useReducer } from 'react';
 import axios from 'axios';
 import CampaignContext from './CampaignContext';
 import CampaignReducer from './CampaignReducer';
+import BASE_URL from '../BASE_URL';
+
 import {
   GET_CAMPAIGNS,
   CAMPAIGN_ERROR,
   CREATE_CAMPAIGN,
   DELETE_CAMPAIGN,
-  UPDATE_CAMPAIGN,
   SET_ACADEMIC_YEAR,
   SET_CURRENT_CAMPAIGN,
   CLEAR_CURRENT_CAMPAIGN,
   GET_CURRENT_CAMPAIGN,
-  CLEAR_ACADEMIC_YEAR,
-  UPDATE_CURRENT_CHOICES,
 } from '../Types';
 
 const CampaignState = (props) => {
@@ -29,7 +28,7 @@ const CampaignState = (props) => {
 
   const getCampaigns = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/campaigns');
+      const res = await axios.get(`${BASE_URL}/campaigns`);
 
       dispatch({
         type: GET_CAMPAIGNS,
@@ -52,7 +51,7 @@ const CampaignState = (props) => {
     };
     try {
       const res = await axios.post(
-        'http://localhost:5000/campaigns/add',
+        `${BASE_URL}/campaigns/add`,
         campaign,
         config
       );
@@ -69,32 +68,14 @@ const CampaignState = (props) => {
     };
     try {
       const res = await axios.delete(
-        `http://localhost:5000/campaigns/${campaign._id}`,
-        campaign,
+        `${BASE_URL}/campaigns/${campaign._id}`,
+        
         config
       );
       dispatch({
         type: DELETE_CAMPAIGN,
         payload: { data: res.data, campaign: campaign },
       });
-    } catch (error) {}
-  };
-
-  //update campaign
-  const updateCampaign = async (campaign) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    try {
-      const res = await axios.patch(
-        `http://localhost:5000/campaigns/${campaign._id}`,
-        campaign,
-        config
-      );
-      dispatch({ type: UPDATE_CAMPAIGN, payload: res.data });
-      console.log(res.data);
     } catch (error) {}
   };
 
@@ -109,7 +90,7 @@ const CampaignState = (props) => {
   const getCurrentCampaign = async () => {
     try {
       const res = await axios.get(
-        'http://localhost:5000/campaigns/currentCampaign'
+        `${BASE_URL}/campaigns/currentCampaign`
       );
 
       dispatch({ type: GET_CURRENT_CAMPAIGN, payload: res.data });
@@ -133,7 +114,6 @@ const CampaignState = (props) => {
         currentCampaign: state.currentCampaign,
         getCampaigns,
         createCampaign,
-        updateCampaign,
         deleteCampaign,
         setAcademicYear,
         setCurrentCampaign,

@@ -4,20 +4,16 @@ import {
   SET_CURRENT,
   CLEAR_CURRENT,
   UPDATE_STUDENT,
-  FILTER_STUDENTS,
-  CLEAR_FILTER,
   CHECK_STUDENT,
   UNCHECK_STUDENT,
-  SET_CHECKED_STUDENT,
   CLEAR_STUDENTS,
   GET_STUDENTS,
   STUDENT_ERROR,
-  UPDATE_OWN_SELECTIONS,
   SUBMIT_SELECTIONS,
   ADD_STUDENT_FAIL
 } from '../Types';
 
-export default (state, action) => {
+const StudentReducer =  (state, action) => {
   switch (action.type) {
     case GET_STUDENTS:
       return {
@@ -42,7 +38,7 @@ export default (state, action) => {
       return {
         ...state,
         students: state.students.filter(
-          (student) => student._id !== action.payload.student._id
+          (student) => student._id !== action.payload.studentId
         ),
       };
     case CHECK_STUDENT:
@@ -54,7 +50,7 @@ export default (state, action) => {
       return {
         ...state,
         checkedStudents: state.checkedStudents.filter(
-          (checkedStudent) => checkedStudent._id !== action.payload._id
+          (checkedStudent) => checkedStudent !== action.payload
         ),
       };
     case CLEAR_STUDENTS:
@@ -91,3 +87,5 @@ export default (state, action) => {
       return state;
   }
 };
+
+export default StudentReducer;

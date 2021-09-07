@@ -36,23 +36,15 @@ export const deleteCampaign = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id))
     return res.status(404).send('No campaign with that ID');
-
-  await Campaign.findByIdAndRemove(id);
-
-  res.json('campaign deleted');
-};
-
-export const updateCampaign = async (req, res) => {
-  const { id } = req.params;
-  const campaign = req.body;
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send('No campaign with that ID');
-
-  const updatedCampaign = await Campaign.findByIdAndUpdate(id, campaign, {
-    new: true,
-  });
-
-  res.json(updatedCampaign);
+  const campaign = await Campaign.findById(id);
+  if (campaign.current)
+    return res.status(500).json({ msg: 'cannot delete current campaign' });
+  try {
+    await Campaign.findByIdAndRemove(id);
+    res.json('Campaign deleted successfully');
+  } catch (error) {
+    res.status(404).json({ msg: error });
+  }
 };
 
 export const getCurrentCampaign = async (req, res) => {

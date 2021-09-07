@@ -1,5 +1,4 @@
 import React, { useReducer } from 'react';
-import axios from 'axios';
 import SelectionsContext from './SelectionsContext';
 import SelectionsReducer from './SelectionsReducer';
 import {UPDATE_SELECTIONS} from '../Types';

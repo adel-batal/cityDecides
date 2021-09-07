@@ -1,6 +1,6 @@
 import { UPDATE_SELECTIONS } from '../Types';
 
-export default (state, action) => {
+const SelectionsReducer =  (state, action) => {
   switch (action.type) {
     case UPDATE_SELECTIONS:
       return {
@@ -12,3 +12,5 @@ export default (state, action) => {
       return state;
   }
 };
+
+export default SelectionsReducer;

@@ -1,5 +1,4 @@
 import {
-  /* REGISTER, */
   REGISTER_SUCCESS,
   REGISTER_FAIL,
   LOGIN_SUCCESS,
@@ -10,7 +9,7 @@ import {
   AUTH_ERROR,
 } from '../Types';
 
-export default (state, action) => {
+const AuthReducer = (state, action) => {
   switch (action.type) {
     case USER_LOADED:
       return {
@@ -23,23 +22,22 @@ export default (state, action) => {
     case REGISTER_SUCCESS:
       return {
         ...state,
-        ...action.payload,
-        //isAuthenticated: false,
         loading: false,
       };
     case LOGIN_SUCCESS:
       localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('user', JSON.stringify(action.payload.user));
+      console.log(action.payload);
       return {
         ...state,
-        user: action.payload.result,
+        user: action.payload.user,
         isAuthenticated: true,
         loading: false,
-        //user: action.payload.result,
       };
     case AUTH_ERROR:
     case LOGIN_FAIL:
     case LOGOUT:
-      localStorage.removeItem('token');
+      localStorage.clear()
       return {
         ...state,
         token: null,
@@ -51,8 +49,6 @@ export default (state, action) => {
     case REGISTER_FAIL:
       return {
         ...state,
-       /*  token: null, */
-       /*  isAuthenticated: false, */
         loading: false,
         error: action.payload,
       };
@@ -65,3 +61,5 @@ export default (state, action) => {
       return state;
   }
 };
+
+export default AuthReducer;

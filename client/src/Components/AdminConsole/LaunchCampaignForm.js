@@ -1,8 +1,8 @@
 import React, { useState, useContext } from 'react';
-/* import StudentContext from '../../Context/Student/StudentContext';
- */import AuthContext from '../../Context/Auth/AuthContext';
-/* import NotificationContext from '../../Context/Notification/NotificationContext';
- */import CampaignContext from '../../Context/Campaign/CampaignContext';
+
+import AuthContext from '../../Context/Auth/AuthContext';
+import NotificationContext from '../../Context/Notification/NotificationContext';
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
@@ -20,17 +20,13 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 import { useStyles } from '../../Hooks/StylesHook';
-/* import CampaignState from '../../Context/Campaign/CampaignState';
- */
-export default function AddStudentPopup({
-  handleLaunchCampaignFormClose,
-  launchCampaignFormOpen,
-}) {
+
+export default function AddStudentPopup({ form, setForm }) {
   const classes = useStyles();
   const authContext = useContext(AuthContext);
   const campaignContext = useContext(CampaignContext);
-/*   const notificationContext = useContext(NotificationContext);
- */  const [campaign, setCampaign] = useState({
+  const notificationContext = useContext(NotificationContext);
+  const [campaign, setCampaign] = useState({
     academicYear: '',
     tracks: [],
     units: [],
@@ -45,17 +41,8 @@ export default function AddStudentPopup({
 
   const { academicYear, tracks, units, current } = campaign;
   const { createCampaign, campaigns, updateCampaign } = campaignContext;
-/*   const { setNotification } = notificationContext;
- */  const { /* register,  */error/* , clearErrors */ } = authContext;
-
-  /*   //experimental
-  useEffect(() => {
-    if (error === 'user already exists') {
-      setNotification(error, 'error', true);
-      clearErrors();
-    }
-    // eslint-disable-next-line
-  }, [error]); */
+  const { setNotification } = notificationContext;
+  const { error } = authContext;
 
   function handleAddSelection(type) {
     if (type === 'track') {
@@ -117,7 +104,7 @@ export default function AddStudentPopup({
       campaigns.forEach((campaign) => {
         if (campaign.current) {
           campaign.current = false;
-          updateCampaign(campaign)
+          updateCampaign(campaign);
         }
       });
     }
@@ -128,7 +115,8 @@ export default function AddStudentPopup({
     existsCurrent();
     createCampaign(campaign);
     if (error === null) {
-      handleLaunchCampaignFormClose();
+      setForm({ open: false });
+      setNotification('Campaign was launched successfully!');
     }
   }
 
@@ -140,7 +128,9 @@ export default function AddStudentPopup({
           className={classes.mb1}
           name={listElement.id.toString()}
           type='text'
-          placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)} #${listElement.id}`}
+          placeholder={`${type.charAt(0).toUpperCase() + type.slice(1)} #${
+            listElement.id
+          }`}
           onChange={(e) => onchange(e, type)}
         />
 
@@ -156,12 +146,9 @@ export default function AddStudentPopup({
       </div>
     ));
   }
- return (
+  return (
     <>
-      <Dialog
-        open={launchCampaignFormOpen}
-        onClose={handleLaunchCampaignFormClose}
-      >
+      <Dialog open={form.open}>
         <form>
           <DialogTitle name='form-dialog-title'>
             Launch a New Campaign
@@ -192,8 +179,8 @@ export default function AddStudentPopup({
             >
               <AddIcon />
             </Fab>
-            <br/>
-            <br/>
+            <br />
+            <br />
             <DialogContentText>Units</DialogContentText>
             {renderElementList(units, 'unit')}
             <Fab
@@ -225,7 +212,7 @@ export default function AddStudentPopup({
           <DialogActions>
             <Button
               type='button'
-              onClick={handleLaunchCampaignFormClose}
+              onClick={() => setForm({ open: false })}
               color='secondary'
             >
               Cancel

@@ -3,8 +3,9 @@ import axios from 'axios';
 import AuthContext from './AuthContext';
 import AuthReducer from './AuthReducer';
 import setAuthToken from '../../Utils/setAuthToken';
+import BASE_URL from '../BASE_URL';
+
 import {
-  REGISTER,
   REGISTER_SUCCESS,
   DELETE_USER,
   REGISTER_FAIL,
@@ -14,6 +15,7 @@ import {
   CLEAR_ERRORS,
   USER_LOADED,
   AUTH_ERROR,
+  UPDATE_USER,
 } from '../Types';
 
 const AuthState = (props) => {
@@ -21,32 +23,19 @@ const AuthState = (props) => {
     token: localStorage.getItem('token'),
     isAuthenticated: null,
     loading: true,
-    user: null,
+    user: JSON.parse(localStorage.getItem('user')),
     error: null,
   };
 
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
   // load user
-  const loadAdminUser = async () => {
+  const loadUser = async () => {
     setAuthToken(localStorage.token);
-
     try {
-      const res = await axios.get('http://localhost:5000/users/AdminAuth');
-
-      dispatch({
-        type: USER_LOADED,
-        payload: res.data,
-      });
-    } catch (err) {
-      dispatch({ type: AUTH_ERROR });
-    }
-  };
-  const loadStudentUser = async () => {
-    setAuthToken(localStorage.token);
-
-    try {
-      const res = await axios.get('http://localhost:5000/users/studentAuth');
+      const res = await axios.get(
+        `${BASE_URL}/users/auth${state.user.role}`
+      );
 
       dispatch({
         type: USER_LOADED,
@@ -66,7 +55,7 @@ const AuthState = (props) => {
     };
     try {
       const res = await axios.post(
-        'http://localhost:5000/users/add',
+        `${BASE_URL}/users/add`,
         formData,
         config
       );
@@ -91,7 +80,7 @@ const AuthState = (props) => {
     };
     try {
       const res = await axios.post(
-        'http://localhost:5000/users/login',
+        `${BASE_URL}/users/login`,
         formData,
         config
       );
@@ -100,15 +89,12 @@ const AuthState = (props) => {
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
-      if (res.data.result.role === 'admin') {
-        loadAdminUser();
-      } else {
-        loadStudentUser();
-      }
+      setAuthToken(localStorage.token);
+      
     } catch (error) {
       dispatch({
         type: LOGIN_FAIL,
-        payload: error,
+        payload: error.response.data.msg,
       });
     }
   };
@@ -128,12 +114,29 @@ const AuthState = (props) => {
     };
     try {
       const res = await axios.delete(
-        `http://localhost:5000/users/${userEmail}`,
+        `${BASE_URL}/users/${userEmail}`,
         config
       );
       dispatch({ type: DELETE_USER, payload: res.data });
     } catch (error) {
       dispatch({ type: AUTH_ERROR, payload: error.response.msg });
+    }
+  };
+  const updateUser = async (user) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.patch(
+        `${BASE_URL}users/${user.email}`,
+        user,
+        config
+      );
+      dispatch({ type: UPDATE_USER, payload: res.data });
+    } catch (error) {
+      dispatch({ type: AUTH_ERROR, payload: error.msg });
     }
   };
 
@@ -153,10 +156,11 @@ const AuthState = (props) => {
         register,
         clearErrors,
         login,
-        loadAdminUser,
-        loadStudentUser,
+        updateUser,
         logout,
+        deleteUser,
         deleteUsers,
+        loadUser,
       }}
     >
       {props.children}

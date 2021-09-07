@@ -12,7 +12,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TextField,
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
@@ -21,7 +20,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 export default function StudentRow(props) {
   const {
-    _id,
+    id,
     email,
     firstName,
     lastName,
@@ -33,40 +32,19 @@ export default function StudentRow(props) {
   } = props;
   const studentContext = useContext(StudentContext);
 
-  const {
-    checkedStudents,
-    checkStudent,
-    uncheckStudent,
-    students,
-    updateStudent,
-  } = studentContext;
-  const [checkedStudentBox, setCheckedStudentBox] = useState({
-    studentId: '',
-    checked: false,
-  });
+  const { checkedStudents, checkStudent, uncheckStudent, setCurrentStudent } =
+    studentContext;
   const [open, setOpen] = useState(false);
   const classes = useRowStyles();
 
-  const handleBoxCheck = (e) => {
-    setCheckedStudentBox({
-      studentId: e.target.name,
-      checked: !checkedStudentBox.checked,
-    });
-    if (!checkedStudentBox.checked) {
-      checkStudent({
-        _id: e.target.name,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        regNumber: regNumber,
-        creditCount: creditCount,
-        academicYear: academicYear,
-      });
+  const handleBoxCheck = () => {
+    if (!checkedStudents.includes(id)) {
+      checkStudent(id);
+      setCurrentStudent(props);
     } else {
-      uncheckStudent({ _id: e.target.name });
+      uncheckStudent(id);
     }
   };
-
   return (
     <>
       <TableRow className={classes.root}>
@@ -74,13 +52,8 @@ export default function StudentRow(props) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={
-                  checkedStudents.length === 0
-                    ? false
-                    : checkedStudentBox.checked
-                }
+                checked={checkedStudents.includes(id)}
                 onChange={handleBoxCheck}
-                name={_id}
                 color='primary'
               />
             }

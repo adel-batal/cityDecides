@@ -50,6 +50,7 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   helperText: {
     marginTop: '-15px',
@@ -68,13 +69,28 @@ export const useStyles = makeStyles((theme) => ({
   titleActionSpace: {
     display: 'grid',
     gridGap: '10em',
-    gridAutoFlow: 'column'
-  
+    gridAutoFlow: 'column',
   },
   fulSize: {
     display: 'inline-block',
-    width: '16em'
-  }
+    width: '16em',
+  },
+  sticky: {
+    position: 'sticky',
+    top: 0,
+    alignSelf: 'flex-start',
+    zIndex: '1',
+  },
+  addAdminInputContainer: {
+    display: 'flex',
+    width: '100%',
+    flexDirection: 'column'
+  },
+  addAdminButtonConatiner: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: '100%'
+  },
 }));
 
 export const useRowStyles = makeStyles({

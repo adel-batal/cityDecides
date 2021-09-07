@@ -16,7 +16,7 @@ import CampaignContext from '../../Context/Campaign/CampaignContext';
 export default function StudentDatatable() {
   const studentContext = useContext(StudentContext);
   const campaignContext = useContext(CampaignContext);
-  const { students, getStudents /* loading */ } = studentContext;
+  const { students, getStudents } = studentContext;
   const { academicYear } = campaignContext;
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function StudentDatatable() {
             }) => (
               <StudentRow
                 key={_id}
-                _id={_id}
+                id={_id}
                 email={email}
                 firstName={firstName}
                 lastName={lastName}

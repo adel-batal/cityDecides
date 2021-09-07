@@ -6,7 +6,6 @@ import {
   Button,
   FormControl,
   OutlinedInput,
-  FormHelperText,
   InputLabel,
   InputAdornment,
   IconButton,
@@ -35,19 +34,19 @@ export default function Login(props) {
   const { user, login, error, clearErrors, isAuthenticated } = authContext;
 
   const { email, password, showPassword } = loginData;
-  //experimental
+
   useEffect(() => {
     if (isAuthenticated) {
       user && user.role === 'admin'
         ? props.history.push('/adminConsole')
-        : props.history.push('/trackSelection')
+        : props.history.push('/trackSelection');
     }
-    if (error === 'invalid credentials') {
-      setNotification(error, 'error', true);
+    if (error) {
+      setNotification(error, 'error');
       clearErrors();
     }
     // eslint-disable-next-line
-  }, [error, isAuthenticated, props.history]);
+  }, [error, isAuthenticated]);
 
   const handleChange = (prop) => (e) => {
     setLoginData({ ...loginData, [prop]: e.target.value });
@@ -62,17 +61,12 @@ export default function Login(props) {
   };
 
   const handleSignIn = (e) => {
+    setLoginData({ ...loginData, email: email.toLowerCase() });
     e.preventDefault();
-    if (email === '' || password === '') {
-      setNotification('Please fill in all fields', 'error', true);
-      return;
-    }
     login({
       email,
       password,
     });
-
-    setLoginData({ email: '', password: '' });
   };
   return (
     <motion.div initial='initial' animate='in' exit='out' variants={SlideInOut}>
@@ -84,6 +78,8 @@ export default function Login(props) {
         className='centered-container standard-container'
       >
         <img src={cityLogo} alt='city-logo' width='150px' />
+        <h2>Login</h2>
+
         <form
           className={classes.root}
           noValidate
@@ -111,9 +107,6 @@ export default function Login(props) {
                 autoFocus
                 required
               />
-              <FormHelperText id='component-helper-text'>
-                Some important helper text
-              </FormHelperText>
             </FormControl>
 
             <FormControl
@@ -144,15 +137,24 @@ export default function Login(props) {
               />
             </FormControl>
             <div className={`${classes.fullWidth} ${classes.mt1}`}>
-              <Button
-                className={classes.btnFullWidth}
-                variant='outlined'
-                color='primary'
-                type='submit'
-          
-              >
-                Login
-              </Button>
+              {loginData.email && loginData.password ? (
+                <Button
+                  className={classes.btnFullWidth}
+                  variant='outlined'
+                  color='primary'
+                  type='submit'
+                >
+                  Login
+                </Button>
+              ) : (
+                <Button
+                  className={classes.btnFullWidth}
+                  variant='outlined'
+                  disabled
+                >
+                  Login
+                </Button>
+              )}
             </div>
           </Grid>
         </form>

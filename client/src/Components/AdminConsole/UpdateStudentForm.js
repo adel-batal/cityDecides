@@ -18,24 +18,17 @@ import {
 } from '@material-ui/core';
 import { useStyles } from '../../Hooks/StylesHook';
 
-export default function UpdateStudentForm({
-  handleUpdateStudentFormClose,
-  updateStudentFormOpen,
-}) {
+export default function UpdateStudentForm({ form, setForm }) {
   const classes = useStyles();
   const studentContext = useContext(StudentContext);
   const authContext = useContext(AuthContext);
   const notificationContext = useContext(NotificationContext);
   const campaignContext = useContext(CampaignContext);
-  const {
-    uncheckStudent,
-    updateStudent,
-    currentStudent,
-    clearCurrentStudent,
-    checkedStudents,
-  } = studentContext;
+  const { uncheckStudent, updateStudent, currentStudent, clearCurrentStudent } =
+    studentContext;
+  const { updateUser, error, clearErrors } = authContext;
   const { campaigns } = campaignContext;
-
+  const { setNotification } = notificationContext;
   useEffect(() => {
     if (currentStudent !== null) {
       setStudent(currentStudent);
@@ -50,7 +43,7 @@ export default function UpdateStudentForm({
       });
     }
   }, [studentContext, currentStudent]);
-
+  const [isEdited, setIsEdited] = useState(false);
   const [student, setStudent] = useState({
     _id: '',
     email: '',
@@ -64,20 +57,16 @@ export default function UpdateStudentForm({
   const { email, firstName, lastName, regNumber, creditCount, academicYear } =
     student;
 
-  const { setNotification } = notificationContext;
-
-  const { error, clearErrors } = authContext;
-
-  //experimental
   useEffect(() => {
     if (error === 'user already exists') {
-      setNotification(error, 'error', true);
+      setNotification(error, 'error');
       clearErrors();
     }
     // eslint-disable-next-line
   }, [error]);
 
   function onChange(e) {
+    setIsEdited(true);
     setStudent({
       ...student,
       [e.target.name]: e.target.value,
@@ -86,27 +75,43 @@ export default function UpdateStudentForm({
 
   function onSubmit(e) {
     e.preventDefault();
-    //todo update from backend
     updateStudent(student);
+    updateUser({ email: student.email });
     if (error === null) {
-      uncheckStudent(student);
+      uncheckStudent(student.id);
       clearCurrentStudent();
-      handleUpdateStudentFormClose();
+      setForm({ open: false });
+      setNotification('Student was updated successfully!', 'success');
+    } else {
+      setNotification(error, 'error');
     }
   }
-  console.log(currentStudent.academicYear);
+
+  const customInput = (name, type, placeholder, value, autoFocus = false) => {
+    return (
+      <Input
+        autoFocus={autoFocus}
+        className={classes.mb1}
+        name={name}
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        fullWidth
+      />
+    );
+  };
   return (
     <>
-      <Dialog
-        open={updateStudentFormOpen}
-        onClose={handleUpdateStudentFormClose}
-      >
+      <Dialog open={form.open}>
         <form>
-          <DialogTitle name='form-dialog-title'>
+          <DialogTitle>
             Update Student: {`${student.firstName} ${student.lastName}`}
           </DialogTitle>
           <DialogContent>
-            <Input
+            {/* experimenting with custom inputs */}
+            {customInput('email', 'email', 'Email Address', email, true)}
+            {/*  <Input
               autoFocus
               className={classes.mb1}
               name='email'
@@ -115,7 +120,7 @@ export default function UpdateStudentForm({
               value={email}
               onChange={onChange}
               fullWidth
-            />
+            /> */}
             <Input
               className={classes.mb1}
               name='firstName'
@@ -153,19 +158,18 @@ export default function UpdateStudentForm({
               fullWidth
             />
             <FormControl fullWidth>
-              <InputLabel id='demo-simple-select-filled-label'>
-                Academic Year
-              </InputLabel>
+              <InputLabel>Academic Year</InputLabel>
               <Select
-                labelId='demo-simple-select-filled-label'
-                id='demo-simple-select-filled'
                 value={academicYear}
                 name='academicYear'
                 onChange={onChange}
                 fullWidth
               >
                 {campaigns.map((campaign) => (
-                  <MenuItem value={campaign.academicYear}>
+                  <MenuItem
+                    key={campaign.academicYear}
+                    value={campaign.academicYear}
+                  >
                     {campaign.academicYear}
                   </MenuItem>
                 ))}
@@ -177,14 +181,23 @@ export default function UpdateStudentForm({
           <DialogActions>
             <Button
               type='button'
-              onClick={handleUpdateStudentFormClose}
+              onClick={() => {
+                setForm({ open: false });
+                clearCurrentStudent();
+              }}
               color='secondary'
             >
               Cancel
             </Button>
-            <Button variant='contained' onClick={onSubmit} color='primary'>
-              Update
-            </Button>
+            {isEdited ? (
+              <Button variant='contained' onClick={onSubmit} color='primary'>
+                Update
+              </Button>
+            ) : (
+              <Button variant='contained' disabled>
+                Update
+              </Button>
+            )}
           </DialogActions>
         </form>
       </Dialog>

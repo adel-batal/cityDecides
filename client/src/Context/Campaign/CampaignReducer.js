@@ -1,18 +1,14 @@
 import {
   GET_CAMPAIGNS,
-  CAMPAIGN_ERROR,
   CREATE_CAMPAIGN,
   DELETE_CAMPAIGN,
   UPDATE_CAMPAIGN,
-  UPDATE_CURRENT_CHOICES,
   SET_ACADEMIC_YEAR,
-  CLEAR_ACADEMIC_YEAR,
   CLEAR_CURRENT_CAMPAIGN,
   SET_CURRENT_CAMPAIGN,
   GET_CURRENT_CAMPAIGN,
 } from '../Types';
-
-export default (state, action) => {
+const CampaignReducer = (state, action) => {
   switch (action.type) {
     case CREATE_CAMPAIGN:
       return {
@@ -32,6 +28,7 @@ export default (state, action) => {
         campaigns: action.payload,
       };
     case DELETE_CAMPAIGN:
+      console.log(action.payload.data);
       return {
         ...state,
         campaigns: state.campaigns.filter(
@@ -58,3 +55,5 @@ export default (state, action) => {
       return state;
   }
 };
+
+export default CampaignReducer;

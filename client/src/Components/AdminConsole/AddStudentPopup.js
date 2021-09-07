@@ -20,8 +20,8 @@ import {
 import { useStyles, useformControlStyles } from '../../Hooks/StylesHook';
 
 export default function AddStudentPopup({
-  handleAddStudentPopupClose,
-  addStudentPopupOpen,
+  form,
+  setForm,
 }) {
   const classes = useStyles();
   const formControlClasses = useformControlStyles();
@@ -36,7 +36,7 @@ export default function AddStudentPopup({
     lastName: '',
     password: '',
     regNumber: '',
-    creditCount: 0,
+    creditCount: '',
     academicYear: '',
   });
   
@@ -51,13 +51,13 @@ export default function AddStudentPopup({
     academicYear,
   } = student;
   
-  const { register, error, clearErrors, lodaing } = authContext;
+  const { register, error, clearErrors } = authContext;
   const { setNotification } = notificationContext;
   const { addStudent } = studentContext;
   
   //experimental
   useEffect(() => {
-    if (error === 'user already exists') {
+    if (error === 'user already exists' || error === 'student already exists') {
       setNotification(error, 'error', true);
       clearErrors();
     }
@@ -100,7 +100,7 @@ export default function AddStudentPopup({
       firstName: firstName,
       lastName: lastName,
       regNumber: regNumber,
-      creditCount: creditCount,
+      creditCount: parseInt(creditCount),
       academicYear: academicYear,
     });
     if (error === null) {
@@ -113,7 +113,7 @@ export default function AddStudentPopup({
         creditCount: 0,
         academicYear: '',
       });
-      handleAddStudentPopupClose();
+      setForm({open: false});
      
     }
   }
@@ -121,7 +121,7 @@ export default function AddStudentPopup({
   console.log(error);
   return (
     <>
-      <Dialog open={addStudentPopupOpen} onClose={handleAddStudentPopupClose}>
+      <Dialog open={form.open}>
         <form className={formControlClasses.root}>
           <DialogTitle name='form-dialog-title'>
             Add Student To Current List
@@ -158,7 +158,7 @@ export default function AddStudentPopup({
             <Input
               className={classes.mb1}
               name='password'
-              placeholder='Password*'
+              placeholder='Password**'
               type='text'
               value={password}
               onChange={onChange}
@@ -206,7 +206,7 @@ export default function AddStudentPopup({
             <br />
             <br />
             <DialogContentText>
-              *Please note that after adding a student you will not be able
+              **Please note that after adding a student you will not be able
               update their password as it will be automatically encrypted and
               inserted in the database, alternatively you can delete your entry
               and make a new one with a new password.
@@ -215,7 +215,7 @@ export default function AddStudentPopup({
           <DialogActions>
             <Button
               type='button'
-              onClick={handleAddStudentPopupClose}
+              onClick={() => setForm({open: false})}
               color='secondary'
             >
               Cancel

@@ -2,19 +2,16 @@ import express from 'express';
 import {
   createCampaign,
   deleteCampaign,
-  updateCampaign,
   getCampaigns,
   getCurrentCampaign,
 } from '../controllers/campaigns.js';
-
-import adminAuth from '../middleware/adminAuth.js';
+import { authUser, authRole } from '../middleware/AuthM.js';
 
 const router = express.Router();
 
-router.get('/', /* middleWareAuth, */ getCampaigns);
-router.post('/add', /* middleWareAuth, */ createCampaign);
-router.delete('/:id', /* middleWareAuth, */ deleteCampaign);
-router.patch('/:id', /* middleWareAuth, */ updateCampaign);
-router.get('/currentCampaign', getCurrentCampaign);
+router.get('/', authUser, authRole('admin'), getCampaigns);
+router.post('/add', authUser, authRole('admin'), createCampaign);
+router.delete('/:id', authUser, authRole('admin'), deleteCampaign);
+router.get('/currentCampaign', authUser, getCurrentCampaign);
 
 export default router;

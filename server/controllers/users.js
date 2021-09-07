@@ -1,12 +1,24 @@
 import mongoose from 'mongoose';
 import User from '../models/user.model.js';
+import Student from '../models/student.model.js';
+import Campaign from '../models/campaign.model.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/default.js';
 
-export const addUser = async (req, res) => {
-  const { email, password, role, firstName, lastName } = req.body;
+export const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
 
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(404).json({ msg: error.msg });
+  }
+};
+
+export const addUser = async (req, res) => {
+  let { email, password, role, masterAdmin } = req.body;
+  email = email.toLowerCase();
   try {
     const user = await User.findOne({ email });
     if (user) return res.status(400).json({ msg: 'user already exists' });
@@ -15,8 +27,7 @@ export const addUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      firstName,
-      lastName
+      masterAdmin,
     });
     //token video jwt mern 1:42:00
     res.status(200).json({ result });
@@ -24,11 +35,27 @@ export const addUser = async (req, res) => {
     res.status(500).json({ msg: 'something went wrong' });
   }
 };
-
+export const updateUser = async (req, res) => {
+  const { email } = req.params;
+  try {
+    const existingUser = await User.findOne({ email });
+    const updatedUser = await User.findByIdAndUpdate(
+      existingUser._id,
+      { email },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ msg: 'something went wrong', error });
+  }
+};
+//TODO CORRECT DELETE
 export const deleteUser = async (req, res) => {
   const { email } = req.params;
 
-  User.findOneAndRemove({email: email}).exec()
+  User.findOneAndRemove({ email: email }).exec();
   res.json('user deleted');
 };
 
@@ -38,27 +65,33 @@ export const login = async (req, res) => {
   try {
     let user = await User.findOne({ email });
 
-    if (!user) return res.status(404).json({ msg: 'user does not exist' });
+    if (!user) return res.status(400).json({ msg: 'invalid credentials' });
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
       return res.status(400).json({ msg: 'invalid credentials' });
+    }
+    user = await User.findOne({ email }).select('-password');
+    if (user.role === 'student') {
+      const student = await Student.findOne({ email });
+      const currentCampaign = await Campaign.findOne({ current: true });
+      if (student.academicYear !== currentCampaign.academicYear) {
+        return res.status(400).json({ msg: 'invalid credentials' });
+      }
     }
     const payload = {
       user: {
         email: user.email,
         id: user._id,
+        role: user.role,
+        masterAdmin: user.masterAdmin
       },
     };
-    let token = null;
-    if(user.role === 'admin'){
-      token = jwt.sign(payload, config.jwtAdminSecret, { expiresIn: '1h' });
-    } else {
-      token = jwt.sign(payload, config.jwtStudentSecret, { expiresIn: '1h' });
-    }
-    
-    res.status(200).json({ result: user, token });
+
+    const token = jwt.sign(payload, config.jwtSecret, { expiresIn: '1h' });
+
+    res.status(200).json({ user, token });
   } catch (error) {
-    res.status(500).send('server error');
+    res.status(500).json({ msg: 'something went wrong' });
   }
 };
 

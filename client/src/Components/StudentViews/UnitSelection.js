@@ -20,7 +20,7 @@ export default function UnitSelection() {
   const campaignContext = useContext(CampaignContext);
   const selectionsContext = useContext(SelectionsContext);
   const { getCurrentCampaign, currentCampaign } = campaignContext;
-  const { /* setSelections, units, */ tracks } = selectionsContext;
+  const { tracks } = selectionsContext;
 
   const [isDiv, setIsDiv] = useState(false);
   const [thisUnits, updateThisUnits] = useState(currentCampaign.units);

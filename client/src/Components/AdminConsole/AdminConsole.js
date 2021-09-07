@@ -4,6 +4,7 @@ import LaunchCampaignForm from './LaunchCampaignForm';
 import UpdateStudentForm from './UpdateStudentForm';
 import CampaignListForm from './CampaignListForm';
 import UploadStudentsForm from './UploadStudentsForm';
+import AdminListForm from './AdminListForm';
 import { Link } from 'react-router-dom';
 
 import {
@@ -33,147 +34,91 @@ import AuthContext from '../../Context/Auth/AuthContext';
 import NotificationContext from '../../Context/Notification/NotificationContext';
 import StudentContext from '../../Context/Student/StudentContext';
 import CampaignContext from '../../Context/Campaign/CampaignContext';
+import ConfirmationDialogue from '../Layout/ConfirmationDialogue';
 
 export default function AdminConsole() {
-  const studentContext = useContext(StudentContext);
   const authContext = useContext(AuthContext);
-  const {
-    students,
-    deleteStudents,
-    checkedStudents,
-    clearCheckedStudnts,
-    setCurrentStudent,
-  } = studentContext;
-  const { deleteUsers, loadAdminUser, user } = authContext;
+  const { deleteUsers } = authContext;
+  const studentContext = useContext(StudentContext);
+  const { deleteStudents, checkedStudents, clearCheckedStudnts } =
+    studentContext;
   const classes = useStyles();
   const paperClasses = usePaperStyles();
   const formControlClasses = useformControlStyles();
-  const [addStudentPopupOpen, setAddStudentPopupOpen] = useState(false);
-  const [updateStudentFormOpen, setUpdateStudentFormOpen] = useState(false);
-  const [launchCampaignFormOpen, setLaunchCampaignFormOpen] = useState(false);
-  const [viewCampaignsFormOpen, setViewCampaignsFormOpen] = useState(false);
-  const [uploadStudentsFormOpen, setUploadStudentsFormOpen] = useState(false);
+
+  const [form, setForm] = useState({
+    type: null,
+    open: false,
+  });
+
   const notificationContext = useContext(NotificationContext);
   const campaignContext = useContext(CampaignContext);
-  const {
-    academicYear,
-    getCampaigns,
-    campaigns,
-    setAcademicYear,
-    currentCampaign,
-  } = campaignContext;
+  const { academicYear, getCampaigns, campaigns, setAcademicYear } =
+    campaignContext;
   const { setNotification } = notificationContext;
 
   const handleYearChange = (event) => {
     setAcademicYear(event.target.value);
   };
-  /*   useEffect(() => {
-    if (error === 'user already exists') {
-      setNotification(error, 'error', true);
-      clearErrors();
-    }
-    // eslint-disable-next-line
-  }, [error]); */
-  useEffect(() => {
-    loadAdminUser();
-    // eslint-disable-next-line
-  }, []);
+
   useEffect(() => {
     getCampaigns();
     // eslint-disable-next-line
   }, []);
 
-  const handleAddStudentPopupOpen = () => {
-    setAddStudentPopupOpen(true);
-  };
-
-  const handleAddStudentPopupClose = () => {
-    setAddStudentPopupOpen(false);
-  };
-  const handleUploadStudentsFromOpen = () => {
-    setUploadStudentsFormOpen(true);
-  };
-  const handleUploadStudentsFormClose = () => {
-    setUploadStudentsFormOpen(false);
-  };
   const handleUpdateStudentFromOpen = () => {
     if (checkedStudents.length === 0) {
-      setNotification('Please Select At Least One Student', 'error', true);
+      setNotification('Please Select At Least One Student', 'error');
       return;
-    } else if ((checkedStudents.length < 1)){
-      setNotification(
-        'Please Select One Student At a Time To Update',
-        'error',
-        true
-      );
+    } else if (checkedStudents.length > 1) {
+      setNotification('Please Select One Student At a Time To Update', 'error');
       return;
     }
-    setCurrentStudent(checkedStudents[0]);
-    setUpdateStudentFormOpen(true);
-  };
-
-  const handleLaunchCampaignFormOpen = () => {
-    setLaunchCampaignFormOpen(true);
-  };
-  const handleLaunchCampaignFormClose = () => {
-    setLaunchCampaignFormOpen(false);
-  };
-
-  const handleViewCampaignsFormOpen = () => {
-    setViewCampaignsFormOpen(true);
-  };
-  const handleViewCampaignsFormClose = () => {
-    setViewCampaignsFormOpen(false);
-  };
-
-  const handleUpdateStudentFormClose = () => {
-    setUpdateStudentFormOpen(false);
+    setForm({ type: 'updateStudent', open: true });
   };
 
   const handleDeleteStudents = () => {
-    if (checkedStudents.length < 1) {
-      setNotification('Please Select At Least One Student', 'error', true);
-    } else {
-      deleteStudents(checkedStudents);
-      deleteUsers(checkedStudents);
-      clearCheckedStudnts();
-    }
+    deleteStudents(checkedStudents);
+    deleteUsers(checkedStudents);
+    clearCheckedStudnts();
   };
-console.log(user)
+  function renderForm(type) {
+    switch (type) {
+      case 'updateStudent':
+        return <UpdateStudentForm form={form} setForm={setForm} />;
+      case 'addStudent':
+        return <AddStudentPopup form={form} setForm={setForm} />;
+      case 'launchCampaign':
+        return <LaunchCampaignForm form={form} setForm={setForm} />;
+      case 'uploadStudents':
+        return <UploadStudentsForm form={form} setForm={setForm} />;
+      case 'campaignList':
+        return <CampaignListForm form={form} setForm={setForm} />;
+      case 'confirmRemove':
+        return (
+          <ConfirmationDialogue
+            func={handleDeleteStudents}
+            content={`This action is irreversable, are you sure that you wish to remove the checked student(s)?`}
+            successMsg={'Student(s) Removed Successfully!'}
+            isOpen={form.open}
+            close={setForm}
+          />
+        );
+      case 'adminList': 
+      return  <AdminListForm form={form} setForm={setForm} />;
+      default:
+        break;
+    }
+  }
   return (
     <>
-      {addStudentPopupOpen && (
-        <AddStudentPopup
-          handleAddStudentPopupClose={handleAddStudentPopupClose}
-          addStudentPopupOpen={addStudentPopupOpen}
-        />
-      )}
-      {updateStudentFormOpen && (
-        <UpdateStudentForm
-          handleUpdateStudentFormClose={handleUpdateStudentFormClose}
-          updateStudentFormOpen={updateStudentFormOpen}
-        />
-      )}
-      {launchCampaignFormOpen && (
-        <LaunchCampaignForm
-          handleLaunchCampaignFormClose={handleLaunchCampaignFormClose}
-          launchCampaignFormOpen={launchCampaignFormOpen}
-        />
-      )}
-      {uploadStudentsFormOpen && (
-        <UploadStudentsForm
-        handleUploadStudentsFormClose={handleUploadStudentsFormClose}
-        uploadStudentsFormOpen={uploadStudentsFormOpen}
-        />
-      )}
-      {viewCampaignsFormOpen && (
-        <CampaignListForm
-          handleViewCampaignsFormClose={handleViewCampaignsFormClose}
-          viewCampaignsFormOpen={viewCampaignsFormOpen}
-        />
-      )}
+      {form && renderForm(form.type)}
+
       <div className='admin_admin-console'>
-        <Paper elevation={3} className={`${paperClasses.paper} ${classes.mb1}`}>
+        <Paper
+          elevation={3}
+          className={`${paperClasses.paper} ${classes.mb1} ${classes.sticky}`}
+        >
           <div className={`${classes.rowDirection} ${classes.alignItems}`}>
             <FormControl variant='filled' className={formControlClasses.root}>
               <InputLabel id='demo-simple-select-filled-label'>
@@ -200,7 +145,7 @@ console.log(user)
               type='button'
               color='primary'
               startIcon={<AddIcon />}
-              onClick={handleAddStudentPopupOpen}
+              onClick={() => setForm({ type: 'addStudent', open: true })}
             >
               Add Student
             </Button>
@@ -216,7 +161,14 @@ console.log(user)
               type='button'
               color='primary'
               startIcon={<DeleteIcon />}
-              onClick={handleDeleteStudents}
+              onClick={() =>
+                checkedStudents.length > 0
+                  ? setForm({ type: 'confirmRemove', open: true })
+                  : setNotification(
+                      'Please Select At Least One Student',
+                      'error'
+                    )
+              }
             >
               Remove
             </Button>
@@ -225,7 +177,7 @@ console.log(user)
               type='button'
               color='primary'
               startIcon={<UploadIcon />}
-               onClick={handleUploadStudentsFromOpen}
+              onClick={() => setForm({ type: 'uploadStudents', open: true })}
             >
               Upload a list of students
             </Button>
@@ -234,7 +186,7 @@ console.log(user)
               variant='outlined'
               color='primary'
               endIcon={<AddCampaignIcon />}
-              onClick={handleLaunchCampaignFormOpen}
+              onClick={() => setForm({ type: 'launchCampaign', open: true })}
             >
               Launch New Campaign
             </Button>
@@ -243,10 +195,20 @@ console.log(user)
               variant='outlined'
               color='primary'
               endIcon={<VisibilityIcon />}
-              onClick={handleViewCampaignsFormOpen}
+              onClick={() => setForm({ type: 'campaignList', open: true })}
             >
               View Campaigns
             </Button>
+                <Button
+                type='button'
+                variant='outlined'
+                color='primary'
+                endIcon={<VisibilityIcon />}
+                onClick={() => setForm({ type: 'adminList', open: true })}
+              >
+                View Admins
+              </Button>
+           
           </div>
         </Paper>
 
