@@ -30,6 +30,7 @@ export default function UpdateStudentForm({ form, setForm }) {
   const { campaigns } = campaignContext;
   const { setNotification } = notificationContext;
   useEffect(() => {
+    clearErrors()
     if (currentStudent !== null) {
       setStudent(currentStudent);
     } else {
@@ -73,34 +74,19 @@ export default function UpdateStudentForm({ form, setForm }) {
     });
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
+    await updateUser(currentStudent.email);
     updateStudent(student);
-    updateUser({ email: student.email });
     if (error === null) {
-      uncheckStudent(student.id);
-      clearCurrentStudent();
+      uncheckStudent(student);
       setForm({ open: false });
       setNotification('Student was updated successfully!', 'success');
     } else {
       setNotification(error, 'error');
     }
   }
-
-  const customInput = (name, type, placeholder, value, autoFocus = false) => {
-    return (
-      <Input
-        autoFocus={autoFocus}
-        className={classes.mb1}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        fullWidth
-      />
-    );
-  };
+  console.log({...currentStudent})
   return (
     <>
       <Dialog open={form.open}>
@@ -109,9 +95,7 @@ export default function UpdateStudentForm({ form, setForm }) {
             Update Student: {`${student.firstName} ${student.lastName}`}
           </DialogTitle>
           <DialogContent>
-            {/* experimenting with custom inputs */}
-            {customInput('email', 'email', 'Email Address', email, true)}
-            {/*  <Input
+            <Input
               autoFocus
               className={classes.mb1}
               name='email'
@@ -120,7 +104,7 @@ export default function UpdateStudentForm({ form, setForm }) {
               value={email}
               onChange={onChange}
               fullWidth
-            /> */}
+            />
             <Input
               className={classes.mb1}
               name='firstName'

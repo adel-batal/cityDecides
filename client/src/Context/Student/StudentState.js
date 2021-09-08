@@ -102,21 +102,20 @@ const StudentState = (props) => {
   };
 
   // delete student
-  const deleteStudent = async (id) => {
-    console.log(id)
+  const deleteStudent = async (student) => {
     try {
-      const res = await axios.delete(`${BASE_URL}/students/${id}`);
+      const res = await axios.delete(`${BASE_URL}/students/${student.id}`);
       dispatch({
         type: DELETE_STUDENT,
-        payload: { result: res.data, studentId: id },
+        payload: { result: res.data, studentId: student.id },
       });
     } catch (error) {
       dispatch({ type: STUDENT_ERROR, payload: error.msg });
     }
   };
   // delete students
-  const deleteStudents = (ids) => {
-    ids.forEach((id) => deleteStudent(id));
+  const deleteStudents = (students) => {
+    students.forEach((student) => deleteStudent(student));
   };
 
   // set current student
@@ -131,13 +130,13 @@ const StudentState = (props) => {
 
 
   //uncheck student
-  const uncheckStudent = (id) => {
-    dispatch({ type: UNCHECK_STUDENT, payload: id });
+  const uncheckStudent = (idEmail) => {
+    dispatch({ type: UNCHECK_STUDENT, payload: idEmail });
   };
 
   // check student;
-  const checkStudent = (id) => {
-    dispatch({ type: CHECK_STUDENT, payload: id });
+  const checkStudent = (idEmail) => {
+    dispatch({ type: CHECK_STUDENT, payload: idEmail });
   };
 
   const clearCheckedStudnts = () => {

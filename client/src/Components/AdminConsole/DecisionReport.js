@@ -93,7 +93,7 @@ export default function DecisionReport() {
       (student) => student.selectedTracks.length < 1
     );
   }
- 
+ console.log(randomColor())
   return (
     <div className={`${paperClasses.root} decisionReportContainer`}>
       <Paper className='decisionReport' elevation={3}>
@@ -109,7 +109,7 @@ export default function DecisionReport() {
         <h4>
           Students who have not submitted yet:{' '}
           {getUnsubmittedStudents().map((student) => (
-            <span>
+            <span key={student._id}>
               {student.firstName} {student.lastName},{' '}
             </span>
           ))}

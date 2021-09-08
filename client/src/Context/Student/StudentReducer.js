@@ -50,7 +50,7 @@ const StudentReducer =  (state, action) => {
       return {
         ...state,
         checkedStudents: state.checkedStudents.filter(
-          (checkedStudent) => checkedStudent !== action.payload
+          (checkedStudent) => checkedStudent.id !== action.payload.id
         ),
       };
     case CLEAR_STUDENTS:

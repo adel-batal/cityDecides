@@ -27,7 +27,6 @@ export const addUser = async (req, res) => {
       email,
       password: hashedPassword,
       role,
-      masterAdmin,
     });
     //token video jwt mern 1:42:00
     res.status(200).json({ result });
@@ -38,10 +37,10 @@ export const addUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   const { email } = req.params;
   try {
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email });
     const updatedUser = await User.findByIdAndUpdate(
       existingUser._id,
-      { email },
+      { email: email },
       {
         new: true,
       }
@@ -54,9 +53,14 @@ export const updateUser = async (req, res) => {
 //TODO CORRECT DELETE
 export const deleteUser = async (req, res) => {
   const { email } = req.params;
-
-  User.findOneAndRemove({ email: email }).exec();
-  res.json('user deleted');
+  const existingUser = User.findOne({ email: email }).exec();
+  if (!existingUser) return res.status(404).send('No user with that email');
+  try {
+    await User.findOneAndRemove({ email: email }).exec();
+    res.json('user deleted');
+  } catch (error) {
+    res.status(404).json({ msg: error });
+  }
 };
 
 export const login = async (req, res) => {
@@ -83,7 +87,7 @@ export const login = async (req, res) => {
         email: user.email,
         id: user._id,
         role: user.role,
-        masterAdmin: user.masterAdmin
+        masterAdmin: user.masterAdmin,
       },
     };
 

@@ -37,14 +37,16 @@ export default function StudentRow(props) {
   const [open, setOpen] = useState(false);
   const classes = useRowStyles();
 
+
   const handleBoxCheck = () => {
-    if (!checkedStudents.includes(id)) {
-      checkStudent(id);
+    if (!checkedStudents.filter(e => e.id === id).length > 0) {
+      checkStudent({id: id, email:email});
       setCurrentStudent(props);
     } else {
-      uncheckStudent(id);
+      uncheckStudent({id: id, email:email});
     }
   };
+  console.log(checkedStudents)
   return (
     <>
       <TableRow className={classes.root}>
@@ -52,7 +54,7 @@ export default function StudentRow(props) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={checkedStudents.includes(id)}
+                checked={checkedStudents.filter(e => e.id === id).length > 0}
                 onChange={handleBoxCheck}
                 color='primary'
               />

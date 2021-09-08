@@ -17,6 +17,9 @@ export default function ChartPanel({minCreditCount, datasets, elements, title}) 
             color='primary'
             aria-label='outlined primary button group'
           >
+            <Button onClick={() => minCreditCount(0)}>
+              {'0 <='}
+            </Button>
             <Button onClick={() => minCreditCount(50)}>
               {'50 <='}
             </Button>

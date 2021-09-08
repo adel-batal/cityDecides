@@ -33,9 +33,7 @@ const AuthState = (props) => {
   const loadUser = async () => {
     setAuthToken(localStorage.token);
     try {
-      const res = await axios.get(
-        `${BASE_URL}/users/auth${state.user.role}`
-      );
+      const res = await axios.get(`${BASE_URL}/users/auth${state.user.role}`);
 
       dispatch({
         type: USER_LOADED,
@@ -54,11 +52,7 @@ const AuthState = (props) => {
       },
     };
     try {
-      const res = await axios.post(
-        `${BASE_URL}/users/add`,
-        formData,
-        config
-      );
+      const res = await axios.post(`${BASE_URL}/users/add`, formData, config);
       dispatch({
         type: REGISTER_SUCCESS,
         payload: res.data.result,
@@ -79,18 +73,13 @@ const AuthState = (props) => {
       },
     };
     try {
-      const res = await axios.post(
-        `${BASE_URL}/users/login`,
-        formData,
-        config
-      );
+      const res = await axios.post(`${BASE_URL}/users/login`, formData, config);
 
       dispatch({
         type: LOGIN_SUCCESS,
         payload: res.data,
       });
       setAuthToken(localStorage.token);
-      
     } catch (error) {
       dispatch({
         type: LOGIN_FAIL,
@@ -106,23 +95,15 @@ const AuthState = (props) => {
 
   // delete user
 
-  const deleteUser = async (userEmail) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
+  const deleteUser = async (email) => {
     try {
-      const res = await axios.delete(
-        `${BASE_URL}/users/${userEmail}`,
-        config
-      );
+      const res = await axios.delete(`${BASE_URL}/users/${email}`);
       dispatch({ type: DELETE_USER, payload: res.data });
     } catch (error) {
       dispatch({ type: AUTH_ERROR, payload: error.response.msg });
     }
   };
-  const updateUser = async (user) => {
+  const updateUser = async (email) => {
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -130,8 +111,8 @@ const AuthState = (props) => {
     };
     try {
       const res = await axios.patch(
-        `${BASE_URL}users/${user.email}`,
-        user,
+        `${BASE_URL}/users/${email}`,
+        { email: email },
         config
       );
       dispatch({ type: UPDATE_USER, payload: res.data });
