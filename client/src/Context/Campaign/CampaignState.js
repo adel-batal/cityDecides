@@ -13,6 +13,7 @@ import {
   SET_CURRENT_CAMPAIGN,
   CLEAR_CURRENT_CAMPAIGN,
   GET_CURRENT_CAMPAIGN,
+  UPDATE_CAMPAIGN,
 } from '../Types';
 
 const CampaignState = (props) => {
@@ -69,7 +70,7 @@ const CampaignState = (props) => {
     try {
       const res = await axios.delete(
         `${BASE_URL}/campaigns/${campaign._id}`,
-        
+
         config
       );
       dispatch({
@@ -89,9 +90,7 @@ const CampaignState = (props) => {
 
   const getCurrentCampaign = async () => {
     try {
-      const res = await axios.get(
-        `${BASE_URL}/campaigns/currentCampaign`
-      );
+      const res = await axios.get(`${BASE_URL}/campaigns/currentCampaign`);
 
       dispatch({ type: GET_CURRENT_CAMPAIGN, payload: res.data });
     } catch (err) {
@@ -104,6 +103,24 @@ const CampaignState = (props) => {
 
   const clearCurrentCampaign = () => {
     dispatch({ type: CLEAR_CURRENT_CAMPAIGN });
+  };
+
+  const updateCampaign = async (campaign) => {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+    try {
+      const res = await axios.patch(
+        `${BASE_URL}/students/${campaign._id}`,
+        campaign,
+        config
+      );
+      dispatch({ type: UPDATE_CAMPAIGN, payload: res.data });
+    } catch (error) {
+      dispatch({ type: CAMPAIGN_ERROR, payload: error.msg });
+    }
   };
 
   return (
@@ -119,6 +136,7 @@ const CampaignState = (props) => {
         setCurrentCampaign,
         clearCurrentCampaign,
         getCurrentCampaign,
+        updateCampaign,
       }}
     >
       {props.children}

@@ -15,7 +15,6 @@ import {
   CLEAR_ERRORS,
   USER_LOADED,
   AUTH_ERROR,
-  UPDATE_USER,
 } from '../Types';
 
 const AuthState = (props) => {
@@ -103,23 +102,7 @@ const AuthState = (props) => {
       dispatch({ type: AUTH_ERROR, payload: error.response.msg });
     }
   };
-  const updateUser = async (email) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    try {
-      const res = await axios.patch(
-        `${BASE_URL}/users/${email}`,
-        { email: email },
-        config
-      );
-      dispatch({ type: UPDATE_USER, payload: res.data });
-    } catch (error) {
-      dispatch({ type: AUTH_ERROR, payload: error.msg });
-    }
-  };
+
 
   // delete users
   const deleteUsers = (users) => {
@@ -137,7 +120,6 @@ const AuthState = (props) => {
         register,
         clearErrors,
         login,
-        updateUser,
         logout,
         deleteUser,
         deleteUsers,

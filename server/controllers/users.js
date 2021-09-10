@@ -1,4 +1,3 @@
-import mongoose from 'mongoose';
 import User from '../models/user.model.js';
 import Student from '../models/student.model.js';
 import Campaign from '../models/campaign.model.js';
@@ -17,7 +16,7 @@ export const getUsers = async (req, res) => {
 };
 
 export const addUser = async (req, res) => {
-  let { email, password, role, masterAdmin } = req.body;
+  let { email, password, role } = req.body;
   email = email.toLowerCase();
   try {
     const user = await User.findOne({ email });
@@ -34,23 +33,8 @@ export const addUser = async (req, res) => {
     res.status(500).json({ msg: 'something went wrong' });
   }
 };
-export const updateUser = async (req, res) => {
-  const { email } = req.params;
-  try {
-    const existingUser = await User.findOne({ email: email });
-    const updatedUser = await User.findByIdAndUpdate(
-      existingUser._id,
-      { email: email },
-      {
-        new: true,
-      }
-    );
-    res.status(200).json(updatedUser);
-  } catch (error) {
-    res.status(500).json({ msg: 'something went wrong', error });
-  }
-};
-//TODO CORRECT DELETE
+
+
 export const deleteUser = async (req, res) => {
   const { email } = req.params;
   const existingUser = User.findOne({ email: email }).exec();

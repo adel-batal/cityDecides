@@ -26,7 +26,7 @@ export default function UpdateStudentForm({ form, setForm }) {
   const campaignContext = useContext(CampaignContext);
   const { uncheckStudent, updateStudent, currentStudent, clearCurrentStudent } =
     studentContext;
-  const { updateUser, error, clearErrors } = authContext;
+  const {error, clearErrors } = authContext;
   const { campaigns } = campaignContext;
   const { setNotification } = notificationContext;
   useEffect(() => {
@@ -35,7 +35,6 @@ export default function UpdateStudentForm({ form, setForm }) {
       setStudent(currentStudent);
     } else {
       setStudent({
-        email: '',
         firstName: '',
         lastName: '',
         regNumber: '',
@@ -43,11 +42,11 @@ export default function UpdateStudentForm({ form, setForm }) {
         academicYear: '',
       });
     }
+    // eslint-disable-next-line
   }, [studentContext, currentStudent]);
   const [isEdited, setIsEdited] = useState(false);
   const [student, setStudent] = useState({
     _id: '',
-    email: '',
     firstName: '',
     lastName: '',
     regNumber: '',
@@ -55,7 +54,7 @@ export default function UpdateStudentForm({ form, setForm }) {
     academicYear: '',
   });
 
-  const { email, firstName, lastName, regNumber, creditCount, academicYear } =
+  const { firstName, lastName, regNumber, creditCount, academicYear } =
     student;
 
   useEffect(() => {
@@ -76,7 +75,6 @@ export default function UpdateStudentForm({ form, setForm }) {
 
   async function onSubmit(e) {
     e.preventDefault();
-    await updateUser(currentStudent.email);
     updateStudent(student);
     if (error === null) {
       uncheckStudent(student);
@@ -95,16 +93,6 @@ export default function UpdateStudentForm({ form, setForm }) {
             Update Student: {`${student.firstName} ${student.lastName}`}
           </DialogTitle>
           <DialogContent>
-            <Input
-              autoFocus
-              className={classes.mb1}
-              name='email'
-              type='email'
-              placeholder='Email Address'
-              value={email}
-              onChange={onChange}
-              fullWidth
-            />
             <Input
               className={classes.mb1}
               name='firstName'

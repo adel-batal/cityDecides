@@ -8,7 +8,6 @@ import {
   ADMIN_ERROR,
   ADD_ADMIN,
   DELETE_ADMIN,
-  UPDATE_ADMIN,
   SET_CURRENT_ADMIN,
 } from '../Types';
 
@@ -52,23 +51,7 @@ const AdminState = (props) => {
       dispatch({ type: ADMIN_ERROR, payload: error });
     }
   };
-  const updateAdmin = async (admin) => {
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-    try {
-      const res = await axios.patch(
-        `${BASE_URL}/admins/${admin.id}`,
-        admin,
-        config
-      );
-      dispatch({ type: UPDATE_ADMIN, payload: res.data });
-    } catch (error) {
-      dispatch({ type: ADMIN_ERROR, payload: error.msg });
-    }
-  };
+ 
   const deleteAdmin = async (id) => {
     console.log(id);
     try {
@@ -92,7 +75,6 @@ const AdminState = (props) => {
         currentAdmin: state.currentAdmin,
         getAdmins,
         addAdmin,
-        updateAdmin,
         deleteAdmin,
         setCurrentAdmin,
       }}

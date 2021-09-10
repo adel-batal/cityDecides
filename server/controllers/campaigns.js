@@ -53,3 +53,22 @@ export const getCurrentCampaign = async (req, res) => {
   if (!currentCampaign) return res.status(404).send('No Current Campaign');
   res.status(200).json(currentCampaign);
 };
+
+export const updateCampaign = async (req, res) => {
+  const { id } = req.params;
+  let { academicYear } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send('No Campaign with that ID');
+  try {
+    const updatedCampaign = await Campaign.findByIdAndUpdate(
+      id,
+      { academicYear },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedCampaign);
+  } catch (error) {
+    res.status(500).json({ msg: 'something went wrong', error: error });
+  }
+};

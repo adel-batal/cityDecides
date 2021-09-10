@@ -54,6 +54,5 @@ export const UPDATE_SELECTIONS = 'UPDATE_SELECTIONS';
 export const GET_ADMINS = 'GET_ADMINS';
 export const ADMIN_ERROR = 'ADMIN_ERROR';
 export const ADD_ADMIN = 'ADD_ADMIN';
-export const UPDATE_ADMIN = 'UPDATE_ADMIN';
 export const DELETE_ADMIN = 'DELETE_ADMIN';
 export const SET_CURRENT_ADMIN = 'SET_CURRENT_ADMIN';

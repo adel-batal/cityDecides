@@ -1,7 +1,6 @@
 import {
   ADD_ADMIN,
   DELETE_ADMIN,
-  UPDATE_ADMIN,
   GET_ADMINS,
   ADMIN_ERROR,
   SET_CURRENT_ADMIN,
@@ -21,13 +20,7 @@ const AdminReducer = (state, action) => {
         admins: [action.payload, ...state.admins],
         loading: false,
       };
-    case UPDATE_ADMIN:
-      return {
-        ...state,
-        admins: state.admins.map((admin) =>
-          admin._id === action.payload._id ? action.payload : admin
-        ),
-      };
+  
     case DELETE_ADMIN:
       return {
         ...state,

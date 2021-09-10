@@ -35,26 +35,7 @@ export const deleteAdmin = async (req, res) => {
   }
 };
 
-export const updateAdmin = async (req, res) => {
-  const { id } = req.params;
-  let { regNumber, email, creditCount, academicYear, firstName, lastName } =
-    req.body;
-  email = email.toLowerCase();
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send('No Admin with that ID');
-  try {
-    const updatedAdmin = await Admin.findByIdAndUpdate(
-      id,
-      { firstName, lastName, email, regNumber, creditCount, academicYear },
-      {
-        new: true,
-      }
-    );
-    res.status(200).json(updatedAdmin);
-  } catch (error) {
-    res.status(500).json({ msg: 'something went wrong', error: error });
-  }
-};
+
 export const addAdmin = async (req, res) => {
   let { regNumber, email, creditCount, academicYear, firstName, lastName } =
     req.body;
@@ -77,22 +58,3 @@ export const addAdmin = async (req, res) => {
   }
 };
 
-export const submitSelections = async (req, res) => {
-  const { email } = req.params;
-  const selectedTracks = req.body.selectedTracks;
-  const selectedUnits = req.body.selectedUnits;
-  try {
-    const updatedAdmin = await Admin.findOneAndUpdate(
-      {
-        email: email,
-      },
-      { selectedTracks: selectedTracks, selectedUnits: selectedUnits },
-      {
-        new: true,
-      }
-    ).exec();
-    res.status(200).json(updatedAdmin);
-  } catch (error) {
-    res.status(500).json({ msg: 'something went wrong' });
-  }
-};

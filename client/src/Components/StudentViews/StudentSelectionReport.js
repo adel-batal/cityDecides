@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { motion } from 'framer-motion';
 import { Grid, Button } from '@material-ui/core';
@@ -10,7 +10,7 @@ import { SlideInOut } from '../../Animations/SlideAnimation';
 import SelectionsContext from '../../Context/Selections/SelectionsContext';
 import AuthContext from '../../Context/Auth/AuthContext';
 import StudentContext from '../../Context/Student/StudentContext';
-
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 export default function StudentSelectionReport() {
   const LOCAL_STORAGE_KEY_TRACKS_ORDERED =
     'cityDecides.selections.tracks.ordered';
@@ -24,7 +24,7 @@ export default function StudentSelectionReport() {
   const { setSelections, tracks, units } = selectionsContext;
   const { submitSelections } = studentContext;
   const { user } = authContext;
-
+  const [submitted, setSubmitted] = useState(false);
   useEffect(() => {
     const TracksJson = localStorage.getItem(LOCAL_STORAGE_KEY_TRACKS_ORDERED);
     const UnitsJson = localStorage.getItem(LOCAL_STORAGE_KEY_UNITS_ORDERED);
@@ -37,13 +37,13 @@ export default function StudentSelectionReport() {
     // eslint-disable-next-line
   }, []);
 
-  const handleSubmitSelections = () => {
-    submitSelections(user.email, tracks, units);
+  const handleSubmitSelections = async () => {
+    await submitSelections(user.email, tracks, units);
+    setSubmitted(true);
   };
 
   console.log(tracks, units);
   return (
-    
     <motion.div
       className='centered-container report-container'
       initial='initial'
@@ -51,7 +51,6 @@ export default function StudentSelectionReport() {
       exit='out'
       variants={SlideInOut}
     >
-
       <Grid
         container
         direction='row'
@@ -91,27 +90,38 @@ export default function StudentSelectionReport() {
         alignItems='center'
       >
         <div className='selectionListComponent__next-button'>
-          <Link to={'./unitSelection'}> 
-          <Button
-            variant='contained'
-            color='primary'
-            className={`${classes.button} ${classes.mb1}`}
-            startIcon={<BackIcon />}
-          >
-            Back
-          </Button>
+          <Link to={'./unitSelection'}>
+            <Button
+              variant='contained'
+              color='primary'
+              className={`${classes.button} ${classes.mb1}`}
+              startIcon={<BackIcon />}
+            >
+              Back
+            </Button>
           </Link>
         </div>
         <div className='selectionListComponent__next-button'>
-          <Button
-            variant='contained'
-            color='primary'
-            className={`${classes.button} ${classes.mb1}`}
-            endIcon={<SubmitIcon />}
-            onClick={handleSubmitSelections}
-          >
-            Submit
-          </Button>
+          {submitted ? (
+            <Button
+              variant='contained'
+              disabled
+              className={`${classes.button} ${classes.mb1}`}
+              endIcon={<CheckCircleOutlineIcon />}
+            >
+              Submitted Successfully!
+            </Button>
+          ) : (
+            <Button
+              variant='contained'
+              color='primary'
+              className={`${classes.button} ${classes.mb1}`}
+              endIcon={<SubmitIcon />}
+              onClick={handleSubmitSelections}
+            >
+              Submit
+            </Button>
+          )}
         </div>
       </Grid>
     </motion.div>
