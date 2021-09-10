@@ -12,7 +12,6 @@ import {
   TableHead,
   TableRow,
   Typography,
-  TextField,
   Checkbox,
   FormControlLabel,
 } from '@material-ui/core';
@@ -21,6 +20,7 @@ import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 
 export default function StudentRow(props) {
   const {
+    id,
     email,
     firstName,
     lastName,
@@ -28,25 +28,25 @@ export default function StudentRow(props) {
     creditCount,
     selectedTracks,
     selectedUnits,
+    academicYear,
   } = props;
   const studentContext = useContext(StudentContext);
-  const [checkedStudentBox, setCheckedStudentBox] = useState({
-    studentEmail: '',
-    checked: false,
-  });
+
+  const { checkedStudents, checkStudent, uncheckStudent, setCurrentStudent } =
+    studentContext;
   const [open, setOpen] = useState(false);
   const classes = useRowStyles();
 
-  const handleBoxCheck = (e) => {
-    setCheckedStudentBox({ studentEmail: e.target.name, checked: !checkedStudentBox.checked });
-    if(!checkedStudentBox.checked){
-      studentContext.checkStudent(e.target.name)
-    }
-    else {
-      studentContext.uncheckStudent(e.target.name)
+
+  const handleBoxCheck = () => {
+    if (!checkedStudents.filter(e => e.id === id).length > 0) {
+      checkStudent({id: id, email:email});
+      setCurrentStudent(props);
+    } else {
+      uncheckStudent({id: id, email:email});
     }
   };
-  console.log(studentContext);
+  console.log(checkedStudents)
   return (
     <>
       <TableRow className={classes.root}>
@@ -54,9 +54,8 @@ export default function StudentRow(props) {
           <FormControlLabel
             control={
               <Checkbox
-                checked={checkedStudentBox.checked}
+                checked={checkedStudents.filter(e => e.id === id).length > 0}
                 onChange={handleBoxCheck}
-                name={email}
                 color='primary'
               />
             }
@@ -81,49 +80,53 @@ export default function StudentRow(props) {
         <TableCell component='th' scope='row'>
           {lastName}
         </TableCell>
-        <TableCell>{regNumber}</TableCell>
-        <TableCell>
-          <TextField
-            id='outlined-basic'
-            variant='outlined'
-            defaultValue={creditCount}
-          />
+        <TableCell component='th' scope='row'>
+          {regNumber}
+        </TableCell>
+        <TableCell component='th' scope='row'>
+          {creditCount}
+        </TableCell>
+        <TableCell component='th' scope='row'>
+          {academicYear}
         </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={open} timeout='auto' unmountOnExit>
-            <Box margin={1}>
-              <Typography variant='h6' gutterBottom component='div'>
-                Selections
-              </Typography>
-              <Table size='small' aria-label='purchases'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Selected Tracks</TableCell>
-                    <TableCell>Selected Units</TableCell>
-                  </TableRow>
-                </TableHead>
-                {selectedTracks && (
+            {selectedTracks.length > 0 ? (
+              <Box margin={1}>
+                <Typography variant='h6' gutterBottom component='div'>
+                  Submitted Preferences
+                </Typography>
+                <Table size='small' aria-label='purchases'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Preferred Tracks</TableCell>
+                      <TableCell>Preferred Units</TableCell>
+                    </TableRow>
+                  </TableHead>
+
                   <TableBody>
                     <TableCell component='tr'>
                       <TableCell component='td' style={{ border: 'none' }}>
                         {selectedTracks.map((track) => (
-                          <div key={track}>{track}</div>
+                          <div key={track.id}>{track.name}</div>
                         ))}
                       </TableCell>
                     </TableCell>
                     <TableCell component='tr'>
                       <TableCell component='td' style={{ border: 'none' }}>
                         {selectedUnits.map((unit) => (
-                          <div key={unit}>{unit}</div>
+                          <div key={unit.id}>{unit.name}</div>
                         ))}
                       </TableCell>
                     </TableCell>
                   </TableBody>
-                )}
-              </Table>
-            </Box>
+                </Table>
+              </Box>
+            ) : (
+              <h3>This Student has not submitted prefrences yet.</h3>
+            )}
           </Collapse>
         </TableCell>
       </TableRow>

@@ -1,94 +1,129 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useContext, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-import {Grid, Button} from '@material-ui/core';
+import { Grid, Button } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { motion } from 'framer-motion'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { motion } from 'framer-motion';
 
-import { useStyles } from '../../Hooks/StylesHook'
-import { SlideInOut } from "../../Animations/SlideAnimation";
+import { useStyles } from '../../Hooks/StylesHook';
+import { SlideInOut } from '../../Animations/SlideAnimation';
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 
-export default function TrackSelction({tracks, updateTracks}) {
-    const [isDiv, setIsDiv] = useState(false)
-    const classes = useStyles();
-    const AnimatedDiv = isDiv ? 'div' : motion.div
+export default function TrackSelction() {
+  const LOCAL_STORAGE_KEY = 'cityDecides.selections';
+  const LOCAL_STORAGE_KEY_TRACKS_ORDERED =
+    'cityDecides.selections.tracks.ordered';
+  const campaignContext = useContext(CampaignContext);
 
+  const { getCurrentCampaign, currentCampaign } = campaignContext;
 
-    function handleOnDragEnd(result) {
-        if (!result.destination) return;
-        const items = Array.from(tracks)
-        const [reorderedItem] = items.splice(result.source.index, 1)
-        items.splice(result.destination.index, 0, reorderedItem)
-        updateTracks(items)
-    }
-    return (
-        <AnimatedDiv
-            initial='initial' animate='in' exit='out'
-            variants={SlideInOut}
-            onMouseMove={() => setIsDiv(true)}
-        >
-            <Grid
+  const [isDiv, setIsDiv] = useState(false);
+  const [thisTracks, updateThisTracks] = useState(null);
+  const classes = useStyles();
+  const AnimatedDiv = isDiv ? 'div' : motion.div;
+
+  useEffect(() => {
+    getCurrentCampaign();
+    // eslint-disable-next-line
+  }, []);
+  useEffect(() => {
+    const CampaignJSON = localStorage.getItem(LOCAL_STORAGE_KEY);
+    CampaignJSON && updateThisTracks(JSON.parse(CampaignJSON).tracks);
+  }, []);
+
+  useEffect(() => {
+    currentCampaign &&
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(currentCampaign));
+    updateThisTracks(currentCampaign.tracks);
+  }, [currentCampaign]);
+  useEffect(() => {
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY_TRACKS_ORDERED,
+      JSON.stringify(thisTracks)
+    );
+  }, [thisTracks]);
+
+  function handleOnDragEnd(result) {
+    if (!result.destination) return;
+    const items = Array.from(thisTracks);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    updateThisTracks(items);
+  }
+
+  function handleNext() {
+    setIsDiv(false);
+  }
+  console.log(currentCampaign);
+  return (
+    <AnimatedDiv
+      initial='initial'
+      animate='in'
+      exit='out'
+      variants={SlideInOut}
+      onMouseMove={() => setIsDiv(true)}
+    >
+      <Grid
+        container
+        direction='column'
+        justify='space-between'
+        alignItems='center'
+        className={'centered-container standard-container'}
+      >
+        <p className={classes.indented}>
+          Drag and drop tracks according to your preference.
+        </p>
+        <DragDropContext onDragEnd={handleOnDragEnd}>
+          <Droppable droppableId='tracks'>
+            {(provided) => (
+              <Grid
                 container
-                direction="column"
-                justify="space-between"
-                alignItems="center"
-                className={'centered-container standard-container' }
-
-            >
-
-                <DragDropContext onDragEnd={handleOnDragEnd}>
-                    <Droppable droppableId="tracks">
+                direction='column'
+                justify='center'
+                alignItems='center'
+                className={classes.root}
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {thisTracks &&
+                  thisTracks.map(({ id, name }, index) => {
+                    return (
+                      <Draggable key={id} draggableId={id} index={index}>
                         {(provided) => (
-                            <Grid
-                                container
-                                direction="column"
-                                justify="center"
-                                alignItems="center"
-                                className={classes.root}
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                            >
-                                {tracks.map(({ id, name }, index) => {
-                                    return <Draggable key={id} draggableId={id} index={index}>
-                                        {(provided) => (
-                                            <div
-                                                className='track-selection__track-option'
-                                                {...provided.draggableProps}
-                                                {...provided.dragHandleProps}
-                                                ref={provided.innerRef}
-
-                                            >
-                                                {name}
-                                            </div>
-                                        )}
-                                    </Draggable>
-                                })}
-                                {provided.placeholder}
-                            </Grid>
-
+                          <div
+                            className='track-selection__track-option'
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            ref={provided.innerRef}
+                          >
+                            {name}
+                          </div>
                         )}
-                    </Droppable>
-                </DragDropContext>
-                <div className={`selectionListComponent__next-button-container ${classes.mr2}`}>
-                    <Link to={'./unitSelection'}>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            className={`${classes.button} ${classes.mb1} `}
-                            endIcon={<SendIcon />}
-                            onClick={() => setIsDiv(false)}
-                        >
-                            Next
-                    </Button>
-                    </Link>
-                </div>
-
-
-            </Grid>
-
-        </AnimatedDiv>
-
-
-    )
+                      </Draggable>
+                    );
+                  })}
+                {provided.placeholder}
+              </Grid>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <div
+          className={`selectionListComponent__next-button-container ${classes.mr2}`}
+        >
+          <Link to={'./unitSelection'}>
+            <Button
+              variant='contained'
+              color='primary'
+              className={`${classes.button} ${classes.mb1} `}
+              endIcon={<SendIcon />}
+              onClick={handleNext}
+            >
+              Next
+            </Button>
+          </Link>
+        </div>
+      </Grid>
+    </AnimatedDiv>
+  );
 }

@@ -5,22 +5,17 @@ import {
   deleteStudent,
   updateStudent,
   getStudent,
-  login,
   submitSelections
 } from '../controllers/students.js';
-import auth from '../middleware/auth.js'
-
+import { authUser, authRole } from '../middleware/AuthM.js';
 const router = express.Router();
 
-router.get('/', auth,  getStudents);
-router.post('/add', auth, addStudent);
-router.delete('/:id', auth, deleteStudent);
-router.patch('/:id', auth, updateStudent);
-router.get('/:id', auth, getStudent);
+router.get('/', authUser, authRole('admin'),  getStudents);
+router.post('/add', authUser, authRole('admin'), addStudent);
+router.delete('/:id', authUser, authRole('admin'), deleteStudent);
+router.patch('/:id', authUser, authRole('admin'), updateStudent);
+router.get('/:id', authUser, authRole('admin'), getStudent);
 
-router.post('/login', login);
-
-//route to do:
-router.post('/submitSelections', auth, submitSelections);
+router.patch('/submitSelections/:email', authUser, authRole('student'), submitSelections);
 
 export default router;

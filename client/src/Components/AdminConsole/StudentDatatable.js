@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   TableCell,
   Table,
@@ -8,18 +8,29 @@ import {
   TableRow,
   Paper,
 } from '@material-ui/core';
-import StudentRow from './StudentRow'
+import StudentRow from './StudentRow';
 
 import StudentContext from '../../Context/Student/StudentContext';
-
-
+import CampaignContext from '../../Context/Campaign/CampaignContext';
 
 export default function StudentDatatable() {
   const studentContext = useContext(StudentContext);
-  const { students } = studentContext;
-  
+  const campaignContext = useContext(CampaignContext);
+  const { students, getStudents } = studentContext;
+  const { academicYear } = campaignContext;
+
+  useEffect(() => {
+    getStudents();
+    // eslint-disable-next-line
+  }, []);
+
+  const filteredStudents =
+    academicYear !== ''
+      ? students.filter((student) => student.academicYear === academicYear)
+      : students;
+
   return (
-    <TableContainer component={Paper} >
+    <TableContainer component={Paper}>
       <Table aria-label='collapsible table'>
         <TableHead>
           <TableRow>
@@ -30,11 +41,13 @@ export default function StudentDatatable() {
             <TableCell>Last Name</TableCell>
             <TableCell>Reg. Num.</TableCell>
             <TableCell>Credits</TableCell>
+            <TableCell>AcademicYear</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {students.map(
+          {filteredStudents.map(
             ({
+              _id,
               email,
               firstName,
               lastName,
@@ -42,9 +55,11 @@ export default function StudentDatatable() {
               creditCount,
               selectedTracks,
               selectedUnits,
+              academicYear,
             }) => (
               <StudentRow
-                key={email}
+                key={_id}
+                id={_id}
                 email={email}
                 firstName={firstName}
                 lastName={lastName}
@@ -52,6 +67,7 @@ export default function StudentDatatable() {
                 creditCount={creditCount}
                 selectedTracks={selectedTracks}
                 selectedUnits={selectedUnits}
+                academicYear={academicYear}
               />
             )
           )}
