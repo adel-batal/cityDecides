@@ -113,12 +113,12 @@ export default function AddStudentPopup({
         creditCount: 0,
         academicYear: '',
       });
-      setForm({open: false});
-     
+      
     }
+    setForm({open: false});
+    setNotification("Student has been added successfully!", "success")
   }
 
-  console.log(error);
   return (
     <>
       <Dialog open={form.open}>
