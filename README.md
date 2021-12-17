@@ -1,7 +1,7 @@
 ## CityDecides
 
 ### Description
-CityDecides was built as a part of the author's undergraduate thesis project. It is an open source project built using the MERN Stack technologies (MongoDB, Express.js, React.js, and Node.js) 
+CityDecides is built as a part of the author's undergraduate thesis project. It is an open source project built using the MERN Stack technologies (MongoDB, Express.js, React.js, and Node.js) 
 that still in the works. CityDecides is an online administrative tool through
 which administrators in academic institutions manage and make decisions on which study pathways
 and learning modules to allocate to final year students. By incorporating all the necessary features
